@@ -1,0 +1,42 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": [
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ]
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": "[data-difficulty=\"chill\"]"
+        },
+        {
+          "eval": "(() => { window.__screenFitOriginalRandom=Math.random;let value=1;Math.random=()=>{value=(value*1664525+1013904223)>>>0;return value/4294967296;}; })()"
+        },
+        {
+          "click": "#start-button"
+        },
+        {
+          "eval": "Math.random=window.__screenFitOriginalRandom;delete window.__screenFitOriginalRandom;"
+        },
+        {
+          "wait": 2100
+        },
+        {
+          "eval": "(() => {for(let n=0;n<2;n++){const i=game.human.hand.findIndex(c=>playablePileIndexes(game,c).length);if(i<0)throw Error('Seeded deal lost its legal move');const pile=playablePileIndexes(game,game.human.hand[i])[0];window.dispatchEvent(new KeyboardEvent('keydown',{key:String(i+1),bubbles:true}));window.dispatchEvent(new KeyboardEvent('keydown',{key:['a','s','d'][pile],bubbles:true}));}if(game.plays.human<2)throw Error('Human move events failed');})()"
+        },
+        {
+          "wait": 250
+        },
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ],
+      "settle": 150
+    }
+  ]
+}

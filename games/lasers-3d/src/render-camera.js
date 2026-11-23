@@ -41,6 +41,27 @@
   var THREE = root.THREE;
   var DEG = Math.PI / 180;
 
+  /* Automatic focus is deliberately tighter than free dragging. A fitted board
+   * stays completely visible; an oversized working board may pan only across
+   * its real extent. Coordinates are CSS pixels in the visible stage, which
+   * already excludes the HUD, side panel and bottom tray. No zoom is changed. */
+  function focusPanDelta(board, point, visible, centre, padding) {
+    function axis(lo, hi, viewLo, viewHi, cell) {
+      var span = hi - lo, available = viewHi - viewLo;
+      if (!(available > 0) || !(span > 0)) return 0;
+      var fits = span <= available + 0.01;
+      if (!centre && fits && lo >= viewLo - 0.01 && hi <= viewHi + 0.01) return 0;
+      var inset = Math.min(padding || 0, available / 4);
+      var inside = cell >= viewLo + inset && cell <= viewHi - inset;
+      var wanted = centre || !inside ? (viewLo + viewHi) / 2 - cell : 0;
+      var a = viewLo - lo, b = viewHi - hi;
+      var delta = Math.max(Math.min(a, b), Math.min(Math.max(a, b), wanted));
+      return Math.abs(delta) < 0.01 ? 0 : delta;
+    }
+    return { x: axis(board.left, board.right, visible.left, visible.right, point.x),
+      y: axis(board.top, board.bottom, visible.top, visible.bottom, point.y) };
+  }
+
   function create(opts) {
     var theme = opts.theme, size = opts.size, Core = root.LaserRenderCore;
     var CAM = theme.camera, R = opts.distance || 60;
@@ -154,6 +175,17 @@
       else pan.addScaledVector(groundUp, dyPx / (z * Math.max(0.2, se)));
       clampPan();
       apply();
+    }
+    function focusScreenPoint(point, rect, visible, centre) {
+      var box = getBoardScreenBox();
+      var cx = rect.left + rect.width / 2 + box.centerX;
+      var cy = rect.top + rect.height / 2 + box.centerY;
+      var delta = focusPanDelta({left:cx-box.width/2, right:cx+box.width/2,
+        top:cy-box.height/2, bottom:cy+box.height/2}, point, visible,
+        !!centre, getCellPx()/2 + 8);
+      // In particular, do not latch manual framing or expose FIT for a no-op.
+      if (delta.x || delta.y) panBy(delta.x, delta.y);
+      return delta;
     }
     /* At least theme.camera.panMinVisiblePct of the board's projected box stays inside the canvas on each axis. */
     function clampPan() {
@@ -461,7 +493,7 @@
     return {
       camera: camera, up: upVec, right: rightVec, dir: dirVec, boardCenter: boardCenter, pan: pan,
       setBoard: setBoard, apply: apply, refit: refit, step: step,
-      setPreset: setPreset, orbit: orbit, zoomBy: zoomBy, panBy: panBy, fitToBoard: fitToBoard, canFit: canFit,
+      setPreset: setPreset, orbit: orbit, zoomBy: zoomBy, panBy: panBy, focusScreenPoint: focusScreenPoint, fitToBoard: fitToBoard, canFit: canFit,
       restoreCamera: restoreCamera,
       setSide: function(side){faceSign=side==='below'?-1:1;},
       setViewMode: setViewMode, getViewMode: getViewMode, hasOverview: hasOverview,
@@ -473,5 +505,5 @@
     };
   }
 
-  root.LaserRenderCamera = { __version: 1, create: create };
+  root.LaserRenderCamera = { __version: 1, create: create, focusPanDelta: focusPanDelta };
 }(typeof self !== 'undefined' ? self : this));

@@ -1,0 +1,56 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "settle": 80,
+      "steps": [
+        {
+          "click": ".tray-card[data-type=\"MIRROR\"]"
+        },
+        {
+          "wait": 250
+        },
+        {
+          "eval": "(() => {const a=window.__lasers3d,c=document.querySelector('#board'),p=a.render.projectCell(a.levels[0].solution[0],0);for(const type of ['pointerdown','pointerup'])c.dispatchEvent(new PointerEvent(type,{pointerId:17,pointerType:'touch',clientX:p.x,clientY:p.y,button:0,buttons:type==='pointerdown'?1:0,bubbles:true}));})()"
+        },
+        {
+          "wait": 250
+        },
+        {
+          "eval": "(() => {const a=window.__lasers3d;if(!a.state.placed.length)throw new Error('Tutorial must place a real mirror');if(a.state.placed[0].orient!==a.levels[0].solution[0].orient){(() => {const a=window.__lasers3d,c=document.querySelector('#board'),p=a.render.projectCell(a.levels[0].solution[0],0);for(const type of ['pointerdown','pointerup'])c.dispatchEvent(new PointerEvent(type,{pointerId:17,pointerType:'touch',clientX:p.x,clientY:p.y,button:0,buttons:type==='pointerdown'?1:0,bubbles:true}));})()}})()"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "eval": "const a=window.__lasers3d;if(!a.sim.trace(a.state.level,a.state.placed).allTargetsHit)throw new Error('Tutorial mirror must connect the target before FIRE')"
+        },
+        {
+          "click": "#btn-fire"
+        },
+        {
+          "wait": 100
+        },
+        {
+          "eval": "new Promise((resolve,reject)=>{const deadline=performance.now()+10000;function check(){const a=window.__lasers3d;if(!a.render.getBeamProgress().playing&&a.state.status!=='tracing')return resolve();if(performance.now()>deadline)return reject(new Error('Fired beam did not finish'));setTimeout(check,25)}check()})"
+        },
+        {
+          "click": "#btn-fit",
+          "only": [
+            "phone"
+          ]
+        },
+        {
+          "wait": 500,
+          "only": [
+            "phone"
+          ]
+        }
+      ]
+    }
+  ]
+}

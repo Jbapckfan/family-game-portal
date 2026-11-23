@@ -1,0 +1,33 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": [
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ]
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "clickText": "CAMPAIGN"
+        },
+        {
+          "wait": 1800
+        },
+        {
+          "eval": "(async () => { const c=document.querySelector('canvas'),r=c.getBoundingClientRect();const init={bubbles:true,pointerId:1,clientX:r.x+r.width*.5,clientY:r.y+r.height*.4};c.dispatchEvent(new PointerEvent('pointerdown',init));await new Promise(resolve=>setTimeout(resolve,700));c.dispatchEvent(new PointerEvent('pointerup',init)); })()"
+        },
+        {
+          "wait": 200
+        },
+        {
+          "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        }
+      ],
+      "settle": 150
+    }
+  ]
+}

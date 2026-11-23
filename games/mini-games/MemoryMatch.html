@@ -14,7 +14,6 @@
     <title>Memory Match</title>
 
     <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- React Libraries -->
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
@@ -28,7 +27,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 
-    <style>
+
+    <style id="local-utilities">*,:before,:after{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;--tw-ring-color: rgb(59 130 246 / .5);--tw-ring-offset-shadow: 0 0 #0000;--tw-ring-shadow: 0 0 #0000;--tw-shadow: 0 0 #0000;--tw-shadow-colored: 0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }*,:before,:after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}:before,:after{--tw-content: ""}html,:host{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dl,dd,h1,h2,h3,h4,h5,h6,hr,figure,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}ol,ul,menu{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}button,[role=button]{cursor:pointer}:disabled{cursor:default}img,svg,video,canvas,audio,iframe,embed,object{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.left-0{left:0}.right-2{right:.5rem}.top-0{top:0}.top-2{top:.5rem}.z-10{z-index:10}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mt-0\.5{margin-top:.125rem}.mt-2{margin-top:.5rem}.mt-5{margin-top:1.25rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-12{height:3rem}.h-16{height:4rem}.h-full{height:100%}.min-h-\[44px\]{min-height:44px}.min-h-screen{min-height:100vh}.w-12{width:3rem}.w-16{width:4rem}.w-full{width:100%}.min-w-\[44px\]{min-width:44px}.min-w-\[90px\]{min-width:90px}.max-w-2xl{max-width:42rem}.max-w-sm{max-width:24rem}.flex-shrink-0,.shrink-0{flex-shrink:0}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.list-none{list-style-type:none}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.gap-1{gap:.25rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse: 0;margin-top:calc(.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-cyan-800{--tw-border-opacity: 1;border-color:rgb(21 94 117 / var(--tw-border-opacity, 1))}.border-purple-800{--tw-border-opacity: 1;border-color:rgb(107 33 168 / var(--tw-border-opacity, 1))}.border-rose-400\/30{border-color:#fb71854d}.border-rose-400\/50{border-color:#fb718580}.border-rose-500\/50{border-color:#f43f5e80}.border-rose-800{--tw-border-opacity: 1;border-color:rgb(159 18 57 / var(--tw-border-opacity, 1))}.bg-black{--tw-bg-opacity: 1;background-color:rgb(0 0 0 / var(--tw-bg-opacity, 1))}.bg-black\/30{background-color:#0000004d}.bg-black\/40{background-color:#0006}.bg-black\/70{background-color:#000000b3}.bg-black\/80{background-color:#000c}.bg-cyan-500{--tw-bg-opacity: 1;background-color:rgb(6 182 212 / var(--tw-bg-opacity, 1))}.bg-gray-900{--tw-bg-opacity: 1;background-color:rgb(17 24 39 / var(--tw-bg-opacity, 1))}.bg-purple-500{--tw-bg-opacity: 1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.bg-rose-400\/10{background-color:#fb71851a}.bg-rose-500{--tw-bg-opacity: 1;background-color:rgb(244 63 94 / var(--tw-bg-opacity, 1))}.bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.from-black{--tw-gradient-from: #000 var(--tw-gradient-from-position);--tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.from-rose-300{--tw-gradient-from: #fda4af var(--tw-gradient-from-position);--tw-gradient-to: rgb(253 164 175 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.from-rose-400{--tw-gradient-from: #fb7185 var(--tw-gradient-from-position);--tw-gradient-to: rgb(251 113 133 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}.via-pink-400{--tw-gradient-to: rgb(244 114 182 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), #f472b6 var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-rose-950\/30{--tw-gradient-to: rgb(76 5 25 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), rgb(76 5 25 / .3) var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-black{--tw-gradient-to: #000 var(--tw-gradient-to-position)}.to-pink-400{--tw-gradient-to: #f472b6 var(--tw-gradient-to-position)}.to-pink-500{--tw-gradient-to: #ec4899 var(--tw-gradient-to-position)}.to-rose-400{--tw-gradient-to: #fb7185 var(--tw-gradient-to-position)}.bg-clip-text{background-clip:text}.bg-repeat{background-repeat:repeat}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-10{padding-left:2.5rem;padding-right:2.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.text-center{text-align:center}.font-sans{font-family:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji"}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.leading-none{line-height:1}.tracking-wider{letter-spacing:.05em}.tracking-widest{letter-spacing:.1em}.text-black{--tw-text-opacity: 1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.text-cyan-200{--tw-text-opacity: 1;color:rgb(165 243 252 / var(--tw-text-opacity, 1))}.text-cyan-300{--tw-text-opacity: 1;color:rgb(103 232 249 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity: 1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-pink-300{--tw-text-opacity: 1;color:rgb(249 168 212 / var(--tw-text-opacity, 1))}.text-rose-100{--tw-text-opacity: 1;color:rgb(255 228 230 / var(--tw-text-opacity, 1))}.text-rose-100\/90{color:#ffe4e6e6}.text-rose-200{--tw-text-opacity: 1;color:rgb(254 205 211 / var(--tw-text-opacity, 1))}.text-rose-200\/80{color:#fecdd3cc}.text-rose-300{--tw-text-opacity: 1;color:rgb(253 164 175 / var(--tw-text-opacity, 1))}.text-rose-300\/70{color:#fda4afb3}.text-rose-400{--tw-text-opacity: 1;color:rgb(251 113 133 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-200{--tw-text-opacity: 1;color:rgb(254 240 138 / var(--tw-text-opacity, 1))}.opacity-70{opacity:.7}.shadow-2xl{--tw-shadow: 0 25px 50px -12px rgb(0 0 0 / .25);--tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-lg{--tw-shadow: 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);--tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000),var(--tw-ring-shadow, 0 0 #0000),var(--tw-shadow)}.shadow-rose-500\/10{--tw-shadow-color: rgb(244 63 94 / .1);--tw-shadow: var(--tw-shadow-colored)}.shadow-rose-500\/20{--tw-shadow-color: rgb(244 63 94 / .2);--tw-shadow: var(--tw-shadow-colored)}.shadow-rose-500\/40{--tw-shadow-color: rgb(244 63 94 / .4);--tw-shadow: var(--tw-shadow-colored)}.outline{outline-style:solid}.backdrop-blur-sm{--tw-backdrop-blur: blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-200{transition-duration:.2s}.ease-out{transition-timing-function:cubic-bezier(0,0,.2,1)}@media(hover:hover){.hover\:scale-105:hover{--tw-scale-x: 1.05;--tw-scale-y: 1.05;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skew(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}}@media(hover:hover){.hover\:bg-rose-400\/30:hover{background-color:#fb71854d}}@media(hover:hover){.hover\:from-rose-300:hover{--tw-gradient-from: #fda4af var(--tw-gradient-from-position);--tw-gradient-to: rgb(253 164 175 / 0) var(--tw-gradient-to-position);--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)}}@media(hover:hover){.hover\:to-pink-400:hover{--tw-gradient-to: #f472b6 var(--tw-gradient-to-position)}}@media(hover:hover){.hover\:text-white:hover{--tw-text-opacity: 1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}}.disabled\:cursor-default:disabled{cursor:default}@media(min-width:640px){.sm\:h-14{height:3.5rem}.sm\:h-20{height:5rem}.sm\:w-14{width:3.5rem}.sm\:w-20{width:5rem}.sm\:justify-center{justify-content:center}.sm\:gap-3{gap:.75rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-4xl{font-size:2.25rem;line-height:2.5rem}}@media(min-width:768px){.md\:h-16{height:4rem}.md\:h-24{height:6rem}.md\:w-16{width:4rem}.md\:w-24{width:6rem}.md\:p-4{padding:1rem}.md\:text-5xl{font-size:3rem;line-height:1}}
+</style>
+<style>
         html, body {
             background-color: #000;
         }
@@ -130,14 +132,322 @@
             }
         }
     </style>
-</head>
+<style id="screen-fit">:root {
+  --mini-gap:clamp(12px,2vw,30px);
+  --board-size:min(64vw,calc(100dvh - 120px));
+}
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+body > a[aria-label="Back to menu"],
+.home-link {
+  z-index: 99999 !important;
+  top: max(12px, env(safe-area-inset-top)) !important;
+  left: max(12px, env(safe-area-inset-left)) !important;
+  min-height: 44px;
+}
+.mute-btn {
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+}
+.mini-shell {
+  min-height: 100dvh !important;
+  padding: max(74px, calc(env(safe-area-inset-top) + 62px)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)) !important;
+}
+.mini-layout {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(270px, .72fr) minmax(0, 1.6fr);
+  grid-template-rows: auto auto;
+  gap: var(--mini-gap);
+  align-items: center;
+  align-content: center;
+  margin: 0 !important;
+  min-width: 0;
+}
+.mini-controls {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  text-align: center;
+  align-self: end;
+}
+.mini-bottom {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  text-align: center;
+  align-self: start;
+}
+.mini-board {
+  grid-column: 2;
+  grid-row: 1/span 2;
+  width: min(100%, var(--board-size)) !important;
+  justify-self: center;
+  margin: 0 !important;
+  min-width: 0;
+  box-shadow: 0 24px 70px #0008, inset 0 1px 0 #ffffff12 !important;
+}
+.mini-controls header {
+  padding: 4px 0 18px !important;
+}
+.mini-controls h1 {
+  font-family:
+    Orbitron,
+    system-ui,
+    sans-serif;
+  font-size: clamp(24px, 2.8vw, 43px) !important;
+  line-height: 1.15;
+  letter-spacing: .025em;
+  text-shadow: 0 0 24px #67e8f933 !important;
+}
+.mini-controls header p {
+  font: 500 14px/1.4 system-ui, sans-serif;
+  margin-top: 8px;
+}
+.mini-controls button,
+.mini-bottom button,
+.mini-controls select,
+.mini-controls input {
+  min-height: 44px;
+  line-height: 1.25;
+}
+.mini-controls button,
+.mini-bottom button {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+}
+.mini-controls > div {
+  max-width: 100%;
+  min-width: 0;
+}
+.mini-controls input {
+  width: 100%;
+}
+.mini-bottom footer {
+  padding: 8px 0 !important;
+}
+.mini-bottom footer button {
+  margin: 0 !important;
+}
+.mini-controls .overflow-x-auto {
+  scrollbar-width: thin;
+  padding-bottom: 6px;
+}
+.modal-overlay,
+[role=dialog] {
+  z-index: 1000;
+}
+.modal-content,
+[role=dialog] > div.relative {
+  max-height: calc(100dvh - 150px);
+  overflow-y: auto;
+}
+@media (max-width: 700px), (orientation: portrait) {
+  :root {
+    --board-size:min(calc(100vw - 32px),calc(100dvh - 410px));
+  }
+  .mini-layout {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  .mini-controls,
+  .mini-bottom {
+    width: 100%;
+    align-self: auto;
+  }
+  .mini-controls header {
+    padding: 0 0 8px !important;
+  }
+  .mini-controls h1 {
+    font-size: clamp(24px, 5vw, 38px) !important;
+  }
+  .mini-controls header p {
+    margin-top: 4px;
+    font-size: 13px;
+  }
+  .mini-controls > div {
+    margin-bottom: 7px;
+  }
+  .mini-board {
+    flex: none;
+  }
+  .mini-bottom footer {
+    padding: 4px 0 !important;
+  }
+}
+@media (min-width: 701px) and (orientation: portrait) {
+  :root {
+    --board-size:min(calc(100vw - 64px),calc(100dvh - 390px));
+  }
+  .mini-controls {
+    max-width: 700px;
+  }
+  .mini-shell {
+    justify-content: center !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+html.mini-hidden *,
+html.mini-hidden *::before,
+html.mini-hidden *::after {
+  animation-play-state: paused !important;
+}
+</style>
+<style id="board-fit">.mini-board {
+  padding: clamp(8px, 1.2vw, 18px) !important;
+  container-type: inline-size;
+}
+.mini-board [role=grid] {
+  width: 100%;
+  gap: clamp(5px, 1vw, 12px);
+}
+.mini-board [role=row] {
+  width: 100%;
+  gap: clamp(5px, 1vw, 12px);
+}
+.mini-board [role=gridcell] {
+  flex: 1;
+  min-width: 0;
+}
+.mini-board .card-flip-outer {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1;
+}
+.mini-board .card-front {
+  font-size: clamp(24px, 12cqw, 68px);
+}
+.mini-board .card-back span {
+  font-size: clamp(20px, 7cqw, 48px);
+  opacity: .85;
+}
+.mini-controls > div:first-of-type {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.game-stats {
+  margin-bottom: 0 !important;
+}
+.game-stats > div {
+  padding: 8px 12px !important;
+}
+.mini-board {
+  width: min(100%, calc(var(--board-size) * var(--memory-cols) / var(--memory-rows))) !important;
+}
+@media (max-width: 700px) {
+  :root {
+    --board-size:min(calc(100vw - 32px),calc(100dvh - 390px));
+  }
+  .mini-controls button {
+    padding: 6px 9px;
+  }
+  .mini-controls h1 {
+    font-size: 24px !important;
+  }
+}
+</style>
+<style>.mini-settings {
+  margin: 8px 0 12px;
+  border: 1px solid #94a3b83a;
+  border-radius: 14px;
+  background: #0f172a66;
+  text-align: center;
+}
+.mini-settings summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px;
+  color: #cbd5e1;
+  font: 650 14px/1.3 system-ui, sans-serif;
+}
+.mini-settings[open] {
+  padding: 0 10px 10px;
+}
+.mini-settings > div,
+.mini-settings > nav {
+  margin-bottom: 8px !important;
+}
+.mini-campaign summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 10px;
+  color: #c4b5fd;
+  font: 650 14px system-ui, sans-serif;
+}
+.mini-board [role=gridcell]:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 1px;
+  z-index: 2;
+}
+.mini-shell [role=dialog] {
+  padding-top: 74px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+}
+</style><style>body>a[href="../../"]{z-index:99999!important;top:max(12px,env(safe-area-inset-top))!important;left:max(12px,env(safe-area-inset-left))!important;min-width:44px;min-height:44px;display:flex;align-items:center}button,a,[role=button]{touch-action:manipulation}</style><style id="round-three-polish">
+/* Round 3: readable controls, quiet chrome, bounded feedback and material depth. */
+:root{--polish-accent:#fda4af;--polish-ink:#e8effc;--polish-muted:#bdcbe0;--polish-control:#111c30;--polish-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body,.mini-shell,.mini-controls,.mini-bottom,.breaker-layout{font-family:var(--polish-font);color:var(--polish-ink)}
+.mini-controls h1,.game-title{font-family:Orbitron,var(--polish-font);letter-spacing:.025em;text-shadow:0 2px 18px #0005!important}
+button,input,select,summary{font-family:var(--polish-font);font-size:14px;line-height:1.35;touch-action:manipulation}
+.mini-controls button:not(.theme-dot),.mini-bottom button,.breaker-setup button,.breaker-input .action-btn,.breaker-input .notepad-toggle-btn{min-width:44px;min-height:44px;border-radius:12px;border:1px solid #526580!important;background:var(--polish-control)!important;color:var(--polish-ink)!important;font:650 14px/1.3 var(--polish-font)!important;box-shadow:inset 0 1px #ffffff1c,0 2px 0 #0005!important;transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.mini-controls :is(select,input),.breaker-layout select{min-height:44px;font:500 14px/1.3 var(--polish-font);border:1px solid #526580;border-radius:10px;background:#111c30;color:#e8effc;padding:8px}
+.mini-controls p,.mini-controls label,.mini-controls small,.mini-controls .text-xs,.mini-controls .text-sm,.mini-bottom .text-xs,.breaker-layout .text-xs,.breaker-layout .text-sm{font-size:14px!important;line-height:1.4}
+.mini-controls p,.mini-controls .text-gray-400,.mini-controls .text-gray-500,.mini-controls .text-gray-600,.mini-bottom .text-gray-600{color:var(--polish-muted)!important}
+.mini-controls :is(button[aria-pressed=true],button[aria-checked=true],button.active,button.bg-cyan-500,button.bg-cyan-600,button.bg-cyan-700,button.bg-blue-600,button.bg-purple-500,button.bg-purple-600,button.bg-purple-700,button.bg-rose-500,button.bg-green-500,button.bg-amber-400,button.bg-yellow-500),.breaker-setup :is(button.bg-cyan-700,button.bg-purple-700){color:#091020!important;background:var(--polish-accent)!important;border-color:var(--polish-accent)!important;box-shadow:inset 0 1px #fff8,0 2px 0 #0007!important}
+.mini-bottom footer button,.mini-bottom button[aria-label^="Reset"],.mini-bottom button[aria-label="Start a new game"],.breaker-input button[aria-label="Submit your guess"]{background:var(--polish-accent)!important;color:#091020!important;border-color:var(--polish-accent)!important;font-size:16px!important;box-shadow:inset 0 1px #fff9,0 3px 0 #0006,0 8px 20px #0003!important}
+.mini-settings,.mq-settings,.mq-records,.mini-2048-records{border:1px solid #526580!important;border-radius:12px;background:#0d1729!important;color:#e8effc}
+summary{min-height:44px;font:650 14px/1.3 var(--polish-font)!important;color:#e8effc!important;cursor:pointer}
+.mini-controls header{padding-bottom:12px!important}.mini-controls header p{font-size:14px!important;line-height:1.4}
+.mini-board{border-radius:20px!important;border-color:#8aabc455!important;box-shadow:0 18px 42px #0007,inset 0 1px #ffffff35,inset 0 -2px #0008!important}
+.mini-bottom .stats-bar{font:500 14px/1.4 var(--polish-font);color:var(--polish-muted);gap:8px}.mini-bottom footer{padding:8px 0!important}
+.scanline-animation,.scanline-animation::before,.scanline-overlay,.mini-shell>.absolute .animate-pulse{animation:none!important}.scanline-animation,.scanline-overlay{opacity:.18}
+.win-animation{animation-iteration-count:2!important}.mini-board .animate-pulse{animation:none!important}
+.mini-controls button:active:not(:disabled),.mini-bottom button:active:not(:disabled),.breaker-layout button:active:not(:disabled),summary:active{transform:translateY(2px)!important;box-shadow:inset 0 2px 5px #0007!important}
+button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #fef08a!important;outline-offset:3px}
+@media(hover:hover){.mini-controls button:hover:not(:disabled),.mini-bottom button:hover:not(:disabled),.breaker-layout .action-btn:hover:not(:disabled){border-color:var(--polish-accent)!important;filter:brightness(1.08)}}
+@media(max-width:700px){.mini-shell{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-items:center!important;padding-top:max(68px,calc(env(safe-area-inset-top) + 60px))!important}.mini-layout{gap:12px;align-content:start}.mini-controls,.mini-bottom{max-width:none}.mini-controls header{padding-bottom:8px!important}.mini-controls h1{font-size:clamp(23px,6vw,30px)!important}}
+@media(min-width:701px) and (orientation:portrait){.mini-shell{align-items:flex-start!important;justify-content:flex-start!important}.mini-layout{gap:12px;align-content:start}.mini-controls{max-width:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.mini-shell{background:radial-gradient(ellipse at 80% 8%,color-mix(in srgb,var(--polish-accent) 9%,transparent),transparent 60%),radial-gradient(ellipse at 5% 100%,#16264066,transparent 55%),#210b19}.mini-shell>.absolute[aria-hidden=true]{opacity:.35}.mini-controls>div,.mini-bottom>div{border-radius:12px}
+
+
+.mini-board{background:radial-gradient(ellipse at 50% 0,#76254955,transparent 75%),#210d19!important;border-color:#c56c9280!important;box-shadow:inset 0 1px 1px #fbcfe840,0 18px 34px #0008!important}
+.card-flip-inner{transition-duration:.22s;transition-timing-function:cubic-bezier(.2,.65,.3,1)}.card-flip-outer{border-radius:14px;transition:transform .18s ease,filter .18s ease}.card-face{border-radius:12px;border:2px solid #ffe4e6bb;box-shadow:inset 0 1px 1px #fff9,inset 0 -2px 2px #0003,0 3px 0 #391129,0 7px 10px #0008}
+.card-back{background-color:#881337;background-image:linear-gradient(135deg,#9f1244e8,#67102ce8),url('./MemoryMatch-assets/card-stock-r3.jpg');background-size:auto,256px 256px;color:#fce7f3}.card-back::before{content:"";position:absolute;inset:6px;border:1px solid #fce7f380;border-radius:7px;pointer-events:none}.card-back::after{content:"";position:absolute;inset:9px;border-radius:5px;background:repeating-linear-gradient(45deg,#fff0 0 9px,#ffffff0a 9px 10px);pointer-events:none}.card-back>span{color:#fce7f3;opacity:1!important;filter:drop-shadow(0 1px 1px #33091a)}
+.card-front{background-color:#fff4e7;background-image:linear-gradient(145deg,#fffaf250,#fbcfe840),url('./MemoryMatch-assets/card-stock-r3.jpg');background-size:auto,256px 256px;color:#3c1631;text-shadow:0 2px 3px #75485b22}.card-flip-outer:active:not(:disabled){transform:translateY(2px)}
+.game-stats>div{background:#20101e;border-color:#a2577b;color:#fce7f3}.game-stats .text-xs{color:#fbcfe8!important}.card-pulse{animation-iteration-count:1!important}
+
+/* Legible secondary text includes setup and help, not only the in-round controls. */
+.mini-shell .text-xs,.mini-shell .text-sm,.mini-shell [class~="text-[10px]"],.mini-shell [class~="text-[11px]"],.mini-shell [class~="text-[12px]"],.mini-shell small,[role=dialog] :is(p,li,label,small,.text-xs),.modal-content :is(p,li,label,small,.text-xs){font-size:14px!important;line-height:1.4}
+.mini-shell>div.max-w-md :is(button,input,label,p,.theme-btn){font-size:14px!important;min-height:44px}.mini-shell>div.max-w-md :is(button.bg-blue-700,button.bg-green-700){font-size:16px!important}
+.mini-controls button:disabled,.mini-bottom button:disabled,.breaker-layout .action-btn:disabled{opacity:1;color:#aebfd8!important;background:#0b1424!important;border-color:#35475e!important;box-shadow:none!important}.mini-controls select:disabled,.breaker-layout select:disabled{opacity:1;color:#aebfd8;background:#0b1424}
+</style></head>
 <body>
   <noscript>
     <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#fb7185;font-family:sans-serif;text-align:center;padding:2rem;">
       <p>JavaScript is required to play Memory Match. Please enable JavaScript in your browser settings.</p>
     </div>
   </noscript>
-  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">&#127968; Menu</a>
+  <a href="../../" aria-label="Back to menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;">&#127968; Menu</a>
     <div id="root"></div>
 
     <script type="text/babel">
@@ -479,10 +789,11 @@
             const rows = React.useMemo(() => chunkIntoRows(deck, sizeConfig.cols), [deck,sizeConfig.cols]);
 
             return (
-                <div className="memory-shell min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                <div className="mini-shell memory-shell min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
                     <div className="absolute inset-0 bg-gradient-to-br from-black via-rose-950/30 to-black" aria-hidden="true" />
                     <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
-                    <div className="relative z-10 w-full max-w-2xl mx-auto text-center">
+                    <div className="mini-layout relative z-10 w-full max-w-2xl mx-auto text-center">
+                        <aside className="mini-controls">
                         <header className="game-header py-6">
                             <div className="flex items-center justify-center gap-3">
                                 <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-rose-300 via-pink-400 to-rose-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
@@ -523,7 +834,8 @@
                             </div>
                         </div>
 
-                        <main className="game-board relative bg-black/30 rounded-2xl p-3 md:p-4 border border-rose-400/30 shadow-2xl shadow-rose-500/10">
+                        </aside>
+                        <main style={{'--memory-cols':sizeConfig.cols,'--memory-rows':rows.length}} className="mini-board game-board relative bg-black/30 rounded-2xl p-3 md:p-4 border border-rose-400/30 shadow-2xl shadow-rose-500/10">
                             <div
                                 role="grid"
                                 aria-label={`Memory match board, ${matchedPairs} of ${totalPairs} pairs matched`}
@@ -572,6 +884,7 @@
                                 </div>
                             )}
                         </main>
+                        <div className="mini-bottom">
 
                         <footer className="game-footer py-6">
                             {!isWon && (
@@ -583,6 +896,7 @@
                                 </button>
                             )}
                         </footer>
+                        </div>
                     </div>
                 </div>
             );
@@ -590,5 +904,57 @@
 
         ReactDOM.render(<MemoryMatchGame />, document.getElementById('root'));
     </script>
+<script>document.addEventListener("visibilitychange",()=>document.documentElement.classList.toggle("mini-hidden",document.hidden));</script>
+
+<script>
+// Fit only on element resize, DOM mount and viewport changes; no animation-frame layout loop.
+(() => {
+ let queued = false, layout, board, observer;
+ const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(fit); } };
+ function fit() {
+  queued = false;
+  if (!layout || !board || !layout.isConnected || document.hidden) return;
+  const shell = layout.closest('.mini-shell,.minequest-shell');
+  const cs = getComputedStyle(layout), ss = getComputedStyle(shell || layout);
+  const number = value => parseFloat(value) || 0;
+  const vertical = cs.display === 'flex';
+  const controls = layout.querySelector(':scope > .mini-controls');
+  const bottom = layout.querySelector(':scope > .mini-bottom');
+  const r = board.getBoundingClientRect();
+  let ratio = 1;
+  if (board.style.getPropertyValue('--peg-cols')) ratio = number(board.style.getPropertyValue('--peg-cols')) / number(board.style.getPropertyValue('--peg-rows'));
+  else if (board.style.getPropertyValue('--memory-cols')) ratio = number(board.style.getPropertyValue('--memory-cols')) / number(board.style.getPropertyValue('--memory-rows'));
+  else {
+   const grid = board.querySelector('[role="grid"]');
+   if (grid) { const ar = getComputedStyle(grid).aspectRatio.split('/').map(Number); if (ar.length === 2 && ar[0] > 0 && ar[1] > 0) ratio = ar[0] / ar[1]; }
+  }
+  const overhead = Math.max(0, r.height - r.width / ratio);
+  let available = innerHeight - number(ss.paddingTop) - number(ss.paddingBottom) - number(cs.paddingTop) - number(cs.paddingBottom);
+  let width;
+  if (vertical) {
+   available -= (controls?.getBoundingClientRect().height || 0) + (bottom?.getBoundingClientRect().height || 0) + number(cs.rowGap) * 2;
+   width = layout.clientWidth - number(cs.paddingLeft) - number(cs.paddingRight);
+  } else {
+   width = number(cs.gridTemplateColumns.split(' ')[1]);
+  }
+  const next = Math.max(100, Math.min(width || r.width, (available - overhead) * ratio));
+  if (Math.abs(r.width - next) > 1) board.style.setProperty('width', next + 'px', 'important');
+ }
+ function connect() {
+  const next = document.querySelector('.mini-layout');
+  const nextBoard = next?.querySelector(':scope > .mini-board');
+  if (next === layout && nextBoard === board) return;
+  observer?.disconnect(); layout = next; board = nextBoard;
+  if (!layout || !board) return;
+  observer = new ResizeObserver(schedule);
+  observer.observe(layout); observer.observe(board);
+  for (const el of layout.querySelectorAll(':scope > .mini-controls,:scope > .mini-bottom')) observer.observe(el);
+  schedule();
+ }
+ new MutationObserver(connect).observe(document.getElementById('root'), {childList:true,subtree:true});
+ addEventListener('resize',schedule); document.addEventListener('visibilitychange',schedule);
+ document.fonts?.ready.then(schedule); connect();
+})();
+</script>
 </body>
 </html>

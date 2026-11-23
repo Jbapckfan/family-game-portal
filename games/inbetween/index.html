@@ -11,9 +11,11 @@
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../daily/screen-fit.css">
   <title>Inbetween — find where you fit</title>
 </head>
 <body data-game-creator="ChatGPT" class="inbetween">
+  <a class="secondary-button screen-fit-menu" href="../../">Menu</a>
   <a class="skip-link" href="#puzzle">Skip to puzzle</a>
   <div class="page">
     <header class="masthead">
@@ -34,17 +36,17 @@
       </section>
       <div class="game-layout">
         <section class="game" aria-label="Inbetween puzzle">
-          <div class="game-topline"><div class="tabs" aria-label="Game mode"><button id="daily-tab" class="tab active" aria-pressed="true">The daily</button><button id="practice-tab" class="tab" aria-pressed="false">Practice <span aria-hidden="true">↗</span></button></div><span id="issue" class="issue">NO. 001</span></div>
-          <div class="puzzle-meta"><span id="puzzle-date">Tuesday, October 20</span><span id="difficulty" class="difficulty">Gentle</span></div>
+          <div class="screen-fit-heading"><div class="game-topline"><div class="tabs" aria-label="Game mode"><button id="daily-tab" class="tab active" aria-pressed="true">The daily</button><button id="practice-tab" class="tab" aria-pressed="false">Practice <span aria-hidden="true">↗</span></button></div><span id="issue" class="issue">NO. 001</span></div>
+          <div class="puzzle-meta"><span id="puzzle-date">Tuesday, October 20</span><span id="difficulty" class="difficulty">Gentle</span></div></div>
           <div id="new-day" class="new-day" hidden>A fresh puzzle is here. <button id="new-day-button">Play today →</button></div>
-          <section class="bank-card" aria-label="Your pairs of letters">
+          <div class="screen-fit-stage" tabindex="0" role="region" aria-label="Scrollable puzzle area"><section class="bank-card" aria-label="Your pairs of letters">
             <div class="bank-heading"><span><b>01</b> PICK A PAIR</span><span id="bank-count">6 to place</span></div>
             <div id="bank" class="bank" tabindex="-1"></div>
             <p id="bank-note" class="bank-note">Each pair stays together. Each pair gets one home.</p>
           </section>
           <div class="board-heading"><span><b>02</b> FIND ITS PLACE</span><button id="quick-help">How it works ↗</button></div>
           <div id="puzzle" class="puzzle" tabindex="-1" aria-label="Six words to complete"><p>Making a little room…</p></div>
-          <div class="board-bottom"><div class="progress"><span id="progress-dots" class="progress-dots" aria-hidden="true"></span><span id="progress-label">0 of 6 fit</span></div><div class="attempt-count"><strong id="attempt-count">0</strong> <span id="attempt-word">attempts</span><span class="par-label"> / 6 is perfect</span></div></div>
+          </div><div class="board-bottom"><div class="progress"><span id="progress-dots" class="progress-dots" aria-hidden="true"></span><span id="progress-label">0 of 6 fit</span></div><div class="attempt-count"><strong id="attempt-count">0</strong> <span id="attempt-word">attempts</span><span class="par-label"> / 6 is perfect</span></div></div>
           <p id="feedback" class="feedback" role="status">Pick a pair. Tap a gap. See what fits.</p>
           <div id="game-controls" class="game-controls"><button id="hint-button" class="primary-button"><span aria-hidden="true">✦</span> A little nudge</button><button id="clear-button" class="secondary-button" disabled>Clear choice</button><button id="more-button" class="secondary-button more-button" aria-label="More puzzle options">•••</button></div>
           <div id="finished-actions" class="game-controls" hidden><button id="results-button" class="primary-button">Your result ↗</button><button id="next-button" class="secondary-button">Try a practice →</button><button id="finished-more-button" class="secondary-button more-button" aria-label="Practice options" hidden>•••</button></div>
@@ -69,7 +71,7 @@
     </main>
     <footer><a id="family-link" href="http://192.168.1.155:8080/">← Alford Family Games</a><a id="tradeoff-link" href="https://tradeoff-daily.jbapckfan.chatgpt.site">Play Tradeoff ↗</a><button id="about-button">About Inbetween</button></footer>
   </div>
-  <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><button id="dialog-close" class="icon-button dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
+  <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><a class="secondary-button screen-fit-menu" href="../../">Menu</a><button id="dialog-close" class="icon-button dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
   <div id="toast" class="toast" role="status" hidden></div>
   <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <noscript><p class="noscript">Please enable JavaScript to place your letters.</p></noscript>

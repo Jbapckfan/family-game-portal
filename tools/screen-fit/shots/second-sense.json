@@ -1,0 +1,39 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": "#noun-clues [data-noun]:not(:disabled)"
+        },
+        {
+          "click": "#verb-clues [data-verb]:not(:disabled)"
+        },
+        {
+          "eval": "(() => { const input = document.getElementById('answer-input'); input.value = 'RING'; input.dispatchEvent(new Event('input', { bubbles: true })); })()"
+        },
+        {
+          "click": "#sense-check"
+        },
+        {
+          "eval": "window.scrollTo(0, 0)"
+        },
+        {
+          "wait": 250
+        }
+      ]
+    },
+    {
+      "name": "help",
+      "steps": [
+        {
+          "click": "#help-button"
+        }
+      ]
+    }
+  ]
+}

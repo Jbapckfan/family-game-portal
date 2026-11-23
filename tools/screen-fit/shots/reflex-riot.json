@@ -1,0 +1,64 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "eval": "window.__screenFitRandom = Math.random; Math.random = () => 0.5"
+        },
+        {
+          "click": "#play-button"
+        },
+        {
+          "wait": 4000
+        },
+        {
+          "tap": [
+            196,
+            300
+          ],
+          "only": [
+            "phone"
+          ]
+        },
+        {
+          "tap": [
+            590,
+            290
+          ],
+          "only": [
+            "tablet"
+          ]
+        },
+        {
+          "tap": [
+            720,
+            310
+          ],
+          "only": [
+            "laptop"
+          ]
+        },
+        {
+          "tap": [
+            410,
+            350
+          ],
+          "only": [
+            "tabletPortrait"
+          ]
+        },
+        {
+          "eval": "Math.random = window.__screenFitRandom; if(Number(document.querySelector('#score').textContent.replaceAll(',', '')) <= 0) throw new Error('Play capture did not catch a real stick; inspect timing before approving')"
+        },
+        {
+          "wait": 450
+        }
+      ]
+    }
+  ]
+}

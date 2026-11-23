@@ -34,7 +34,7 @@ button { font: inherit; }
   content: ""; position: absolute; inset: -40%; pointer-events: none; opacity: .16;
   background-image: linear-gradient(rgba(255,255,255,.13) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.13) 1px, transparent 1px);
   background-size: 54px 54px; transform: perspective(700px) rotateX(62deg) translateY(20%);
-  animation: gridMove 9s linear infinite;
+  animation: none;
 }
 
 @keyframes gridMove { to { background-position: 0 108px, 108px 0; } }
@@ -135,24 +135,140 @@ body.reduce-flash #app::before{animation:none;opacity:.06}
 .toast { position: absolute; z-index: 20; left: 50%; top: 22%; transform: translate(-50%,-50%); white-space: nowrap; font-size: clamp(34px,8vw,84px); font-weight: 1000; color: white; text-shadow: 5px 5px 0 #5b3dcc, 0 0 30px rgba(255,255,255,.22); pointer-events: none; animation: toastPop .72s ease-out both; }
 @keyframes toastPop { 0% { opacity:0; transform: translate(-50%,-50%) scale(.35) rotate(-8deg); } 35% { opacity:1; transform: translate(-50%,-50%) scale(1.15) rotate(3deg); } 100% { opacity:0; transform: translate(-50%,-80%) scale(.92); } }
 
-@media (orientation: landscape) and (max-height: 720px) {
-  .menu-screen { display: grid; grid-template-columns: 1fr minmax(310px, 42vw); grid-template-rows: auto auto auto; column-gap: 6vw; }
-  .logo,.tagline { grid-column: 1; }
-  .logo { align-self: end; }
-  .tagline { align-self: start; text-align:center; }
-  .menu-actions { grid-column:2; grid-row:1 / span 2; align-self:center; width:100%; }
-  .best-row,.microcopy { grid-column: 1 / span 2; justify-self:center; }
-  .panel { max-height: 88vh; padding: 20px 32px; }
-  .rule-grid article { padding: 10px; }
-  .rule-grid article > span { font-size: 30px; }
-}
 
+/* A full arcade cabinet on wide screens, a generous single stack in portrait. */
+#app { height: 100dvh; }
+.exit-button { position: fixed; z-index: 9999; }
+.screen {
+  padding: max(78px, calc(env(safe-area-inset-top) + 66px)) max(24px, env(safe-area-inset-right)) max(76px, calc(env(safe-area-inset-bottom) + 64px)) max(24px, env(safe-area-inset-left));
+}
+.menu-screen {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(24px, 5vw, 88px); align-content: center; align-items: center;
+  padding-right: max(5vw, env(safe-area-inset-right)); padding-left: max(5vw, env(safe-area-inset-left));
+  overflow: auto; touch-action: pan-y;
+}
+.menu-brand { min-width: 0; display: flex; flex-direction: column; align-items: center; gap: clamp(12px, 2dvh, 22px); text-align: center; }
+.logo-top { font-size: clamp(100px, min(14vw, 24dvh), 224px); }
+.logo-bottom { font-size: clamp(130px, min(18vw, 30dvh), 286px); }
+.tagline { margin: 10px 0 0; font-size: clamp(12px, 1.25vw, 20px); letter-spacing: .12em; line-height: 1.5; }
+.menu-actions {
+  width: 100%; min-width: 0; gap: clamp(10px, 1.8dvh, 18px);
+  padding: clamp(18px, 2.4vw, 34px); border: 1px solid #a9baff30; border-radius: 32px;
+  background: linear-gradient(150deg, #252048d9, #0d142cde);
+  box-shadow: inset 0 1px 0 #ffffff12, 0 24px 70px #0004;
+}
+.menu-actions .arcade-button { min-height: clamp(64px, 9dvh, 94px); padding: 12px; font-size: clamp(17px, 1.8vw, 28px); border-radius: 18px; }
+.menu-actions .mini-actions .arcade-button { min-height: 48px; font-size: clamp(12px, 1.2vw, 17px); padding: 10px 6px; }
+#how-button { min-height: 56px; font-size: clamp(15px, 1.5vw, 22px); }
+.best-row { gap: 12px; min-height: 44px; font-size: clamp(15px, 1.5vw, 22px); }
+#sound-state { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #aab7d833; border-radius: 50%; color: white; background: #141c38; cursor: pointer; }
+.microcopy { color: #aab7d8; font-size: 12px; line-height: 1.5; }
+button, a { touch-action: manipulation; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--cyan); outline-offset: 4px; }
+.panel { width: min(88vw, 1080px); max-height: 100%; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; }
+.panel h1 { padding: 0 36px; }
+.rule-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.rule-grid article { padding: clamp(14px, 1.5vw, 24px); }
+.rule-grid h2 { font-size: clamp(14px, 1.4vw, 21px); }
+.rule-grid p { font-size: clamp(13px, 1.2vw, 17px); line-height: 1.4; }
+.rule-grid article > span { font-size: clamp(32px, 4vw, 56px); }
+.setting-buttons button, .toggle-grid label, .name-entry button { min-height: 44px; }
+.toggle-grid label { display: flex; align-items: center; gap: 8px; }
+input[type="checkbox"] { width: 22px; height: 22px; flex: 0 0 auto; }
+.toast { max-width: calc(100vw - 32px); width: max-content; white-space: normal; text-align: center; line-height: 1.1; }
+body.tab-hidden #app::before { animation-play-state: paused; }
+@media (hover: hover) {
+  .arcade-button:hover { filter: brightness(1.08); transform: translateY(-2px); }
+  .exit-button:hover, #sound-state:hover, .sound-button:hover { background: #242b4d; }
+}
+@media (orientation: portrait), (max-width: 899px) {
+  .menu-screen { grid-template-columns: minmax(0, 1fr); gap: clamp(18px, 3dvh, 36px); padding-left: max(7vw, env(safe-area-inset-left)); padding-right: max(7vw, env(safe-area-inset-right)); }
+  .menu-brand { gap: 10px; }
+  .logo-top { font-size: min(25vw, 18dvh); }
+  .logo-bottom { font-size: min(31vw, 22dvh); }
+  .tagline { font-size: clamp(12px, 2vw, 19px); margin-top: 4px; }
+  .menu-actions { padding: 20px; gap: 12px; }
+  .menu-actions .arcade-button { min-height: clamp(58px, 6.5dvh, 80px); font-size: clamp(17px, 2.8vw, 25px); }
+  .rule-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .panel { width: 100%; }
+}
 @media (max-width: 520px) {
-  .rule-grid { grid-template-columns: 1fr 1fr; }
+  .menu-screen { padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); gap: 18px; }
+  .menu-brand { gap: 6px; }
+  .logo-top { font-size: min(22vw, 12dvh); }
+  .logo-bottom { font-size: min(28vw, 15dvh); }
+  .tagline { font-size: 11px; letter-spacing: .1em; }
+  .menu-actions { padding: 14px; gap: 10px; border-radius: 24px; }
+  .menu-actions .arcade-button { min-height: 54px; font-size: 16px; padding: 10px 5px; }
+  .menu-actions .mini-actions .arcade-button { font-size: 12px; min-height: 44px; }
+  #how-button { min-height: 48px; font-size: 15px; }
+  .microcopy { font-size: 11px; }
   .hud-pill { min-width: 86px; padding: 8px 11px; }
-  .mode-chip { top: calc(max(18px, env(safe-area-inset-top)) + 57px); }
-  .hearts { bottom: 62px; }
-  .records-grid{grid-template-columns:1fr}.setting-buttons{grid-template-columns:repeat(2,1fr)}
+  .mode-chip { top: calc(max(18px, env(safe-area-inset-top)) + 65px); }
+  .hearts { bottom: max(70px, calc(env(safe-area-inset-bottom) + 62px)); }
+  .combo-wrap { width: 65vw; }
+  .combo-wrap span { font-size: 21px; }
+  .records-grid { grid-template-columns: 1fr; }
+  .setting-buttons { grid-template-columns: repeat(2, 1fr); }
+  .panel { padding: 24px 16px; border-radius: 24px; }
+  .panel h1 { font-size: 27px; margin-bottom: 18px; }
+  .rule-grid { gap: 8px; }
+  .rule-grid article { padding: 10px; }
+  .rule-grid p { font-size: 12px; }
+  .countdown-tip, .round-label { max-width: calc(100% - 32px); text-align: center; }
+  .toast { font-size: clamp(25px, 7vw, 38px); }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .menu-screen { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding: 70px max(20px, env(safe-area-inset-right)) 16px max(20px, env(safe-area-inset-left)); }
+  .menu-brand { gap: 5px; }
+  .logo-top { font-size: 18dvh; }
+  .logo-bottom { font-size: 23dvh; }
+  .menu-actions { gap: 7px; padding: 12px; border-radius: 22px; }
+  .menu-actions .arcade-button { min-height: 44px; padding: 7px; font-size: 14px; }
+  .menu-actions .mini-actions .arcade-button, #how-button { min-height: 44px; font-size: 12px; }
+  .best-row { font-size: 14px; }
+  .microcopy { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
 }
 
-@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+/* Round 2: centre the complete menu group, protect the score, and unify type. */
+.menu-screen { display: flex; flex-direction: row; align-items: center; justify-content: center; }
+.menu-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 88px); align-items: center; width: 100%; flex-shrink: 0; margin-block: auto; }
+#game { z-index: 1; }
+.hud { z-index: 8; }
+.hud-pill { background: linear-gradient(145deg, #17213e, #090f23); border-color: #526185; box-shadow: 0 6px 20px #0005, inset 0 1px 0 #ffffff18; }
+.hud-label { color: #c3cee6; font-size: 14px; letter-spacing: .08em; }
+.secondary { background: linear-gradient(135deg, #8034c9, #6130b9 60%, #2448a9); }
+.reaction { color: #10182e; background: linear-gradient(135deg, #5ce8f4, #68d6ff 60%, #9bb6ff); }
+.menu-actions .mini-actions .arcade-button, #how-button { font-size: clamp(14px, 1.3vw, 18px); }
+.microcopy, .tagline, .rule-grid p, .stats-grid span { font-size: 14px; }
+.arcade-button, .close-button, .sound-button, #sound-state, .setting-buttons button, .name-entry button {
+  transition: transform 180ms ease, filter 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+.close-button:active, .sound-button:active, #sound-state:active,
+.setting-buttons button:not(:disabled):active, .name-entry button:active { transform: translateY(2px) scale(.97); }
+@media (hover: hover) { .arcade-button:hover:active { transform: translateY(6px) scale(.99); } }
+@media (orientation: portrait), (max-width: 899px) {
+  .menu-layout { grid-template-columns: minmax(0, 1fr); gap: clamp(18px, 3dvh, 36px); }
+}
+@media (max-width: 520px) {
+  .menu-layout { gap: 16px; }
+  .menu-actions .mini-actions .arcade-button, #how-button, .microcopy, .tagline,
+  .rule-grid p, .rule-grid h2, .stats-grid span, .mode-chip { font-size: 14px; }
+  .tagline { letter-spacing: .04em; }
+  .mode-chip { top: calc(max(18px, env(safe-area-inset-top)) + 70px); }
+  .hud-pill { min-width: 84px; padding: 9px; }
+  .panel h1 { padding-left: 24px; padding-right: 32px; }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  .menu-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+  .menu-actions .mini-actions .arcade-button, #how-button, .microcopy { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-button, .close-button, .sound-button, #sound-state, .setting-buttons button { transition: none !important; }
+}
+
+.name-entry label {font-size:14px;}

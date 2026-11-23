@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Shut the Box - Alford Family Game Portal</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -71,10 +68,12 @@
             transition: all 0.2s;
             line-height: 1;
         }
+        @media (hover: hover) {
         .mute-btn:hover {
             border-color: rgba(255,107,157,0.4);
             color: #fff;
             background: rgba(255,107,157,0.1);
+        }
         }
         .mute-btn.muted {
             color: rgba(255,255,255,0.3);
@@ -194,10 +193,12 @@
             transition: all 0.25s ease;
         }
 
+        @media (hover: hover) {
         .count-btn:hover {
             border-color: rgba(255,107,157,0.4);
             background: rgba(255,107,157,0.08);
             color: #fff;
+        }
         }
 
         .count-btn.active {
@@ -221,7 +222,9 @@
             flex-wrap: wrap;
         }
 
+        @media (hover: hover) {
         .player-config:hover { background: rgba(255,255,255,0.05); }
+        }
 
         /* Emoji picker */
         .emoji-picker {
@@ -244,10 +247,12 @@
             justify-content: center;
             padding: 0;
         }
+        @media (hover: hover) {
         .emoji-pick-btn:hover {
             border-color: rgba(255,251,125,0.4);
             background: rgba(255,251,125,0.08);
             transform: scale(1.15);
+        }
         }
         .emoji-pick-btn.active {
             border-color: #fffb7d;
@@ -310,7 +315,9 @@
             letter-spacing: 0.02em;
         }
 
+        @media (hover: hover) {
         .type-toggle button:hover { color: rgba(255,255,255,0.7); }
+        }
         .type-toggle button.active {
             background: linear-gradient(135deg, #ff6b9d, #e94560);
             color: #fff;
@@ -355,7 +362,9 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+        @media (hover: hover) {
         .diff-toggle button:hover { color: rgba(255,255,255,0.6); }
+        }
         .diff-toggle button.active {
             background: linear-gradient(135deg, #48dbfb, #27ae60);
             color: #fff;
@@ -383,10 +392,12 @@
             transition: all 0.25s;
             text-align: center;
         }
+        @media (hover: hover) {
         .stats-toggle-btn:hover {
             border-color: rgba(255,107,157,0.3);
             color: rgba(255,255,255,0.7);
             background: rgba(255,107,157,0.05);
+        }
         }
         .stats-panel {
             display: none;
@@ -448,9 +459,11 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+        @media (hover: hover) {
         .stats-clear-btn:hover {
             border-color: rgba(233,69,96,0.4);
             color: rgba(233,69,96,0.8);
+        }
         }
 
         .start-btn {
@@ -472,10 +485,12 @@
             box-shadow: 0 4px 20px rgba(233,69,96,0.25);
         }
 
+        @media (hover: hover) {
         .start-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 32px rgba(233,69,96,0.4);
             background-position: 100% 0;
+        }
         }
 
         .start-btn:active { transform: translateY(0); }
@@ -638,11 +653,13 @@
             transform: rotate(45deg);
         }
 
+        @media (hover: hover) {
         .tile:hover:not(.shut):not(.disabled) {
             border-color: rgba(255,251,125,0.5);
             background: rgba(255,251,125,0.08);
             transform: translateY(-4px);
             box-shadow: 0 6px 20px rgba(255,251,125,0.12);
+        }
         }
 
         .tile.selected {
@@ -959,10 +976,12 @@
             50% { box-shadow: 0 3px 24px rgba(233,69,96,0.45); }
         }
 
+        @media (hover: hover) {
         .btn-roll:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 28px rgba(233,69,96,0.4);
             animation: none;
+        }
         }
         .btn-roll:active:not(:disabled) { transform: translateY(0); animation: none; }
         .btn-roll:disabled { animation: none; }
@@ -973,7 +992,9 @@
             background:linear-gradient(135deg,rgba(16,185,129,.22),rgba(6,182,212,.16));
             box-shadow:0 3px 16px rgba(16,185,129,.12);
         }
+        @media (hover: hover) {
         .btn-coach:hover { transform:translateY(-2px); box-shadow:0 7px 24px rgba(16,185,129,.25); }
+        }
 
         .btn-row {
             display: flex;
@@ -1011,10 +1032,12 @@
             transition: all 0.2s;
             vertical-align: middle;
         }
+        @media (hover: hover) {
         .undo-btn:hover {
             border-color: rgba(233,69,96,0.4);
             color: #e94560;
             background: rgba(233,69,96,0.08);
+        }
         }
 
         .message-area {
@@ -1099,9 +1122,11 @@
             box-shadow: 0 4px 20px rgba(233,69,96,0.25);
         }
 
+        @media (hover: hover) {
         .play-again-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 32px rgba(233,69,96,0.4);
+        }
         }
 
         .new-game-btn, .rematch-btn {
@@ -1112,20 +1137,24 @@
             cursor: pointer; transition: all 0.2s;
         }
 
+        @media (hover: hover) {
         .new-game-btn:hover, .rematch-btn:hover {
             border-color: rgba(255,107,157,0.4);
             color: #fff;
             background: rgba(255,107,157,0.06);
+        }
         }
 
         .rematch-btn {
             margin-bottom: 8px;
             border-color: rgba(72,219,251,0.2);
         }
+        @media (hover: hover) {
         .rematch-btn:hover {
             border-color: rgba(72,219,251,0.5);
             background: rgba(72,219,251,0.06);
             color: #48dbfb;
+        }
         }
 
         /* ====== Rounds selector ====== */
@@ -1240,9 +1269,11 @@
             box-shadow: 0 4px 20px rgba(233,69,96,0.25);
         }
 
+        @media (hover: hover) {
         .next-round-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 32px rgba(233,69,96,0.4);
+        }
         }
 
         /* ====== Rules ====== */
@@ -1256,10 +1287,12 @@
             cursor: pointer; transition: all 0.25s;
         }
 
+        @media (hover: hover) {
         .rules-toggle button:hover {
             border-color: rgba(255,107,157,0.3);
             color: rgba(255,255,255,0.7);
             background: rgba(255,107,157,0.05);
+        }
         }
 
         .rules-panel {
@@ -1317,7 +1350,9 @@
             cursor: pointer;
             transition: background 0.2s;
         }
+        @media (hover: hover) {
         .speed-mode-row:hover { background: rgba(255,255,255,0.05); }
+        }
         .speed-mode-label {
             font-size: 0.82rem;
             font-weight: 600;
@@ -1429,9 +1464,11 @@
             display: flex;
             align-items: center;
         }
+        @media (hover: hover) {
         .back-btn:hover {
             border-color: #8b5cf6; color: #c4b5fd;
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        }
         }
 
         /* ====== Theme Toggle Button ====== */
@@ -1454,10 +1491,12 @@
             transition: all 0.2s;
             line-height: 1;
         }
+        @media (hover: hover) {
         .theme-btn:hover {
             border-color: rgba(255,107,157,0.4);
             color: #fff;
             background: rgba(255,107,157,0.1);
+        }
         }
 
         /* ====== Light Theme ====== */
@@ -1539,10 +1578,12 @@
             background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
             border-color: rgba(255,255,255,0.1);
         }
+        @media (hover: hover) {
         body.light-theme .tile:hover:not(.shut):not(.disabled) {
             border-color: rgba(139,69,19,0.5);
             background: linear-gradient(145deg, #f0dfc0, #e0c8a0);
             box-shadow: 0 6px 16px rgba(139,69,19,0.15);
+        }
         }
         body.light-theme .tile.selected {
             border-color: #2980b9;
@@ -1579,10 +1620,12 @@
             border-color: rgba(0,0,0,0.12);
             background: rgba(0,0,0,0.03);
         }
+        @media (hover: hover) {
         body.light-theme .rules-toggle button:hover {
             border-color: rgba(139,69,19,0.35);
             color: rgba(0,0,0,0.7);
             background: rgba(139,69,19,0.06);
+        }
         }
         body.light-theme .rules-panel {
             background: rgba(255,255,255,0.5);
@@ -1654,6 +1697,7 @@
             .tile.valid-hint:not(.shut):not(.selected):not(.matched):not(.closing) { animation: none; }
         }
     </style>
+    <link rel="stylesheet" href="shut-the-box-assets/table.css">
 </head>
 <body>
 <a href="../" class="back-btn">&#x1F3E0; Menu</a>
@@ -1692,10 +1736,17 @@
 
         <div class="rounds-label">Rule Variant</div>
         <div class="rounds-row" id="variant-row">
-            <button class="count-btn" data-variant="traditional">Traditional 1–9</button>
-            <button class="count-btn active" data-variant="modern">Modern 1–12</button>
-            <button class="count-btn" data-variant="double">Double Box</button>
-            <button class="count-btn" data-variant="lasttile">Last Tile</button>
+            <button class="count-btn" data-variant="traditional" aria-label="Traditional 1–9"><span class="variant-full">Traditional 1–9</span><span class="variant-short" aria-hidden="true">1–9</span></button>
+            <button class="count-btn active" data-variant="modern" aria-label="Modern 1–12"><span class="variant-full">Modern 1–12</span><span class="variant-short" aria-hidden="true">1–12</span></button>
+            <button class="count-btn" data-variant="double" aria-label="Double Box"><span class="variant-full">Double Box</span><span class="variant-short" aria-hidden="true">Double</span></button>
+            <button class="count-btn" data-variant="lasttile" aria-label="Last Tile"><span class="variant-full">Last Tile</span><span class="variant-short" aria-hidden="true">Last tile</span></button>
+        </div>
+
+        <div class="rounds-label">Table</div>
+        <div class="table-choice-row" id="table-choice-row" role="group" aria-label="Table material">
+            <button class="count-btn table-choice" data-table="walnut" onclick="setTable('walnut')"><span class="table-swatch" style="--swatch:#276344"></span>Walnut</button>
+            <button class="count-btn table-choice" data-table="maple" onclick="setTable('maple')"><span class="table-swatch" style="--swatch:#244a80"></span>Maple</button>
+            <button class="count-btn table-choice" data-table="ebony" onclick="setTable('ebony')"><span class="table-swatch" style="--swatch:#7b2940"></span>Ebony</button>
         </div>
 
         <div class="speed-mode-row" id="speed-mode-row" onclick="toggleSpeedMode()">
@@ -1734,6 +1785,7 @@
 
 <!-- ======== GAME SCREEN ======== -->
 <div id="game-screen">
+    <div id="table-view" aria-hidden="true"></div>
     <div class="game-header">
         <h1>Shut the Box</h1>
         <div id="round-indicator"></div>
@@ -1745,7 +1797,7 @@
         <div class="timer-bar" id="timer-bar"></div>
     </div>
     <div class="box-area" id="box-area"></div>
-    <div class="selection-info" id="selection-info"></div>
+    <div class="selection-info" id="selection-info" role="status" aria-live="polite"></div>
 
     <div class="dice-area">
         <div class="dice-tray">
@@ -1786,6 +1838,9 @@
 </div>
 
 <canvas id="confetti-canvas"></canvas>
+<script src="shut-the-box-assets/vendor/three.min.js"></script>
+<script src="shut-the-box-assets/physics.js"></script>
+<script src="shut-the-box-assets/table.js"></script>
 <script>
 /* ======================================================
    SHUT THE BOX -- Alford Family Game Portal
@@ -1833,6 +1888,7 @@ let recommendedTiles = new Set();
 let phase = 'roll';
 let playerCount = 2;
 let rolling = false;
+let diceInFlight = false; // Presentation state shared by human, AI and one-die throws.
 let totalRounds = 1;
 let currentRound = 0;
 let speedMode = false;
@@ -1859,6 +1915,7 @@ function ensureAudioCtx() {
 
 let storedSettings = {};
 try { storedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch (e) {}
+let activeTable = ['walnut','maple','ebony'].includes(storedSettings.table) ? storedSettings.table : 'walnut';
 activeVariant = ['traditional','modern','double','lasttile'].includes(storedSettings.variant) ? storedSettings.variant : 'modern';
 function variantTileIds() { return VARIANTS[activeVariant].ids(); }
 function tileValue(id) { return id >= 100 ? id - 100 : id; }
@@ -1871,7 +1928,17 @@ function toggleTheme() {
     darkTheme = !darkTheme;
     document.body.classList.toggle('light-theme', !darkTheme);
     document.getElementById('theme-icon').textContent = darkTheme ? '\u2600\uFE0F' : '\uD83C\uDF19';
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant, table:activeTable }));
+}
+
+function setTable(table, persist = true) {
+    activeTable = ['walnut','maple','ebony'].includes(table) ? table : 'walnut';
+    STBTable.theme(activeTable);
+    document.querySelectorAll('[data-table]').forEach(button => {
+        button.classList.toggle('active', button.dataset.table === activeTable);
+        button.setAttribute('aria-pressed', String(button.dataset.table === activeTable));
+    });
+    if (persist) localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant, table:activeTable }));
 }
 
 function toggleMute() {
@@ -1880,7 +1947,7 @@ function toggleMute() {
     btn.classList.toggle('muted', soundMuted);
     document.getElementById('mute-icon-on').style.display = soundMuted ? 'none' : '';
     document.getElementById('mute-icon-off').style.display = soundMuted ? '' : 'none';
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant, table:activeTable }));
 }
 
 function playDiceRattle() {
@@ -2007,7 +2074,7 @@ function playTurnChime() {
 function toggleSpeedMode() {
     speedMode = !speedMode;
     document.getElementById('speed-mode-toggle').classList.toggle('on', speedMode);
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant, table:activeTable }));
 }
 
 function startTurnTimer() {
@@ -2199,6 +2266,7 @@ function clearStats() {
 /* =============== SETUP =============== */
 
 function initSetup() {
+    setTable(activeTable, false);
     document.body.classList.toggle('light-theme', !darkTheme);
     document.getElementById('theme-icon').textContent = darkTheme ? '\u2600\uFE0F' : '\uD83C\uDF19';
     document.getElementById('mute-btn').classList.toggle('muted', soundMuted);
@@ -2238,7 +2306,7 @@ function setVariant(variant) {
     if (!VARIANTS[variant]) return;
     activeVariant = variant;
     document.querySelectorAll('[data-variant]').forEach(button => button.classList.toggle('active', button.dataset.variant === variant));
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant }));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...storedSettings, darkTheme, soundMuted, speedMode, variant:activeVariant, table:activeTable }));
     updateVariantRules();
 }
 
@@ -2251,7 +2319,7 @@ function updateVariantRules() {
     };
     ['setup-rules','game-rules'].forEach(id => {
         const panel=document.getElementById(id);if(!panel)return;
-        panel.innerHTML=`<h3>${VARIANTS[activeVariant].name}</h3><ul><li>${details[activeVariant]}</li><li>Roll, then close any combination whose values add up to the dice total.</li><li>If no combination works, the turn ends and open tiles become the score.</li><li>Lowest total wins; closing every tile earns a perfect zero.</li><li>Three or more rounds form a tournament with championship, comeback, and perfect-round awards.</li></ul>`;
+        panel.innerHTML=`<h3>${VARIANTS[activeVariant].name}</h3><ul><li>${details[activeVariant]}</li><li>Roll, then close any combination whose values add up to the dice total.</li><li>If no combination works, the turn ends and open tiles become the score.</li><li>Lowest total wins; closing every tile earns a perfect zero.</li><li>Three or more rounds form a tournament with championship, comeback, and perfect-round awards.</li></ul>${id === 'game-rules' ? '<button class="rules-close" onclick="toggleRules(&quot;game-rules&quot;)">Back to table</button>' : ''}`;
     });
 }
 
@@ -2363,6 +2431,7 @@ function renderPlayerConfigs() {
 
 function toggleRules(id) {
     document.getElementById(id).classList.toggle('open');
+    if (id === 'game-rules' && document.getElementById(id).classList.contains('open')) document.getElementById(id).querySelector('.rules-close')?.focus();
 }
 
 /* =============== START GAME =============== */
@@ -2446,6 +2515,7 @@ function renderRoundIndicator() {
 }
 
 function renderScoreboard() {
+    document.body.dataset.players = String(players.length);
     document.getElementById('scoreboard').innerHTML = players.map((p, i) => {
         const prevTotal = p.roundScores.reduce((a, b) => a + b, 0);
         const thisRound = p.score !== null ? p.score : (p.done ? sumOpen(p) : null);
@@ -2500,6 +2570,7 @@ function renderTiles() {
         wrapper.dataset.tileId = t;
         tile.disabled = !canSelect || shut;
         tile.setAttribute('aria-pressed', sel ? 'true' : 'false');
+        tile.setAttribute('aria-label', `Tile ${tileLabel(t)}${shut ? ', closed' : sel ? ', selected' : ''}`);
         if (canSelect && !shut) tile.onclick = () => toggleTile(t);
 
         const back = document.createElement('div');
@@ -2508,6 +2579,7 @@ function renderTiles() {
         wrapper.append(tile, back);
         area.appendChild(wrapper);
     });
+    STBTable.sync(variantTileIds(), variantTileIds().map(id => ({id, shut:cp.shutTiles.has(id), selected:selectedTiles.has(id), valid:validTileSet.has(id) && phase === 'select', coach:recommendedTiles.has(id)})));
 }
 
 /* =============== 3D DICE =============== */
@@ -2552,6 +2624,7 @@ function buildDiceScenes({ thrown }) {
 }
 
 function renderDice() {
+    STBTable.dice(diceValues);
     if (diceValues.length === 0) {
         document.getElementById('dice-row').innerHTML = '';
         return;
@@ -2563,13 +2636,36 @@ function ensureDiceInDOM() {
     buildDiceScenes({ thrown: true });
 }
 
-function animateThrow(targetValues) {
+async function animateThrow(targetValues) {
+    diceInFlight = true;
+    updateSelectionInfo();
+    try {
+        await animateDicePresentation(targetValues);
+    } finally {
+        diceInFlight = false;
+    }
+}
+
+function animateDicePresentation(targetValues) {
+    const result = STBTable.throw(targetValues, speedMode);
+    if (result) return result;
+    // Working flat-board fallback, including instant motion preferences.
+    if (speedMode || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.die-cube').forEach((cube,i) => {
+            const t=FACE_ROT[targetValues[i]];
+            cube.style.transition='none';cube.style.transform=`rotateX(${t.x}deg) rotateY(${t.y}deg)`;
+            cube.dataset.face=targetValues[i];
+        });
+        return Promise.resolve();
+    }
+    window.STBFlatThrowing = true;
     return new Promise(resolve => {
         const cubes = document.querySelectorAll('.die-cube');
         const shadows = document.querySelectorAll('.die-shadow');
 
         cubes.forEach((cube, i) => {
             const val = targetValues[i];
+            cube.dataset.face=val;
             const t = FACE_ROT[val];
 
             const extraX = (2 + Math.floor(Math.random() * 2)) * 360 * (Math.random() > 0.5 ? 1 : -1);
@@ -2612,7 +2708,7 @@ function animateThrow(targetValues) {
             }, stagger);
         });
 
-        setTimeout(resolve, THROW_DURATION + 120);
+        setTimeout(() => { window.STBFlatThrowing = false; resolve(); }, THROW_DURATION + 120);
     });
 }
 
@@ -2624,6 +2720,7 @@ function updateButtons() {
     const cp = players[currentPlayerIdx];
     const rollBtn = document.getElementById('btn-roll');
     const coachBtn = document.getElementById('btn-coach');
+    if (rolling) updateSelectionInfo();
 
     if (cp.isAI) {
         rollBtn.style.display = 'none';
@@ -2633,7 +2730,7 @@ function updateButtons() {
 
     rollBtn.style.display = (phase === 'roll') ? '' : 'none';
     rollBtn.disabled = (phase !== 'roll' || rolling);
-    coachBtn.style.display = phase === 'select' ? '' : 'none';
+    coachBtn.style.display = phase === 'select' ? 'inline-flex' : 'none';
 }
 
 function undoTileSelection() {
@@ -2660,7 +2757,7 @@ function rankStrategicCombo(combo, openTiles) {
 }
 
 function showStrategyCoach() {
-    if (phase !== 'select' || players[currentPlayerIdx].isAI) return;
+    if (diceInFlight || rolling || phase !== 'select' || players[currentPlayerIdx].isAI) return;
     const openTiles = getOpenTiles(players[currentPlayerIdx]);
     const combos = findCombinations(openTiles, diceTotal);
     if (!combos.length) return;
@@ -2675,7 +2772,9 @@ function showStrategyCoach() {
 
 function updateSelectionInfo() {
     const info = document.getElementById('selection-info');
-    if (phase !== 'select' || players[currentPlayerIdx].isAI) { info.innerHTML = ''; return; }
+    const cp = players[currentPlayerIdx];
+    if (diceInFlight || rolling || phase !== 'select' || !cp || cp.isAI || cp.done
+        || !Number.isInteger(diceTotal) || diceTotal < 1) { info.innerHTML = ''; return; }
 
     const selSum = [...selectedTiles].reduce((sum, tile) => sum + tileValue(tile), 0);
     const undoHtml = selectedTiles.size > 0 ? ` <button class="undo-btn" onclick="undoTileSelection()">Undo</button>` : '';
@@ -2692,10 +2791,18 @@ function setTurnIndicator(html) { document.getElementById('turn-indicator').inne
 /* =============== CONFETTI =============== */
 
 function launchConfetti(duration) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const canvas = document.getElementById('confetti-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    let width, height;
+    function fitCelebration() {
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        width = innerWidth; height = innerHeight;
+        canvas.width = width * dpr; canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    fitCelebration();
+    window.addEventListener('resize', fitCelebration);
 
     const colors = ['#ff6b9d', '#ffa66b', '#fffb7d', '#48dbfb', '#6ee7a0', '#e94560', '#ff6b6b'];
     const particles = [];
@@ -2703,8 +2810,8 @@ function launchConfetti(duration) {
 
     for (let i = 0; i < 120; i++) {
         particles.push({
-            x: canvas.width * 0.5 + (Math.random() - 0.5) * canvas.width * 0.4,
-            y: canvas.height * 0.4,
+            x: width * 0.5 + (Math.random() - 0.5) * width * 0.4,
+            y: height * 0.4,
             vx: (Math.random() - 0.5) * 14,
             vy: -Math.random() * 16 - 4,
             color: colors[Math.floor(Math.random() * colors.length)],
@@ -2717,21 +2824,25 @@ function launchConfetti(duration) {
         });
     }
 
+    let lastFrame = startTime;
     function frame(now) {
+        const dt = Math.min((now - lastFrame) / 1000, .05) * 60;
+        lastFrame = now;
         const elapsed = now - startTime;
-        if (elapsed > duration) {
+        if (elapsed > duration || document.hidden) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            window.removeEventListener('resize', fitCelebration);
             return;
         }
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         particles.forEach(p => {
-            p.x += p.vx;
-            p.vy += p.gravity;
-            p.y += p.vy;
-            p.vx *= 0.99;
-            p.rotation += p.rotSpeed;
+            p.x += p.vx * dt;
+            p.vy += p.gravity * dt;
+            p.y += p.vy * dt;
+            p.vx *= Math.pow(.99, dt);
+            p.rotation += p.rotSpeed * dt;
             p.opacity = Math.max(0, 1 - elapsed / duration);
 
             ctx.save();
@@ -3054,6 +3165,7 @@ function autoConfirmSelection() {
 
         // After brief matched state, animate closing
         setTimeout(() => {
+            STBTable.closing(tilesToClose);
             tilesToClose.forEach(t => {
                 const el = getTileEl(t);
                 if (el) {
@@ -3368,6 +3480,7 @@ function esc(s) { const d = document.createElement('div'); d.textContent = s; re
 
 const ALL_SCREENS = ['setup-screen', 'game-screen', 'round-summary-screen', 'game-over-screen'];
 function showScreen(id) {
+    document.body.classList.toggle('playing', id === 'game-screen');
     ALL_SCREENS.forEach(s => {
         const el = document.getElementById(s);
         if (s === id) {
@@ -3376,6 +3489,7 @@ function showScreen(id) {
             el.style.display = 'none';
         }
     });
+    STBTable.active(id === 'game-screen');
 }
 
 /* =============== INIT =============== */
@@ -3384,6 +3498,21 @@ document.addEventListener('keydown', (event) => {
     if (event.code === 'KeyR' && phase === 'roll') { event.preventDefault(); rollDice(); }
     if (event.code === 'KeyH' && phase === 'select') { event.preventDefault(); showStrategyCoach(); }
 });
+STBTable.logicalValues = () => diceValues.slice();
+window.addEventListener('stb-fallback', () => {
+    if (!players.length) return;
+    renderTiles();
+    renderDice();
+    document.querySelectorAll('.die-cube').forEach((cube,i) => {
+        const face = FACE_ROT[diceValues[i]];
+        if (!face) return;
+        cube.style.transition = 'none';
+        cube.style.transform = `rotateX(${face.x}deg) rotateY(${face.y}deg)`;
+        cube.dataset.face = diceValues[i];
+    });
+});
+STBTable.init();
+STBTable.theme(activeTable);
 initSetup();
 </script>
 </body>

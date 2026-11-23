@@ -489,6 +489,40 @@
         .layer-caption {font:700 10px var(--font-data);letter-spacing:1px;padding:0 7px;color:#a0bed1;}
         #btn-below.btn-selected {background:#685697;border-color:#ccb5ff;}
         @media(max-width:380px){.layer-caption{display:none;}}
+
+        /* Round 2: readable instrument chrome; the optical board is unchanged. */
+        :root {--type-xs:14px;--type-sm:14px;}
+        .hud-num,.hud-pieces {color:#c0d0dd;}
+        #hud {background:#0b1b2b;border-color:#415668;}
+        .btn,.tray-card,.level-tile {transition:transform 180ms ease,box-shadow 180ms ease,border-color 180ms ease,background-color 180ms ease;}
+        .btn:disabled,.btn[aria-disabled="true"],#btn-fire:disabled,.tray-card:disabled {
+          opacity:1;color:#c0d0dd;background:#142431;border:1px dashed #688092;
+          box-shadow:inset 0 1px 0 rgba(235,246,255,.05);cursor:not-allowed;transform:none;
+        }
+        .tray-card:disabled .tray-icon {opacity:.5;}
+        .tray-label,.tray-count,.tray-card[data-type="SPLITTER"] .tray-label,#toast,#readout,.tile-name,.tile-chapter,#cursor-description {font-size:14px;letter-spacing:0;}
+        #toast {background:#091a29;color:#f4f8ff;border-color:#688b9f;line-height:1.45;}
+        #tray::after {font-size:14px;}
+        .tray-card:not(:disabled):active,.level-tile:not(:disabled):active {transform:translateY(1px) scale(.98);}
+        .menu-link:active {transform:translateY(1px);}
+        .level-tile[data-state="locked"] {opacity:1;color:#c0d0dd;background:#142431;border-style:dashed;}
+        @media (max-width:599px) {
+          /* Give readable metadata a full-width row below the two corner links. */
+          #hud {margin:calc(68px + var(--sa-t)) 12px 0;padding:8px 12px;}
+          .hud-line {gap:8px;}
+          .hud-name {font-size:18px;}
+          .hud-num,.hud-pieces,.hud-pill {font-size:14px;}
+          .hud-pill {padding:2px 6px;}
+          #tray {width:calc(100% - 24px);padding:10px 10px calc(10px + var(--sa-b));gap:8px;}
+          .tray-actions {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;overflow:visible;}
+          .tray-actions .btn {font-size:14px;min-width:44px;padding:0 4px;}
+          .tray-cards {max-width:100%;flex-wrap:wrap;gap:6px;}
+          .tray-card {min-width:78px;min-height:72px;}
+          .tray-meta {gap:1px;}
+          .tray-label {font-size:14px;}
+          #readout {font-size:14px;}
+        }
+        @media (prefers-reduced-motion:reduce) {.btn,.tray-card,.level-tile {transition:none!important;}}
     </style>
 </head>
 <body>

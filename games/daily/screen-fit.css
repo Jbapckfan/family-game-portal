@@ -1,0 +1,476 @@
+/* Screen-fit layout only. Load after each game's own branding stylesheet.
+   Keep this separate from the generated collection design and puzzle scripts. */
+body:not(.native-app) .screen-fit-menu {
+  position: fixed;
+  z-index: 10000;
+  top: max(8px, env(safe-area-inset-top));
+  left: max(10px, env(safe-area-inset-left));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  min-height: 44px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 14px;
+  text-decoration: none;
+}
+/* A native dialog is in the top layer. Its own Menu stays tappable there. */
+body:has(dialog[open]) > .screen-fit-menu { visibility: hidden; }
+body.native-app .screen-fit-menu { display: none; }
+body:not(.native-app) .page {
+  width: auto;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: env(safe-area-inset-top) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  display: grid;
+  grid-template-rows: 58px 20px minmax(0, 1fr);
+  gap: 4px;
+}
+body:not(.native-app) .page .masthead {
+  height: auto;
+  min-height: 0;
+  padding-left: 76px;
+  gap: 12px;
+}
+body:not(.native-app) .game-credit {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+body:not(.native-app) .collection-back { min-height: 20px; }
+/* Branding follows each puzzle's own stylesheet: tagline and hero mark above 800 px only. */
+@media (min-width: 801px) {
+  body:not(.native-app) .page .brand-caption,
+  body:not(.native-app) .page .brand-line { display: block; }
+}
+body:not(.native-app) .page main {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+body:not(.native-app) .page .hero {
+  padding: 4px 0 8px;
+  background-repeat: no-repeat;
+  background-size: 40px;
+  background-position: right center;
+}
+body:not(.native-app) .page .hero h1 { font-size: clamp(24px, 2.5vw, 34px); }
+body:not(.native-app) .page .hero .eyebrow { margin-bottom: 2px; }
+body:not(.native-app) .page .hero > p:last-child { margin-top: 3px; }
+/* Shared CSS URLs resolve from daily/, so each mark names its original asset. */
+@media (min-width: 801px) {
+  body.tradeoff:not(.native-app) .page .hero { background-image: url('../tradeoff/icon.svg'); }
+  body.inbetween:not(.native-app) .page .hero { background-image: url('../inbetween/icon.svg'); }
+  body.counterpart:not(.native-app) .page .hero { background-image: url('../counterpart/icon.svg'); }
+  body.shortlist:not(.native-app) .page .hero { background-image: url('../shortlist/icon.svg'); }
+  body.second-sense:not(.native-app) .page .hero { background-image: url('../second-sense/icon.svg'); }
+  body.sideways:not(.native-app) .page .hero { background-image: url('../sideways/icon.svg'); }
+  body.ringcount:not(.native-app) .page .hero { background-image: url('../ringcount/icon.svg'); }
+  body.switchpath:not(.native-app) .page .hero { background-image: url('../switchpath/icon.svg'); }
+}
+body:not(.native-app) .page .game-layout {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+}
+body:not(.native-app) .page .sidebar,
+body:not(.native-app) .page > footer { display: none; }
+body:not(.native-app) .page .game {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: none;
+  min-height: 0;
+  padding: clamp(10px, 1.4vw, 20px);
+  gap: 8px;
+}
+.screen-fit-heading { display: flex; align-items: center; gap: 16px; }
+.screen-fit-heading .game-topline { flex: 1; min-width: 0; }
+.screen-fit-heading .puzzle-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0;
+  font-size: 14px;
+}
+body:not(.native-app) .game > * { flex-shrink: 0; }
+body:not(.native-app) .game .screen-fit-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 12px 4px 20px;
+  scroll-padding-block: 12px 20px;
+  /* Leave padding under the mask so fully scrolled first/last rows stay clear.
+     Content crossing either boundary fades instead of ending under controls. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, var(--ink) 10px, var(--ink) calc(100% - 18px), transparent);
+  mask-image: linear-gradient(to bottom, transparent, var(--ink) 10px, var(--ink) calc(100% - 18px), transparent);
+}
+body:not(.native-app) .page .tabs,
+body:not(.native-app) .page .mode-tabs { flex-shrink: 0; }
+body:not(.native-app) .page .tab,
+body:not(.native-app) .page .mode-tab { min-height: 44px; font-size: 14px; padding: 8px 12px; }
+body:not(.native-app) .page .primary-button,
+body:not(.native-app) .page .secondary-button,
+body:not(.native-app) .page .mini-button,
+body:not(.native-app) .page .fit-button,
+body:not(.native-app) .page .text-button,
+body:not(.native-app) .page #quick-help {
+  min-height: 44px;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+body:not(.native-app) .page .game-controls,
+body:not(.native-app) .page .finished-actions { margin: 0; gap: 8px; }
+body:not(.native-app) .page button:active:not(:disabled),
+body:not(.native-app) .screen-fit-menu:active { translate: 0 1px; }
+body:not(.native-app) .page .board-bottom { padding: 0; min-height: 24px; font-size: 14px; }
+body:not(.native-app) .page .feedback,
+body:not(.native-app) .page .interaction-note {
+  min-height: 20px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+body:not(.native-app) .page .board-note,
+body:not(.native-app) .page .board-footnote { margin: 0; font-size: 14px; line-height: 1.4; }
+body:not(.native-app) .page .section-heading,
+body:not(.native-app) .page .bank-heading,
+body:not(.native-app) .page .board-heading { font-size: 14px; letter-spacing: .3px; }
+body:not(.native-app) .page .section-heading small,
+body:not(.native-app) .page .bank-heading > span:last-child { font-size: 14px; }
+body:not(.native-app) .page .bank-note { margin: 6px 0 0; font-size: 14px; line-height: 1.4; }
+body:not(.native-app) .page .new-day { margin: 0; font-size: 14px; }
+body:not(.native-app) .page .new-day button { min-height: 44px; }
+body:not(.native-app) #game-dialog { max-height: calc(100dvh - 100px); margin-block: auto; }
+
+/* Six trading rows grow with the viewport. Wide desks use two sets of three. */
+body.tradeoff:not(.native-app) .screen-fit-stage { display: flex; flex-direction: column; }
+body.tradeoff:not(.native-app) .compact-rules { flex-shrink: 0; align-items: center; margin: 0 0 8px; padding: 0 8px; font-size: 14px; }
+body.tradeoff:not(.native-app) .board { display: grid; grid-template-rows: repeat(6, minmax(64px, 1fr)); flex: 1; gap: 8px; }
+body.tradeoff:not(.native-app) .word-row { min-height: 64px; padding: 6px 10px; gap: 12px; grid-template-columns: minmax(0, 1fr) auto; }
+body.tradeoff:not(.native-app) .clue-text { display: block; font-size: 14px; line-height: 1.35; max-width: none; }
+body.tradeoff:not(.native-app) .row-transform { font-size: 14px; }
+body.tradeoff:not(.native-app) .tiles { gap: 5px; }
+body.tradeoff:not(.native-app) .tile { width: clamp(44px, 4.7vw, 68px); height: clamp(44px, 5vw, 72px); font-size: clamp(24px, 2.6vw, 36px); }
+body.tradeoff:not(.native-app) .swap-count,
+body.tradeoff:not(.native-app) .par-label { font-size: 14px; }
+
+/* Letter insertion keeps every gap a real touch target, including a preview. */
+body.inbetween:not(.native-app) .bank-card { padding: 10px; margin: 0 0 6px; }
+body.inbetween:not(.native-app) .bank { grid-template-columns: repeat(6, minmax(44px, 1fr)); gap: 6px; margin-top: 8px; }
+body.inbetween:not(.native-app) .pair { min-height: 44px; font-size: 22px; }
+body.inbetween:not(.native-app) .pair span + span { margin-left: 2px; padding-left: 3px; }
+body.inbetween:not(.native-app) .board-heading { margin: 0 0 6px; }
+body.inbetween:not(.native-app) .puzzle { gap: 8px; }
+body.inbetween:not(.native-app) .word-row { min-height: 76px; padding: 8px; }
+body.inbetween:not(.native-app) .row-main { grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+body.inbetween:not(.native-app) .clue-copy { font-size: 14px; line-height: 1.4; }
+body.inbetween:not(.native-app) .word-line { gap: 0; }
+body.inbetween:not(.native-app) .gap { min-width: 44px; width: 44px; min-height: 44px; height: 44px; flex: 0 0 44px; }
+body.inbetween:not(.native-app) .seed-letter { width: 21px; flex-basis: 21px; line-height: 44px; }
+body.inbetween:not(.native-app) .preview-panel { flex-wrap: wrap; gap: 8px; }
+
+body.counterpart:not(.native-app) .bank-panel { padding: 10px; margin: 0 0 10px; }
+body.counterpart:not(.native-app) .word-bank { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+body.counterpart:not(.native-app) .word-tile { min-height: 44px; font-size: 14px; padding: 8px 4px; overflow-wrap: normal; }
+body.counterpart:not(.native-app) .analogy { padding: 8px 10px; }
+body.counterpart:not(.native-app) .cue-button,
+body.counterpart:not(.native-app) .answer-slot { min-height: 44px; font-size: 14px; }
+body.counterpart:not(.native-app) .analogy-actions { gap: 6px; margin-top: 6px; }
+body.counterpart:not(.native-app) .analogy-answer { margin-top: 4px; }
+
+/* The scan console and evidence deck sit side by side on landscape screens. */
+body.shortlist:not(.native-app) .scan-panel { padding: 10px; margin-bottom: 8px; }
+body.shortlist:not(.native-app) .scan-compose { margin: 8px 0 10px; gap: 8px; flex-wrap: wrap; }
+body.shortlist:not(.native-app) .scan-compose .primary-button { font-size: 14px; min-width: 0; }
+body.shortlist:not(.native-app) .letter-bank { grid-template-columns: repeat(6, minmax(44px, 1fr)); gap: 6px; }
+body.shortlist:not(.native-app) .letter-key { min-width: 44px; min-height: 44px; font-size: 14px; }
+body.shortlist:not(.native-app) .scan-note,
+body.shortlist:not(.native-app) .pencil-note,
+body.shortlist:not(.native-app) .scan-explanation { font-size: 14px; line-height: 1.4; }
+body.shortlist:not(.native-app) .scan-history { gap: 6px; margin-bottom: 10px; }
+body.shortlist:not(.native-app) .scan-result { min-height: 44px; padding: 6px; grid-template-columns: 12px 62px 26px minmax(0, 1fr); gap: 6px; }
+body.shortlist:not(.native-app) .candidates { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+body.shortlist:not(.native-app) .candidate { min-height: 48px; }
+body.shortlist:not(.native-app) .candidate-word { font-size: 14px; letter-spacing: 0; padding: 8px 3px; }
+body.shortlist:not(.native-app) .pencil-button { width: 44px; min-width: 44px; min-height: 44px; }
+
+/* Clue cards use the available height; the answer form never scrolls away. */
+body.second-sense:not(.native-app) .screen-fit-stage { display: flex; flex-direction: column; }
+body.second-sense:not(.native-app) .sense-board { flex: 1; gap: 10px; }
+body.second-sense:not(.native-app) .sense-column { display: flex; flex-direction: column; min-width: 0; }
+body.second-sense:not(.native-app) .sense-column h2 { font-size: 16px; margin: 0 0 6px; }
+body.second-sense:not(.native-app) .clue-cards { flex: 1; grid-template-rows: repeat(5, minmax(56px, 1fr)); gap: 6px; }
+body.second-sense:not(.native-app) .sense-card { min-height: 56px; padding: 8px; font-size: 14px; line-height: 1.35; }
+body.second-sense:not(.native-app) .answer-panel { margin: 0; padding: 8px 10px; }
+body.second-sense:not(.native-app) .answer-panel .section-heading { margin-bottom: 4px; }
+body.second-sense:not(.native-app) .chosen-senses { margin: 0 0 6px; min-height: 32px; }
+body.second-sense:not(.native-app) .chosen-senses p { font-size: 14px; line-height: 1.35; }
+body.second-sense:not(.native-app) #answer-form { flex-wrap: wrap; }
+body.second-sense:not(.native-app) #answer-input { min-width: 140px; min-height: 44px; }
+body.second-sense:not(.native-app) #answer-input::placeholder { font-size: 14px; }
+body.second-sense:not(.native-app) .solved-senses:empty { display: none; }
+body.second-sense:not(.native-app) .solved-senses:not(:empty) { max-height: 20dvh; overflow: auto; margin: 0; }
+
+body.sideways:not(.native-app) .screen-fit-stage { display: flex; flex-direction: column; container-type: size; }
+body.sideways:not(.native-app) .column-clues { margin: 0 54px 8px; gap: 6px; }
+body.sideways:not(.native-app) .column-clue { padding: 8px 6px; min-height: 0; }
+body.sideways:not(.native-app) .column-clue p { font-size: 14px; line-height: 1.35; overflow-wrap: normal; }
+body.sideways:not(.native-app) .shift-board { flex: 1; grid-template-rows: repeat(5, minmax(52px, 1fr)); gap: 6px; }
+body.sideways:not(.native-app) .letter-strip { gap: 6px; }
+body.sideways:not(.native-app) .rotate-button { min-width: 44px; width: 44px; min-height: 44px; height: 44px; flex-shrink: 0; }
+body.sideways:not(.native-app) .strip-letters { gap: 6px; padding: 4px; }
+body.sideways:not(.native-app) .strip-letter { font-size: clamp(26px, 3vw, 40px); line-height: clamp(44px, calc((100cqh - 200px) / 5), 100px); }
+body.sideways:not(.native-app) .column-status { margin: 8px 54px 0; }
+body.sideways:not(.native-app) .shift-actions { margin: 0; flex-wrap: wrap; gap: 6px; }
+
+/* Container height, rather than a pixel cap, limits the circular board. */
+body.ringcount:not(.native-app) .screen-fit-stage {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 4px;
+  container-type: size;
+}
+body.ringcount:not(.native-app) .ring-intro { font-size: 14px; min-height: 28px; }
+body.ringcount:not(.native-app) .ring-intro p { margin: 0; }
+body.ringcount:not(.native-app) .ring-dial-fit {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  container-type: size;
+}
+body.ringcount:not(.native-app) .ring-board { width: min(100cqw, 100cqh); margin: 0; }
+body.ringcount:not(.native-app) .ring-number { width: clamp(34px, 8cqw, 56px); height: clamp(34px, 8cqw, 56px); font-size: clamp(23px, 4cqw, 34px); }
+body.ringcount:not(.native-app) .ring-center > strong { font-size: clamp(36px, 7cqw, 64px); }
+body.ringcount:not(.native-app) .ring-center > small,
+body.ringcount:not(.native-app) .ring-center > span { font-size: 12px; }
+body.ringcount:not(.native-app) .arc-totals { min-height: 70px; margin: 4px 0 0; }
+body.ringcount:not(.native-app) .arc-total { padding: 4px; }
+body.ringcount:not(.native-app) .arc-total > small,
+body.ringcount:not(.native-app) .arc-total > span { font-size: 14px; }
+body.ringcount:not(.native-app) .empty-arcs { padding: 8px; font-size: 14px; }
+body.ringcount:not(.native-app) .ring-actions { margin: 0; gap: 8px; flex-wrap: nowrap; }
+body.ringcount:not(.native-app) .ring-actions .primary-button { flex-basis: auto; }
+
+body.switchpath:not(.native-app) .route-play {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  padding: 0;
+}
+body.switchpath:not(.native-app) .screen-fit-stage { container-type: size; }
+body.switchpath:not(.native-app) .quick-rules,
+body.switchpath:not(.native-app) .movement-note { font-size: 14px; line-height: 1.35; margin: 0; }
+body.switchpath:not(.native-app) .direction-panel { min-height: 56px; padding: 8px 10px; }
+body.switchpath:not(.native-app) .direction-copy strong { font-size: 16px; }
+body.switchpath:not(.native-app) .route-board { width: min(100%, calc(100cqh - 200px)); margin: 8px auto; padding: 0; }
+body.switchpath:not(.native-app) .number-cell { min-height: 44px; margin: 4px; padding: 12px 2px; }
+body.switchpath:not(.native-app) .route-progress,
+body.switchpath:not(.native-app) .route-score { font-size: 14px; margin: 6px 0; }
+body.switchpath:not(.native-app) .route-play .feedback { min-height: 20px; margin: 0; font-size: 14px; }
+body.switchpath:not(.native-app) .route-play .board-note { margin: 0; }
+
+@media (min-width: 960px) {
+  body:not(.native-app) .page { padding-inline: max(24px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-right)); }
+  body.tradeoff:not(.native-app) .board { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(80px, 1fr)); }
+  body.inbetween:not(.native-app) .screen-fit-stage { display: flex; flex-direction: column; }
+  body.inbetween:not(.native-app) .puzzle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(100px, 1fr)); flex: 1; }
+  body.inbetween:not(.native-app) .row-main { grid-template-columns: 1fr; }
+  body.counterpart:not(.native-app) .screen-fit-stage { display: grid; grid-template-columns: minmax(260px, .7fr) minmax(0, 1.5fr); grid-template-rows: auto minmax(0, 1fr); gap: 8px 20px; }
+  body.counterpart:not(.native-app) .bank-panel { grid-column: 1; grid-row: 1 / 3; align-self: start; }
+  body.counterpart:not(.native-app) .word-bank { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.counterpart:not(.native-app) .screen-fit-stage > .section-heading { grid-column: 2; }
+  body.counterpart:not(.native-app) .analogy-list { grid-column: 2; align-content: start; }
+  body.second-sense:not(.native-app) .answer-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; }
+  body.second-sense:not(.native-app) .answer-panel .section-heading { grid-column: 1 / -1; }
+  body.second-sense:not(.native-app) .chosen-senses { margin: 0; }
+  body.ringcount:not(.native-app) .screen-fit-stage,
+  body.switchpath:not(.native-app) .screen-fit-stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 30%); grid-auto-rows: auto; gap: 12px 24px; align-content: center; }
+  body.ringcount:not(.native-app) .screen-fit-stage { grid-template-rows: none; }
+  body.ringcount:not(.native-app) .screen-fit-stage > :not(.ring-dial-fit),
+  body.switchpath:not(.native-app) .screen-fit-stage > :not(.route-board) { grid-column: 2; }
+  body.ringcount:not(.native-app) .ring-dial-fit { grid-column: 1; grid-row: 1 / 7; height: calc(100cqh - 16px); align-self: center; }
+  body.switchpath:not(.native-app) .route-board { grid-column: 1; grid-row: 1 / 7; width: min(100%, calc(100cqh - 16px)); align-self: center; margin: 0 auto; }
+  body.ringcount:not(.native-app) .ring-number { width: 56px; height: 56px; font-size: 32px; }
+  body.ringcount:not(.native-app) .arc-totals { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  body.ringcount:not(.native-app) .ring-center > strong { font-size: 64px; }
+}
+@media (min-width: 1100px) {
+  body.shortlist:not(.native-app) .screen-fit-stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+  body.shortlist:not(.native-app) .letter-bank { grid-template-columns: repeat(9, minmax(44px, 1fr)); }
+  body.shortlist:not(.native-app) .screen-fit-candidates { display: flex; flex-direction: column; }
+  body.shortlist:not(.native-app) .candidates { flex: 1; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(60px, 1fr)); }
+}
+@media (max-width: 959px) {
+  body.tradeoff:not(.native-app) .tile { width: clamp(44px, 7vw, 64px); height: clamp(44px, 7vw, 64px); }
+  body.inbetween:not(.native-app) .word-row { padding: 6px 8px; }
+  body.inbetween:not(.native-app) .row-main { grid-template-columns: minmax(0, 1fr) auto; }
+}
+@media (max-width: 600px) {
+  body:not(.native-app) .page { grid-template-rows: 52px 20px minmax(0, 1fr); }
+  body:not(.native-app) .page .masthead { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: 44px auto; padding: 8px 0 0 68px; gap: 0 4px; }
+  body:not(.native-app) .page .wordmark { grid-column: 1; grid-row: 1; font-size: 20px; letter-spacing: -.8px; gap: 5px; }
+  body:not(.native-app) .page .wordmark > svg,
+  body:not(.native-app) .page .wordmark > img { display: block; width: 28px; height: 28px; border-radius: 8px; }
+  body:not(.native-app) .page .tools,
+  body:not(.native-app) .page .header-actions { grid-column: 2; grid-row: 1; gap: 0; }
+  body:not(.native-app) .page .brand-caption,
+  body:not(.native-app) .page .brand-line { grid-column: 1 / -1; grid-row: 2; margin: 0; line-height: 1.2; }
+  body:not(.native-app) .page .hero { padding: 4px 0 6px; }
+  body:not(.native-app) .page .hero h1 { font-size: 24px; }
+  body:not(.native-app) .page .hero .eyebrow { justify-content: flex-start; margin-bottom: 2px; }
+  body:not(.native-app) .page .hero > p:last-child { margin-top: 3px; }
+  .screen-fit-heading { gap: 6px; align-items: center; }
+  .screen-fit-heading .issue { display: none; }
+  .screen-fit-heading .puzzle-meta { display: grid; justify-items: end; gap: 2px; font-size: 14px; line-height: 1.2; }
+  body:not(.native-app) .page .tab,
+  body:not(.native-app) .page .mode-tab { padding: 8px; }
+  body:not(.native-app) .page .game { gap: 4px; }
+  body:not(.native-app) .page .tabs,
+  body:not(.native-app) .page .mode-tabs { padding: 2px; }
+  body:not(.native-app) .page .board-note:not(.warning),
+  body:not(.native-app) .page .board-footnote { display: none; }
+  body:not(.native-app) .page .game-controls { flex-wrap: wrap; }
+  body.tradeoff:not(.native-app) .board { grid-template-rows: repeat(6, minmax(88px, 1fr)); }
+  body.tradeoff:not(.native-app) .word-row { grid-template-columns: 1fr; gap: 4px; padding: 6px; }
+  body.tradeoff:not(.native-app) .clue-block { gap: 4px; }
+  body.tradeoff:not(.native-app) .row-number { display: none; }
+  body.tradeoff:not(.native-app) .tile { width: 44px; height: 44px; }
+  body.tradeoff:not(.native-app) .tiles { gap: 5px; justify-content: center; }
+  body.tradeoff:not(.native-app) .compact-rules > span { display: none; }
+  body.tradeoff:not(.native-app) .compact-rules { justify-content: flex-end; margin-bottom: 4px; }
+  body.inbetween:not(.native-app) .bank-note:not(.active) { display: none; }
+  body.inbetween:not(.native-app) .row-main { grid-template-columns: 1fr; gap: 4px; }
+  body.inbetween:not(.native-app) .word-line { justify-content: center; }
+  body.inbetween:not(.native-app) .clue { align-items: center; }
+  body.inbetween:not(.native-app) .row-number { padding-top: 0; }
+  body.inbetween:not(.native-app) .clue-copy small { display: inline; font-size: 14px; }
+  body.counterpart:not(.native-app) .word-bank .word-tile:last-child:nth-child(3n + 1) { grid-column: auto; }
+  body.counterpart:not(.native-app) .word-bank { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.counterpart:not(.native-app) .analogy:not(.active):not(.solved) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 6px; align-items: center; }
+  body.counterpart:not(.native-app) .analogy:not(.active):not(.solved) .analogy-answer { margin: 0; }
+  body.counterpart:not(.native-app) .analogy:not(.active):not(.solved) .row-state { display: none; }
+  body.sideways:not(.native-app) .column-clues { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-inline: 0; }
+  body.sideways:not(.native-app) .column-status { margin-inline: 0; }
+  body.sideways:not(.native-app) .column-clue { padding: 6px 4px; }
+  body.sideways:not(.native-app) .shift-actions .primary-button,
+  body.sideways:not(.native-app) .shift-actions .secondary-button { font-size: 14px; padding: 8px; }
+  body.second-sense:not(.native-app) .sense-column h2 { gap: 4px; }
+  body.second-sense:not(.native-app) .sense-column h2 small { display: none; }
+  body.second-sense:not(.native-app) .sense-card { padding: 6px; }
+  body.second-sense:not(.native-app) #sense-hint { font-size: 14px; padding: 6px; }
+  body.ringcount:not(.native-app) .ring-intro p { max-width: none; }
+  body.ringcount:not(.native-app) .ring-center > small,
+  body.ringcount:not(.native-app) .ring-center > span { font-size: 10px; }
+}
+
+/* Portrait tablets have room for nine scan columns and four candidate rows. */
+@media (max-width: 360px) {
+  body:not(.native-app) .page .wordmark > svg,
+  body:not(.native-app) .page .wordmark > img { display: none; }
+}
+@media (min-width: 601px) and (max-width: 1099px) {
+  body.shortlist:not(.native-app) .letter-bank { grid-template-columns: repeat(9, minmax(44px, 1fr)); grid-auto-rows: 44px; }
+  body.shortlist:not(.native-app) .candidates { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: minmax(48px, auto); }
+  body.shortlist:not(.native-app) .scan-panel .section-heading { margin-bottom: 4px; }
+  body.shortlist:not(.native-app) .scan-note { margin-top: 6px; }
+  body.shortlist:not(.native-app) .pencil-note { margin-block: 6px; }
+}
+@media (max-width: 959px) {
+  body.sideways:not(.native-app) .screen-fit-stage { display: grid; grid-template-rows: auto auto minmax(294px, 1fr) auto; gap: 6px; }
+  body.sideways:not(.native-app) .shift-board { min-height: 0; grid-template-rows: repeat(5, minmax(54px, 1fr)); }
+  body.sideways:not(.native-app) .letter-strip { align-items: stretch; }
+  body.sideways:not(.native-app) .strip-letters { height: 100%; }
+  body.sideways:not(.native-app) .strip-letter { display: grid; place-items: center; min-height: 44px; height: 100%; line-height: 1.1; }
+  body.sideways:not(.native-app) .rotate-button { align-self: center; }
+}
+/* Keep the complete phone alphabet anchored while only the word list scrolls.
+   Selecting a candidate can no longer scroll the scanner out of view. */
+@media (max-width: 600px) {
+  body.shortlist:not(.native-app) .page .game { padding: 8px; }
+  body.shortlist:not(.native-app) .game .screen-fit-stage { display: flex; flex-direction: column; gap: 6px; overflow: visible; scrollbar-gutter: auto; padding: 0; -webkit-mask-image: none; mask-image: none; }
+  body.shortlist:not(.native-app) .screen-fit-scan { flex: 0 0 auto; max-height: 75%; overflow: auto; overscroll-behavior: contain; padding-block: 8px 12px; -webkit-mask-image: linear-gradient(to bottom, transparent, var(--ink) 6px, var(--ink) calc(100% - 10px), transparent); mask-image: linear-gradient(to bottom, transparent, var(--ink) 6px, var(--ink) calc(100% - 10px), transparent); }
+  body.shortlist:not(.native-app) .scan-panel { padding: 6px; margin-bottom: 6px; }
+  body.shortlist:not(.native-app) .scan-panel .section-heading { margin-bottom: 4px; }
+  body.shortlist:not(.native-app) .scan-compose { margin: 6px 0 8px; }
+  body.shortlist:not(.native-app) .letter-bank { grid-template-columns: repeat(7, minmax(44px, 1fr)); grid-auto-rows: 44px; gap: 4px; }
+  /* The same rule remains in How to Play and in this element for AT. */
+  body.shortlist:not(.native-app) .scan-note { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); }
+  body.shortlist:not(.native-app) .scan-history { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin: 0; }
+  body.shortlist:not(.native-app) .scan-result { grid-template-columns: minmax(0, 1fr) 26px; gap: 4px; padding: 4px; }
+  body.shortlist:not(.native-app) .scan-index,
+  body.shortlist:not(.native-app) .scan-explanation { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  body.shortlist:not(.native-app) .scan-letters { white-space: nowrap; }
+  body.shortlist:not(.native-app) .screen-fit-candidates { flex: 1 1 0; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 10px 4px 18px; scroll-padding-block: 10px 18px; -webkit-mask-image: linear-gradient(to bottom, transparent, var(--ink) 8px, var(--ink) calc(100% - 16px), transparent); mask-image: linear-gradient(to bottom, transparent, var(--ink) 8px, var(--ink) calc(100% - 16px), transparent); }
+  body.shortlist:not(.native-app) .candidate-heading { margin-bottom: 6px; }
+  body.shortlist:not(.native-app) .pencil-note { margin-block: 6px; }
+}
+
+/* The collection is a scrolling catalog, not a bounded puzzle board. */
+.page-shell { width: auto; max-width: none; margin-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right)); padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+.page-shell .masthead { min-height: 66px; padding-left: 76px; }
+.page-shell .hero { padding-block: 24px; gap: 24px; }
+.page-shell .daily-progress { padding: 14px 18px; flex-wrap: wrap; }
+.page-shell .progress-marks { grid-template-columns: repeat(16, minmax(14px, 1fr)); }
+.page-shell .collection-filter { margin-top: 20px; padding-bottom: 16px; }
+.page-shell .game-section { padding-top: 24px; }
+.page-shell .game-card { padding: 20px; gap: 14px; }
+.page-shell .card-copy p,
+.page-shell .creator-credit,
+.page-shell .card-detail,
+.page-shell .card-action,
+.page-shell #filter-summary,
+.page-shell .progress-caption p { font-size: 14px; }
+.page-shell .creator-filters button { font-size: 14px; min-height: 44px; }
+.page-shell .card-action { min-height: 44px; }
+.page-shell .game-card:active { transform: translateY(1px); }
+.page-shell .text-button:active,
+.page-shell .creator-filters button:active { transform: translateY(1px); }
+.page-shell .screen-fit-menu { border: 1px solid var(--line); border-radius: 12px; background: var(--white); color: var(--ink); }
+.page-shell .about-label-short { display: none; }
+@media (min-width: 1100px) {
+  .page-shell { margin-inline: max(24px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-right)); }
+  .page-shell .word-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .page-shell .game-card { grid-template-columns: minmax(0, 1fr) 64px; }
+  .page-shell .card-motif { width: 64px; height: 64px; }
+  .page-shell .flagship-card { grid-template-columns: minmax(0, 1fr) 120px; }
+  .page-shell .flagship-card .card-motif { width: 120px; height: 120px; }
+}
+@media (max-width: 600px) {
+  .page-shell .masthead { padding-left: 68px; gap: 8px; }
+  .page-shell .brand { font-size: 24px; }
+  .page-shell .brand img { display: block; width: 28px; height: 28px; }
+  .page-shell .about-button { max-width: none; white-space: nowrap; }
+  .page-shell .about-label-long { display: none; }
+  .page-shell .about-label-short { display: inline; }
+  .page-shell .hero { padding-block: 18px; }
+  .page-shell .daily-edition { margin-top: 16px; }
+  .page-shell .hero-copy { font-size: 14px; }
+  .page-shell .progress-marks { gap: 4px; }
+  .page-shell .game-card { grid-template-columns: minmax(0, 1fr) 64px; padding: 16px; gap: 12px; }
+  .page-shell .game-card .card-motif { width: 64px; height: 64px; }
+  .page-shell .card-bottom { align-items: flex-start; }
+  .page-shell .card-detail { max-width: 58%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body:not(.native-app) .page button:active:not(:disabled),
+  body:not(.native-app) .screen-fit-menu:active { translate: none; }
+  body:not(.native-app) .screen-fit-menu:active,
+  .page-shell .game-card:active,
+  .page-shell .text-button:active,
+  .page-shell .creator-filters button:active { transform: none; }
+}

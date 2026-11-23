@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>NEXUS DEFENSE ULTIMATE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
@@ -145,8 +145,9 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
             transition: left 0.4s ease;
         }
+@media (hover: hover) {
 
-        .btn:hover::before { left: 100%; }
+        .btn:hover::before { left: 100%; }}
 
         .btn-primary {
             background: linear-gradient(135deg, #6b2fb5 0%, #9b4dca 100%);
@@ -189,16 +190,18 @@
             background: rgba(0,0,0,0.7);
             pointer-events: none;
         }
+@media (hover: hover) {
 
         .btn-ability:hover:not(:disabled) {
             box-shadow: 0 0 20px var(--neon-purple);
             border-color: var(--neon-pink);
-        }
+        }}
+@media (hover: hover) {
 
         .btn:hover:not(:disabled) {
             transform: translateY(-1px);
             filter: brightness(1.15);
-        }
+        }}
 
         .btn:active:not(:disabled) {
             transform: translateY(0);
@@ -347,8 +350,9 @@
             cursor: pointer;
             transition: all 0.15s;
         }
+@media (hover: hover) {
 
-        .target-btn:hover { border-color: var(--neon-purple); color: #fff; }
+        .target-btn:hover { border-color: var(--neon-purple); color: #fff; }}
         .target-btn.active { background: var(--neon-purple); color: #fff; border-color: var(--neon-purple); }
 
         .action-row {
@@ -373,11 +377,12 @@
             justify-content: center;
             transition: all 0.2s;
         }
+@media (hover: hover) {
 
         .close-x:hover {
             background: rgba(255, 50, 80, 0.4);
             transform: rotate(90deg);
-        }
+        }}
 
         /* Cancel chip shown while placing a tower (touch has no right-click/Escape) */
         #cancelPlaceBtn {
@@ -468,8 +473,9 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+@media (hover: hover) {
 
-        .tower-tab:hover { border-color: var(--neon-purple); color: #fff; }
+        .tower-tab:hover { border-color: var(--neon-purple); color: #fff; }}
         .tower-tab.active { background: var(--neon-purple); color: #fff; border-color: var(--neon-purple); }
 
         .towers-grid {
@@ -497,12 +503,13 @@
             height: 3px;
             background: var(--tc, var(--neon-purple));
         }
+@media (hover: hover) {
 
         .tower-card:hover:not(.locked) {
             border-color: var(--tc, var(--neon-purple));
             transform: translateY(-4px);
             box-shadow: 0 8px 25px rgba(138, 43, 226, 0.3);
-        }
+        }}
 
         .tower-card.locked {
             opacity: 0.4;
@@ -618,15 +625,17 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+@media (hover: hover) {
 
         .map-card:hover {
             border-color: var(--neon-pink);
             transform: scale(1.03);
             box-shadow: 0 10px 40px rgba(255, 20, 147, 0.3);
-        }
+        }}
 
         .map-card.locked { opacity: .48; cursor: not-allowed; filter: grayscale(.65); }
-        .map-card.locked:hover { transform: none; border-color: var(--panel-border); box-shadow: none; }
+@media (hover: hover) {
+        .map-card.locked:hover { transform: none; border-color: var(--panel-border); box-shadow: none; }}
         .campaign-strip { width:min(1100px,100%); display:grid; grid-template-columns:1fr minmax(270px,.8fr); gap:14px; margin:0 0 18px; }
         .campaign-card { background:var(--panel-bg); border:1px solid var(--panel-border); border-radius:12px; padding:12px 16px; }
         .campaign-card h3 { font:700 12px Orbitron; color:var(--neon-cyan); margin-bottom:8px; }
@@ -950,11 +959,12 @@
             font-family: 'Orbitron';
             padding: 0;
         }
+@media (hover: hover) {
 
         .btn-bestiary:hover {
             background: var(--neon-cyan);
             color: #000;
-        }
+        }}
 
         /* Bestiary Popup */
         #bestiaryPopup {
@@ -1106,12 +1116,13 @@
             transition: all 0.25s ease;
             text-align: center;
         }
+@media (hover: hover) {
 
         .spec-card:hover {
             border-color: var(--neon-yellow);
             transform: translateY(-4px);
             box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
-        }
+        }}
 
         .spec-card .spec-name {
             font-family: 'Orbitron';
@@ -1165,10 +1176,91 @@
             .close-x { width: 40px; height: 40px; }
             .target-btn { padding: 12px 6px; font-size: 11px; }
         }
+
+        #app { width:100%; height:100dvh; padding-bottom:env(safe-area-inset-bottom); }
+        #hud { padding:10px max(12px,env(safe-area-inset-right)) 10px max(110px,calc(env(safe-area-inset-left) + 104px)); padding-top:max(12px,env(safe-area-inset-top)); gap:8px; }
+        .hud-section { gap:6px; }
+        .btn,.target-btn,.tower-tab,.close-x { min-height:44px; min-width:44px; }
+        #gameCanvas { min-height:0; flex:none; }
+        #mapSelect { padding:max(78px,calc(env(safe-area-inset-top) + 68px)) clamp(18px,4vw,64px) max(24px,env(safe-area-inset-bottom)); background:radial-gradient(ellipse at 20% 10%,#152945aa,transparent 70%),#050812f9; }
+        .map-title { font-size:clamp(30px,4.2vw,62px); text-align:center; line-height:1.1; }
+        .map-subtitle { color:#a6bbd0; font-size:16px; text-align:center; margin:10px 0 24px; }
+        .maps-grid { max-width:none; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+        .campaign-strip { width:100%; }
+        .campaign-card p { font-size:13px; }
+        .family-name { min-height:44px; font-size:13px; }
+        .map-card { border-radius:18px; background:#10192b; }
+        .map-card.locked { opacity:.65; }
+        .map-card .map-name { font-size:16px; }
+        .map-preview { background:#080e1b; }
+        .map-info { padding:16px; }
+        .map-info p { color:#b5c5d5; }
+        .overlay,.spec-overlay,#buildMenu { padding-top:max(76px,calc(env(safe-area-inset-top) + 66px)); }
+        @media(max-width:700px) {
+          #hud { padding:70px 8px 8px; }
+          #hud .hud-section { width:100%; display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; }
+          #hud .hud-section:first-child { grid-template-columns:repeat(5,minmax(0,1fr)); }
+          .resource { padding:6px 3px; font-size:11px; gap:3px; justify-content:center; min-width:0; }
+          .resource .icon { font-size:12px; }
+          #hud .btn { padding:6px 3px; font-size:10px; min-width:0; }
+          #buildBtn,#startBtn,#earlySendBtn { grid-column:span 2; }
+          #hud .resource.trophy { display:none; }
+          .maps-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+          .campaign-strip { grid-template-columns:1fr; gap:10px; }
+          .map-title { font-size:30px; }
+          .map-info { padding:10px 5px; }
+          .map-preview canvas { width:100%; }
+          #towerPanel { max-width:calc(100vw - 24px); }
+        }
+        @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; } }
+
+        /* Round 2: larger mission boards and restrained luminous hardware. */
+        .map-title { animation:none; }
+        .map-card { border:1px solid #6574a35c; box-shadow:inset 0 1px #dce8ff18,0 14px 36px #0005; transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease; }
+        .map-card.locked { opacity:1; filter:none; border-color:#46516b; }
+        .map-card.locked .map-preview { opacity:.65; }
+        .map-info h3 { color:#e5f3ff!important; font-size:18px; font-weight:700; }
+        .map-info p,.map-info .difficulty,.map-info .campaign-stars,.campaign-card p,.family-board,.family-name,.tower-card .desc,.spec-desc { font-size:14px; color:#c7d7e9; line-height:1.45; }
+        .map-info .campaign-stars { color:#ffe497; }
+        .map-preview { height:clamp(120px,18dvh,210px); }
+        .map-preview canvas { display:block; width:100%; height:100%; }
+        .btn,.target-btn,.tower-tab,.tower-card h4 { font-size:14px; }
+        .resource { font-size:14px; }
+        .resource::after { animation:none; }
+        .btn { border-radius:10px; min-height:44px; background-image:linear-gradient(#ffffff14,#00000020); box-shadow:inset 0 1px #ffffff24,0 3px 0 #0006; transition:transform .18s ease,filter .18s ease; }
+        .btn-success { color:#f6fff9; background-color:#0c5d3b; border-color:#50e2a1; }
+        .btn-primary { background-color:#6632a0; }
+        .btn:active:not(:disabled),.map-card:not(.locked):active,.tower-card:active { transform:translateY(2px); }
+        .btn:disabled { opacity:1; color:#c1ccdc; background:#142136; border-color:#526278; }
+        @media(orientation:portrait) and (min-width:701px) {
+          #mapSelect { padding-top:84px; }
+          .maps-grid { grid-template-columns:repeat(2,minmax(0,1fr)); flex:1; min-height:0; grid-auto-rows:minmax(240px,1fr); }
+          .map-card { display:flex; flex-direction:column; }
+          .map-preview { flex:1; min-height:130px; height:auto; }
+          .map-info { flex:none; padding:14px; }
+          .campaign-strip,.map-title,.map-subtitle { flex-shrink:0; }
+        }
+        @media(max-width:700px) {
+          #hud .btn { font-size:14px; line-height:1.2; min-height:48px; white-space:normal; }
+          #hud .resource { font-size:14px; }
+          .map-info h3 { font-size:16px; }
+          .map-info p,.map-info .difficulty,.map-info .campaign-stars { font-size:14px; }
+        }
+
+        @media(orientation:portrait) and (min-width:701px) {
+          #mapSelect { display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto auto auto minmax(0,1fr); row-gap:14px; height:100dvh; padding:84px 28px 24px; }
+          #mapSelect .map-title,#mapSelect .map-subtitle,#mapSelect .campaign-strip { margin:0; }
+          .maps-grid { height:100%; min-height:0; grid-template-rows:repeat(3,minmax(0,1fr)); grid-auto-rows:auto; gap:14px; }
+          .map-card { min-height:0; }
+          .map-preview { min-height:0; flex:1; }
+          .map-info { padding:12px; }
+          .map-info h3 { font-size:16px; line-height:1.25; }
+          .map-info p,.map-info .difficulty,.map-info .campaign-stars { line-height:1.3; }
+        }
     </style>
 </head>
 <body>
-  <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">🏠 Menu</a>
+  <a href="../../" style="position:fixed;top:max(12px,env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));z-index:100001;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;">🏠 Menu</a>
     <div id="app">
         <canvas id="bgCanvas"></canvas>
 
@@ -1418,6 +1510,7 @@ const UI_UPDATE_INTERVAL = 200; // ms
 // Performance: Grid overlay cache
 let cachedGridCells = null;
 let cachedGridKey = '';
+let surfaceGradient = null, surfaceGradientKey = '';
 
 // Performance: Damage number throttle
 let lastDmgNumTime = 0;
@@ -2265,6 +2358,7 @@ function getWavePreviewComp() {
 function init() {
     resize();
     window.addEventListener('resize', resize);
+    new ResizeObserver(resize).observe(document.getElementById('hud'));
 
     // Load persistent data and restore achievements
     const savedData = getPersistentData();
@@ -2297,8 +2391,8 @@ function resize() {
     const oldW = viewW, oldH = viewH;
 
     // Render at device resolution (crisp on retina), keep all game coords in CSS pixels
-    viewW = window.innerWidth;
-    viewH = window.innerHeight - h;
+    viewW = document.getElementById('app').clientWidth;
+    viewH = document.getElementById('app').clientHeight - h;
     canvas.width = Math.round(viewW * dpr);
     canvas.height = Math.round(viewH * dpr);
     canvas.style.width = viewW + 'px';
@@ -2420,6 +2514,7 @@ function generateMapCards() {
         card.onclick = () => selectMap(i);
         grid.appendChild(card);
 
+        new ResizeObserver(() => drawMapPreview(i)).observe(document.getElementById(`mp${i}`));
         setTimeout(() => drawMapPreview(i), 50);
     });
 }
@@ -2429,6 +2524,11 @@ function drawMapPreview(i) {
     if (!c) return;
     const cx = c.getContext('2d');
     const map = MAPS[i];
+    const rect = c.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    c.width = Math.max(1, Math.round(rect.width * dpr));
+    c.height = Math.max(1, Math.round(rect.height * dpr));
+    cx.setTransform(c.width / 250, 0, 0, c.height / 120, 0, 0);
 
     cx.fillStyle = map.bg;
     cx.fillRect(0, 0, 250, 120);
@@ -2445,7 +2545,7 @@ function drawMapPreview(i) {
     pts.forEach(p => cx.lineTo(p.x, p.y));
     cx.stroke();
 
-    cx.strokeStyle = map.pathStroke;
+    cx.strokeStyle = map.glow;
     cx.lineWidth = 8;
     cx.stroke();
 
@@ -2754,7 +2854,7 @@ class Tower {
         // Level indicator
         if (this.level > 1) {
             ctx.fillStyle = '#ffd700';
-            ctx.font = 'bold 9px Orbitron';
+            ctx.font = 'bold 14px Orbitron';
             ctx.textAlign = 'center';
             const stars = '★'.repeat(Math.min(this.level - 1, 5));
             ctx.fillText(stars, x, y + CFG.TOWER_RADIUS + 14);
@@ -2762,7 +2862,7 @@ class Tower {
 
         // Tier badge / Specialization label
         ctx.fillStyle = this.color;
-        ctx.font = 'bold 8px Orbitron';
+        ctx.font = 'bold 14px Orbitron';
         if (this.specialization) {
             ctx.fillText(this.specialization, x, y - CFG.TOWER_RADIUS - 8);
         } else {
@@ -2773,7 +2873,7 @@ class Tower {
         if (this.synergyNames && this.synergyNames.length > 0) {
             ctx.save();
             ctx.fillStyle = '#ffd700';
-            ctx.font = '8px Orbitron';
+            ctx.font = '14px Orbitron';
             ctx.textAlign = 'center';
             ctx.fillText('★ ' + this.synergyNames[0], x, y + CFG.TOWER_RADIUS + 24);
             ctx.restore();
@@ -3020,7 +3120,7 @@ class Enemy {
         // Boss label
         if (this.boss) {
             ctx.fillStyle = '#ffd700';
-            ctx.font = 'bold 10px Orbitron';
+            ctx.font = 'bold 14px Orbitron';
             ctx.textAlign = 'center';
             ctx.fillText('💀 BOSS', x, barY - 8);
         }
@@ -3028,7 +3128,7 @@ class Enemy {
         // Healer indicator
         if (this.healer) {
             ctx.fillStyle = '#44ff44';
-            ctx.font = '10px Arial';
+            ctx.font = '14px Arial';
             ctx.fillText('✚', x, y + 3);
         }
 
@@ -3039,7 +3139,7 @@ class Enemy {
             if (trait.resist) {
                 // Resistance: small shield icon to the right of health bar
                 ctx.save();
-                ctx.font = '8px Arial';
+                ctx.font = '14px Arial';
                 ctx.textAlign = 'right';
                 ctx.fillStyle = trait.resistColor;
                 ctx.fillText(trait.resistIcon, x + barW/2 + 2, indicatorY);
@@ -3048,7 +3148,7 @@ class Enemy {
             if (trait.vuln) {
                 // Vulnerability: small icon to the left of health bar
                 ctx.save();
-                ctx.font = '8px Arial';
+                ctx.font = '14px Arial';
                 ctx.textAlign = 'left';
                 ctx.fillStyle = trait.vulnColor;
                 ctx.fillText(trait.vulnIcon, x - barW/2 - 10, indicatorY);
@@ -3260,7 +3360,15 @@ function updateEffects() {
 function draw() {
     const map = MAPS[G.mapIdx];
 
-    ctx.fillStyle = map.bg;
+    const surfaceKey = `${G.mapIdx}:${viewW}:${viewH}`;
+    if (surfaceKey !== surfaceGradientKey) {
+        surfaceGradientKey = surfaceKey;
+        surfaceGradient = ctx.createRadialGradient(viewW*.5,viewH*.42,0,viewW*.5,viewH*.42,Math.max(viewW,viewH)*.72);
+        surfaceGradient.addColorStop(0,map.pathFill);
+        surfaceGradient.addColorStop(.6,map.bg);
+        surfaceGradient.addColorStop(1,'#020610');
+    }
+    ctx.fillStyle = surfaceGradient;
     ctx.fillRect(0, 0, viewW, viewH);
 
     drawPath(map);
@@ -3321,7 +3429,7 @@ function drawPath(map) {
     ctx.arc(path[0].x, path[0].y, 12, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#000';
-    ctx.font = 'bold 10px Arial';
+    ctx.font = 'bold 14px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('▶', path[0].x + 1, path[0].y);
@@ -3390,7 +3498,7 @@ function drawBase() {
 
     // Label
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 10px Orbitron';
+    ctx.font = 'bold 14px Orbitron';
     ctx.textAlign = 'center';
     ctx.fillText('NEXUS', x, y + 75);
 }
@@ -3676,12 +3784,12 @@ function drawHoverRangePreview() {
 // ═══════════════════════════════════════════════════════════════
 // BACKGROUND ANIMATION
 // ═══════════════════════════════════════════════════════════════
-function drawBgStars() {
+function drawBgStars(frameScale = 1) {
     bgCtx.fillStyle = 'rgba(5, 5, 8, 0.15)';
     bgCtx.fillRect(0, 0, bgViewW, bgViewH);
 
     stars.forEach(s => {
-        s.y += s.speed;
+        s.y += s.speed * frameScale;
         if (s.y > bgViewH) {
             s.y = 0;
             s.x = Math.random() * bgViewW;
@@ -3697,12 +3805,14 @@ function drawBgStars() {
 
 // Keep animateBg for pre-game background animation (before gameLoop takes over)
 let gameLoopRunning = false;
-function animateBg() {
-    drawBgStars();
+let bgLastTime = 0, bgSleeping = false, gameSleeping = false;
+function animateBg(now = performance.now()) {
+    if (document.hidden) { bgSleeping = true; return; }
+    const frameScale = Math.min((now - (bgLastTime || now)) / (1000 / 60), 3);
+    bgLastTime = now;
+    drawBgStars(frameScale);
     // Only run separate rAF loop before gameLoop starts (selectMap calls gameLoop which takes over)
-    if (!gameLoopRunning) {
-        requestAnimationFrame(animateBg);
-    }
+    // The mission screen is static; selectMap starts the gameplay renderer.
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -3740,7 +3850,7 @@ function spawnSubWave() {
             G.spawning = false;
             return;
         }
-        if (!gamePaused) {
+        if (!gamePaused && !document.hidden) {
             enemies.push(new Enemy(comp[idx]));
             idx++;
         }
@@ -4417,6 +4527,7 @@ function updateStep() {
 }
 
 function gameLoop() {
+    if (document.hidden) { gameSleeping = true; return; }
     gameLoopRunning = true;
     const now = performance.now();
     const dt = Math.min(lastFrameTime ? now - lastFrameTime : STEP_MS, 100);
@@ -4453,6 +4564,11 @@ function gameLoop() {
 // ═══════════════════════════════════════════════════════════════
 // START
 // ═══════════════════════════════════════════════════════════════
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { if (gameLoopRunning && !gamePaused) togglePause(); return; }
+    if (gameSleeping) { gameSleeping = false; lastFrameTime = 0; requestAnimationFrame(gameLoop); }
+    if (bgSleeping && !gameLoopRunning) { bgSleeping = false; bgLastTime = 0; requestAnimationFrame(animateBg); }
+});
 init();
 </script>
 </body>

@@ -16,7 +16,7 @@
   <body>
     <main id="app" aria-label="Reflex Riot arcade game">
       <canvas id="game" aria-label="Game area"></canvas>
-      <a id="exit-button" class="exit-button" href="../../" aria-label="Exit to the Alford Family Game Portal">‹ EXIT</a>
+      <a id="exit-button" class="exit-button" href="../../" aria-label="Exit to the Alford Family Game Portal">‹ Menu</a>
 
       <section id="hud" class="hud hidden" aria-live="polite">
         <div class="hud-pill score-wrap"><span class="hud-label">SCORE</span><strong id="score">0</strong></div>
@@ -27,11 +27,16 @@
       </section>
 
       <section id="menu" class="screen menu-screen">
+        <div class="menu-layout">
+        <div class="menu-brand">
         <div class="logo" aria-label="Reflex Riot">
           <span class="logo-top">REFLEX</span>
           <span class="logo-bottom">RIOT!</span>
         </div>
         <p class="tagline">Catch. Smash. Swipe. Survive.</p>
+        <div class="best-row"><span>🏆 BEST</span><strong id="best-score">0</strong><button id="sound-state" aria-label="Toggle sound">🔊</button></div>
+        <p class="microcopy">No ads · Works offline · Made for quick hands</p>
+        </div>
         <div class="menu-actions">
           <button id="play-button" class="arcade-button primary"><span>⚡</span> SOLO RIOT</button>
           <button id="duel-button" class="arcade-button secondary"><span>👥</span> PASS &amp; CLASH</button>
@@ -39,8 +44,7 @@
           <div class="mini-actions"><button id="leaderboard-button" class="arcade-button ghost">🏆 RECORDS</button><button id="settings-button" class="arcade-button ghost">⚙ SETTINGS</button></div>
           <button id="how-button" class="arcade-button ghost"><span>?</span> HOW TO PLAY</button>
         </div>
-        <div class="best-row"><span>🏆 BEST</span><strong id="best-score">0</strong><span id="sound-state">🔊</span></div>
-        <p class="microcopy">No ads · Works offline · Made for quick hands</p>
+        </div>
       </section>
 
       <section id="how" class="screen hidden">

@@ -11,9 +11,11 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="../daily/screen-fit.css">
   <title>Tradeoff — a daily game of give and take</title>
 </head>
 <body data-game-creator="ChatGPT" class="tradeoff">
+  <a class="secondary-button screen-fit-menu" href="../../">Menu</a>
   <a class="skip-link" href="#board">Skip to puzzle</a>
   <div class="page">
     <header class="masthead">
@@ -36,18 +38,18 @@
 
       <div class="game-layout">
         <section class="game" aria-label="Tradeoff puzzle">
-          <div class="game-topline">
+          <div class="screen-fit-heading"><div class="game-topline">
             <div class="mode-tabs" aria-label="Game mode">
               <button class="mode-tab active" id="daily-tab" aria-pressed="true">The daily</button>
               <button class="mode-tab" id="practice-tab" aria-pressed="false">Practice <span aria-hidden="true">↗</span></button>
             </div>
             <div class="issue" id="issue">NO. 001</div>
           </div>
-          <div class="puzzle-meta"><span id="puzzle-date">Tuesday, October 20</span><span class="difficulty" id="difficulty">Gentle</span></div>
+          <div class="puzzle-meta"><span id="puzzle-date">Tuesday, October 20</span><span class="difficulty" id="difficulty">Gentle</span></div></div>
           <div class="new-day" id="new-day" hidden>A fresh daily is here. <button id="new-day-button">Play today →</button></div>
-          <div class="compact-rules"><span>Each word starts one letter from its clue.</span><button id="quick-help">How to play <span aria-hidden="true">↗</span></button></div>
+          <div class="screen-fit-stage" tabindex="0" role="region" aria-label="Scrollable puzzle area"><div class="compact-rules"><span>Each word starts one letter from its clue.</span><button id="quick-help">How to play <span aria-hidden="true">↗</span></button></div>
           <div class="board" id="board" tabindex="-1" aria-label="Six words to solve"><p class="loading">Getting your letters in order…</p></div>
-          <div class="board-bottom">
+          </div><div class="board-bottom">
             <div class="progress-wrap"><div class="progress-dots" id="progress-dots" aria-hidden="true"></div><span id="progress-label">0 of 6 solved</span></div>
             <div class="swap-count"><strong id="move-count">0</strong> <span id="move-word">swaps</span><span class="par-label">/ 5 is perfect</span></div>
           </div>
@@ -80,7 +82,7 @@
     <footer><span>Made for your daily <em>aha.</em></span><span class="footer-mark">TRADEOFF <span aria-hidden="true">✳</span> VOL. 01</span><nav class="footer-links" aria-label="More games"><a href="../../">All games</a><a href="../inbetween/">Inbetween</a><button id="about-button">About the game</button></nav></footer>
   </div>
   <div class="toast" id="toast" role="status" hidden></div>
-  <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><button class="dialog-close icon-button" id="dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
+  <dialog id="game-dialog" aria-labelledby="dialog-title"><div class="dialog-shell"><a class="secondary-button screen-fit-menu" href="../../">Menu</a><button class="dialog-close icon-button" id="dialog-close" aria-label="Close dialog">×</button><div id="dialog-content"></div></div></dialog>
   <div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
   <noscript><p class="noscript">Tradeoff needs JavaScript to move the letters. Please enable it to play.</p></noscript>
   <script type="module" src="./app.mjs"></script>

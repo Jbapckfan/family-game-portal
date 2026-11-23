@@ -12,9 +12,11 @@
   <link rel="preload" href="./fonts/dm-sans-regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./identities.css">
+  <link rel="stylesheet" href="./screen-fit.css">
   <script type="module" src="./app.mjs"></script>
 </head>
 <body>
+  <a class="secondary-button screen-fit-menu" href="../../">Menu</a>
   <a class="skip-link" href="#today">Skip to the games</a>
   <div class="page-shell">
     <header class="masthead">
@@ -22,7 +24,7 @@
         <img src="./icon.svg" alt="" width="44" height="44">
         <span>Alford <strong>Daily</strong></span>
       </a>
-      <button class="text-button about-button" type="button" data-open-about>About the collection <span aria-hidden="true">↗</span></button>
+      <button class="text-button about-button" type="button" data-open-about aria-label="About the collection"><span class="about-label-long">About the collection</span><span class="about-label-short" aria-hidden="true">About</span> <span aria-hidden="true">↗</span></button>
     </header>
     <main>
       <section class="hero" aria-labelledby="page-title">
@@ -87,6 +89,7 @@
     </footer>
   </div>
   <dialog id="about-dialog" aria-labelledby="about-title">
+    <a class="secondary-button screen-fit-menu" href="../../">Menu</a>
     <div class="dialog-topline"><span class="eyebrow">A note from Alford Daily</span><button id="close-about" class="close-button" type="button" aria-label="Close about dialog">×</button></div>
     <h2 id="about-title">A small daily ritual.</h2>
     <p>Alford Daily brings together 32 word, logic, memory, and strategy games. Ringcount and Switchpath are quick first stops; choose any game or filter the collection by its original creator.</p>

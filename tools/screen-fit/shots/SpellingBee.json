@@ -1,0 +1,33 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": ".hex-center"
+        },
+        {
+          "click": ".hex-outer"
+        },
+        {
+          "wait": 300
+        }
+      ]
+    },
+    {
+      "name": "light",
+      "steps": [
+        {
+          "click": ".theme-toggle-btn"
+        },
+        {
+          "wait": 250
+        }
+      ]
+    }
+  ]
+}

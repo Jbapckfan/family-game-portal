@@ -1,0 +1,91 @@
+{
+  "texturePixels": 589824,
+  "distinctRGBSamples": 3571,
+  "floorContrast": {
+    "outer": {
+      "minimumTexturedFloorContrast": 10.373953782085248,
+      "foreground": "#2c1b08",
+      "gradientStops": [
+        "#fff4db",
+        "#ead7b3"
+      ],
+      "blend": "normal-60-percent"
+    },
+    "center": {
+      "minimumTexturedFloorContrast": 4.84551376651804,
+      "foreground": "#201104",
+      "gradientStops": [
+        "#f7c653",
+        "#dba12d"
+      ],
+      "blend": "multiply"
+    }
+  },
+  "panelTextContrast": [
+    {
+      "foreground": "#e1cda9",
+      "backgrounds": [
+        "#483323",
+        "#251c16"
+      ],
+      "minimumContrast": 7.616657625884658
+    },
+    {
+      "foreground": "#d7c19a",
+      "backgrounds": [
+        "#483323",
+        "#251c16"
+      ],
+      "minimumContrast": 6.7578651336984645
+    },
+    {
+      "foreground": "#d6bbff",
+      "backgrounds": [
+        "#483323",
+        "#251c16"
+      ],
+      "minimumContrast": 6.998844225078016
+    },
+    {
+      "foreground": "#ffd16d",
+      "backgrounds": [
+        "#483323",
+        "#251c16"
+      ],
+      "minimumContrast": 8.229092434571205
+    },
+    {
+      "foreground": "#604a30",
+      "backgrounds": [
+        "#f7ecd8",
+        "#dfccb0"
+      ],
+      "minimumContrast": 5.319066248966078
+    },
+    {
+      "foreground": "#695039",
+      "backgrounds": [
+        "#f7ecd8",
+        "#dfccb0"
+      ],
+      "minimumContrast": 4.7740352410922355
+    },
+    {
+      "foreground": "#70450c",
+      "backgrounds": [
+        "#f7ecd8",
+        "#dfccb0"
+      ],
+      "minimumContrast": 5.264830002492782
+    },
+    {
+      "foreground": "#734008",
+      "backgrounds": [
+        "#f7ecd8",
+        "#dfccb0"
+      ],
+      "minimumContrast": 5.434943612440182
+    }
+  ],
+  "method": "JPEG decoded locally with ffmpeg. Composite each RGB sample with each floor gradient endpoint (normal 60 percent ivory wash for outer, multiply for center), excluding brightening reflection and edge-only inset shadow. Static color calculation, not browser pixel certification."
+}

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'particle-conquest-v6-rendered-worlds-20261122';
+const CACHE_NAME = 'particle-conquest-v7-scoped-cache-20261122';
 const ASSETS = [
   './',
   './index.html',
@@ -24,7 +24,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
+        keys.filter(key => key.startsWith('particle-conquest-') && key !== CACHE_NAME)
             .map(key => caches.delete(key))
       );
     })

@@ -668,5 +668,13 @@
             });
         })();
     </script>
+    <script>
+        // Offline registration stays silent and never reloads an open page.
+        if ('serviceWorker' in navigator && isSecureContext) {
+            try {
+                navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' }).catch(() => {});
+            } catch (_) {}
+        }
+    </script>
 </body>
 </html>

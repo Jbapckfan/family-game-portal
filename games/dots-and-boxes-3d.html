@@ -1033,6 +1033,7 @@
         .difficulty-option,.grid-option,.theme-option,.help-key,.help-control,.modal-text { font-size:14px; }
         .player-type,.timer-label,.layer-title { color:#d7e5f3; }
     </style>
+    <link rel="stylesheet" href="dots-and-boxes-3d-assets/controls.css">
 </head>
 <body>
     <a href="../" class="nav-button portal-home">🏠 Menu</a>
@@ -1094,6 +1095,7 @@
                 </div>
                 
                 <div class="timer-section" id="timerSection">
+                    <div id="timerPreferences">
                     <div class="timer-row">
                         <span class="timer-label">Move Timer</span>
                         <button class="timer-toggle" id="timerToggle" onclick="game.toggleTimer()">OFF</button>
@@ -1106,6 +1108,7 @@
                             <option value="total-180">3 min Total</option>
                             <option value="total-300">5 min Total</option>
                         </select>
+                    </div>
                     </div>
                     <div class="timer-row" id="p1TimerRow" style="display:none;">
                         <span class="timer-label" id="p1TimerLabel">P1</span>
@@ -1125,14 +1128,16 @@
         </div>
 
         <div id="rightPanel">
-            <button class="action-button primary" onclick="game.newGame()" aria-label="New Game">🎯 New Game</button>
+            <button class="action-button primary" id="newGameButton" onclick="game.newGame()" aria-label="New Game">🎯 New Game</button>
             <button class="action-button" onclick="game.showHint()" aria-label="Hint">💡 Hint</button>
             <button class="action-button" onclick="game.undoMove()" aria-label="Undo">↶ Undo</button>
+            <button class="action-button settings-trigger" id="settingsButton" type="button" aria-controls="settingsDrawer" aria-expanded="false">⚙ Settings</button>
+            <div id="secondaryActions">
             <button class="action-button" id="modeBtn" onclick="game.toggleAIMode()" aria-label="Toggle Mode">🤖 AI vs AI</button>
             <button class="action-button" id="autoRotateBtn" onclick="game.toggleAutoRotate()" aria-label="Auto Rotate">🔄 Auto Rotate</button>
             <button class="action-button" id="dangerBtn" onclick="game.toggleDangerColoring()" aria-label="Danger Colors">🚦 Danger Colors</button>
-            <button class="action-button" onclick="game.startGuidedTutorial()" aria-label="Guided tutorial">🎓 Guided 2×2</button>
-            <button class="action-button" onclick="game.openTacticalCampaign()" aria-label="Tactical campaign">🧠 Tactics</button>
+            <button class="action-button" onclick="game.startGuidedTutorial()" data-close-settings aria-label="Guided tutorial">🎓 Guided 2×2</button>
+            <button class="action-button" onclick="game.openTacticalCampaign()" data-close-settings aria-label="Tactical campaign">🧠 Tactics</button>
             <div class="theme-selector">
                 <button class="action-button" id="themeBtn" onclick="game.toggleThemeDropdown()" aria-label="Visual Theme">🎨 Theme</button>
                 <div class="theme-dropdown" id="themeDropdown">
@@ -1155,6 +1160,7 @@
                 </div>
             </div>
             <button class="mute-btn" id="muteBtn" onclick="game.toggleMute()" aria-label="Toggle Sound">🔊 Sound ON</button>
+            </div>
         </div>
 
         <div id="gameStats">
@@ -1244,6 +1250,18 @@
             </div>
         </div>
     </div>
+
+    <div id="settingsBackdrop" hidden aria-hidden="true"></div>
+    <section id="settingsDrawer" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+        <header class="settings-sheet-header"><h2 id="settingsTitle">Settings</h2><button id="settingsClose" type="button">Done</button></header>
+        <div class="settings-sheet-body">
+            <section class="settings-section"><h3>Match</h3><div id="drawerMatch"></div></section>
+            <section class="settings-section"><h3>Play and appearance</h3><div id="drawerActions"></div></section>
+            <section class="settings-section"><h3>Rotate the board</h3><div id="drawerView"></div></section>
+            <section class="settings-section"><h3>Visible layers</h3><div id="drawerLayers"></div></section>
+            <section class="settings-section" id="drawerHelp"></section>
+        </div>
+    </section>
 
     <script>
         console.log('🎮 Starting DOTS³...');
@@ -4458,5 +4476,6 @@
             }
         });
     </script>
+    <script type="module" src="dots-and-boxes-3d-assets/controls.mjs"></script>
 </body>
 </html>

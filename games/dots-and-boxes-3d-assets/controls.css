@@ -1,0 +1,79 @@
+/* The drawer is progressive enhancement: original controls remain if JS cannot load. */
+#secondaryActions { display:contents; }
+#timerPreferences { display:contents; }
+.settings-trigger { display:none; }
+[hidden]#settingsDrawer,[hidden]#settingsBackdrop { display:none!important; }
+.portal-home { z-index:2147483647; }
+#settingsBackdrop { position:fixed;inset:0;z-index:7000;background:#030b1bcc;backdrop-filter:blur(5px); }
+#settingsDrawer {
+  position:fixed;z-index:7001;left:50%;transform:translateX(-50%);bottom:0;width:min(620px,100%);
+  max-height:calc(100dvh - max(76px,calc(env(safe-area-inset-top) + 62px)));
+  display:flex;flex-direction:column;border:1px solid #7292ad;border-bottom:0;border-radius:24px 24px 0 0;
+  background:#111e32;color:#edf5ff;box-shadow:0 -12px 60px #0008;font-size:14px;overflow:hidden;
+}
+#settingsDrawer:not([hidden]) { animation:settings-arrive .18s ease-out; }
+@keyframes settings-arrive { from { opacity:0;transform:translate(-50%,20px); } to { opacity:1;transform:translate(-50%,0); } }
+.settings-sheet-header { display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border-bottom:1px solid #51749380; }
+.settings-sheet-header h2 { font-size:20px;line-height:1.2; }
+#settingsClose { min-width:72px;min-height:44px;border:1px solid #6a8aa4;border-radius:12px;background:#243b54;color:#fff;font:inherit;font-size:14px;font-weight:600;padding:10px 14px;cursor:pointer; }
+.settings-sheet-body { overflow-y:auto;overscroll-behavior:contain;padding:16px 18px max(18px,env(safe-area-inset-bottom));min-height:0; }
+.settings-section + .settings-section { margin-top:18px; }
+.settings-section h3 { margin:0 0 10px;font-size:14px;font-weight:700;letter-spacing:.03em;color:#cae4fa; }
+.settings-sheet-body button,.settings-sheet-body select,.settings-sheet-body [role=button] { min-height:44px;min-width:44px;font-size:14px;touch-action:manipulation; }
+.settings-sheet-body :is(button,select,[role=button]):focus-visible { outline:3px solid #a0f1ff;outline-offset:2px; }
+body.compact-controls #rightPanel { top:auto;bottom:max(14px,env(safe-area-inset-bottom));left:12px;right:12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px; }
+body.compact-controls #rightPanel .action-button { min-width:44px;min-height:56px;font-size:14px;line-height:1.2;padding:7px 4px;display:flex;align-items:center;justify-content:center;gap:3px; }
+body.compact-controls .settings-trigger { display:flex; }
+body.compact-controls #leftPanel .score-section { grid-template-columns:repeat(2,minmax(0,1fr)); }
+body.compact-controls #leftPanel .player-card { min-width:0;min-height:58px;padding:8px; }
+body.compact-controls #leftPanel .player-avatar { width:32px;height:32px;min-width:32px;font-size:18px; }
+body.compact-controls #leftPanel .player-name,body.compact-controls #leftPanel .player-type { font-size:14px; }
+body.compact-controls #leftPanel .timer-section { display:none; }
+body.compact-controls.clock-enabled #leftPanel .timer-section { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:8px 0 0;margin:0;border-top:1px solid #51749380; }
+body.compact-controls #leftPanel .timer-display { font-size:14px; }
+body.compact-controls #leftPanel .timer-display.urgent { color:#ffb3b9;animation:none; }
+body.compact-controls #boardViewport {
+  left:12px;right:12px;top:max(168px,calc(env(safe-area-inset-top) + 158px));bottom:calc(88px + env(safe-area-inset-bottom));
+}
+body.compact-controls .game-title { font-size:28px; }
+body.compact-controls.clock-enabled #boardViewport { top:max(210px,calc(env(safe-area-inset-top) + 200px)); }
+body.compact-controls #tutorialCoach { bottom:calc(82px + env(safe-area-inset-bottom));font-size:14px; }
+body.compact-controls:has(#tutorialCoach.active) #boardViewport { bottom:calc(190px + env(safe-area-inset-bottom)); }
+body.compact-controls .nav-button { font-size:14px;min-height:44px; }
+#drawerMatch { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start; }
+#drawerMatch .difficulty-selector,#drawerMatch .grid-selector { margin:0;min-width:0; }
+#drawerMatch .difficulty-btn,#drawerMatch .grid-btn { width:100%;font-size:14px;padding:10px 6px; }
+#drawerMatch #timerPreferences { display:block;grid-column:1/-1;margin:0;padding:12px 0 0;border-top:1px solid #51749380; }
+#drawerMatch .timer-row { gap:10px;justify-content:space-between; }
+#drawerMatch .timer-label,#drawerMatch .timer-display { font-size:14px;color:#edf5ff; }
+#drawerMatch .timer-display.urgent { color:#ffb3b9;animation:none; }
+#drawerMatch .timer-settings select { width:100%;font-size:14px;background:#1c3149;color:#fff;border-color:#7292ad; }
+#settingsDrawer :is(.difficulty-dropdown,.grid-dropdown,.theme-dropdown) {
+  position:static;display:none;opacity:1;visibility:visible;transform:none;min-width:0;width:100%;margin:8px 0 0;background:#1b3048;border:1px solid #7292ad;
+}
+#settingsDrawer :is(.difficulty-dropdown,.grid-dropdown,.theme-dropdown).active { display:grid; }
+#settingsDrawer :is(.difficulty-option,.grid-option,.theme-option) { font-size:14px;line-height:1.35;min-height:44px;color:#f0f7ff;padding:10px; }
+#settingsDrawer :is(.difficulty-option,.grid-option,.theme-option).selected { background:#305373;color:#fff; }
+#drawerActions #secondaryActions { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start; }
+#settingsDrawer .action-button,#settingsDrawer .mute-btn { position:static;width:100%;min-width:44px;min-height:52px;padding:10px 8px;font-size:14px;line-height:1.35;color:#edf5ff;background:#1c3149;border:1px solid #7292ad;border-radius:12px; }
+#settingsDrawer :is(.action-button,.mute-btn).active { color:#fff;background:#71305c;border-color:#d5a3cf; }
+#settingsDrawer .mute-btn.muted { color:#fff;background:#71305c;border-color:#d5a3cf; }
+#settingsDrawer .theme-selector { min-width:0; }
+#settingsDrawer .theme-selector:has(.active) { grid-column:1/-1; }
+#settingsDrawer .theme-dropdown.active { grid-template-columns:repeat(2,minmax(0,1fr)); }
+#settingsDrawer .rotation-controls { position:static;display:grid;grid-template-columns:repeat(5,minmax(44px,1fr));gap:6px;margin:0;transform:none; }
+#settingsDrawer .rotation-btn { min-width:44px;min-height:44px;padding:8px 4px;font-size:16px; }
+#settingsDrawer .layer-controls { position:static;display:flex;flex-flow:row wrap;align-items:center;gap:8px;transform:none;margin:0; }
+#settingsDrawer .layer-title,#settingsDrawer .layer-btn { font-size:14px; }
+#settingsDrawer .layer-title { margin:0 6px 0 0;color:#edf5ff; }
+#settingsDrawer .layer-btn { min-width:44px;min-height:44px; }
+#settingsDrawer .layer-btn.hidden-layer { opacity:1;background:#1c3149;color:#edf5ff;border-color:#d5a3cf;text-decoration:line-through; }
+#settingsDrawer .help-bottom { position:static; }
+#settingsDrawer .help-button { width:100%;min-height:44px;border-radius:12px;font-size:14px;padding:10px 16px;background:#1c3149;color:#edf5ff;border-color:#7292ad; }
+#settingsClose:active,.settings-trigger:active { transform:translateY(2px); }
+@media(hover:hover) {
+  #settingsDrawer :is(button,[role=button]):hover { filter:brightness(1.12); }
+}
+@media(prefers-reduced-motion:reduce) {
+  #settingsDrawer,#settingsDrawer *,#settingsBackdrop { transition:none!important;animation:none!important; }
+}

@@ -1,0 +1,49 @@
+/* Lit baize and a walnut rail; no changes to the card/seat geometry. */
+:root { --table-ink:#fff5df;--table-chip:#152c25;--table-trim:#c69a61; }
+body { background:radial-gradient(ellipse at 48% 36%,#293c31,#121d19 72%); }
+.app::before { opacity:.08; }
+.table {
+  --rail:9px;position:relative;isolation:isolate;
+  background:#745136 url('walnut-rail.jpg') center/420px 420px;
+  border-color:#a77d51;border-radius:28px;
+  box-shadow:inset 0 2px 2px #ffe4b85c,inset 0 -3px 3px #25150fe0,0 6px 0 #2d2018,0 12px 28px #0006;
+}
+.table::before {
+  content:'';position:absolute;inset:var(--rail);z-index:-1;pointer-events:none;border-radius:20px;
+  background:radial-gradient(ellipse at 46% 37%,#e9d6a83d 0,transparent 68%),url('felt.jpg') center/384px 384px,#24583b;
+  background-blend-mode:screen,screen,normal;
+  filter:brightness(1.16);
+  box-shadow:inset 0 2px 9px #07160ed9,inset 0 0 35px #07180b80,0 0 0 1px #291d15;
+}
+.table::after {
+  content:'';position:absolute;inset:3px;z-index:6;pointer-events:none;border:1px solid #edc38d66;border-bottom-color:#24180cc9;border-radius:24px;
+}
+.playing-card {
+  box-shadow:0 1px 0 #ded8c9,0 3px 0 #c0b9a8,0 5px 4px #07120ce0,0 13px 20px #07170e70,inset 0 0 0 1px #d2cbbb66;
+}
+.mini-deck,.human-deck { box-shadow:inset 0 0 0 3px #28385f,inset 0 0 0 4px #e1d9f677,0 2px 0 #ded8c9,0 5px 0 #aca797,0 8px 6px #06160cd9,0 16px 24px #06130c80; }
+.human-deck.ready { box-shadow:inset 0 0 0 3px #28385f,inset 0 0 0 4px #e1d9f677,0 0 0 2px #ffe4a066,0 2px 0 #ded8c9,0 5px 0 #aca797,0 8px 6px #06160cd9,0 16px 24px #06130c80; }
+.challenge-panel,.slap-coach {
+  color:var(--table-ink);background:linear-gradient(#213b30,#12271f);border-color:#b797645e;border-radius:14px;
+  box-shadow:inset 0 1px #f6e2b21f,inset 0 -1px #040e08,0 5px 8px #07150d80;
+}
+.challenge-panel strong { color:#ffc88b; }
+.slap-coach strong { color:#9df2de; }
+.seat-name,.play-caption { color:var(--table-ink);background:var(--table-chip);border-radius:10px;box-shadow:0 0 0 5px var(--table-chip),0 5px 9px #08190d80;text-shadow:none; }
+.player-seat.current .seat-name { color:#ffe4a0;text-shadow:none; }
+.player-seat.out .seat-name { opacity:1;color:#d8e2d6; }
+.pile-empty { color:var(--table-ink);background:#152c25ed;border-color:#b797647a;font-size:14px; }
+.mini-deck::before,.human-deck::before { font-size:clamp(14px,1.5vw,22px); }
+.card-count,.pile-count { color:#fff5df;background:#10241d;border-color:#bc9b6370;box-shadow:inset 0 1px #fff2ca24,0 2px 5px #0005; }
+.icon-button,.home-button,.status-bar { background:#13291ff5;border-color:#9e83584d;color:var(--table-ink);box-shadow:inset 0 1px #ffebc01a,0 3px 8px #0004; }
+.status-message { color:#f5ecd8; }
+.icon-button,.home-button,.status-bar,.status-message,.timer,.slap-streak { font-size:14px; }
+.slap-button { box-shadow:inset 0 3px 3px #fff5cbba,inset 0 -3px 2px #d35327,0 7px 0 #8b3622,0 11px 8px #06150cbb,0 22px 30px #06150c70; }
+@media(max-width:700px) {
+  .table { --rail:5px;border-radius:22px; }
+  .table::before { border-radius:16px; }
+  .table::after { inset:2px;border-radius:19px; }
+}
+@media(hover:hover) {
+  .icon-button:hover,.home-button:hover { background:#294537; }
+}

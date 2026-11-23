@@ -18,16 +18,37 @@
           "click": "#buildBtn"
         },
         {
-          "click": ".tower-card"
+          "click": ".tower-card[data-type=\"pulse\"]"
         },
         {
-          "eval": "(() => {const c=document.querySelector('#gameCanvas'),r=c.getBoundingClientRect();for(let y=65;y<viewH-60;y+=45){for(let x=65;x<viewW-60;x+=45){if(path.every((point,i)=>i===path.length-1||distToSegment(x,y,point,path[i+1])>=CFG.PATH_CLEARANCE)&&towers.every(t=>dist(x,y,t.x,t.y)>=CFG.TOWER_SPACING)){c.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.x+x,clientY:r.y+y}));return;}}} })()"
+          "eval": "(() => { const c=document.querySelector('#gameCanvas'),r=c.getBoundingClientRect(),choices=[];for(let y=40;y<viewH-40;y+=12)for(let x=40;x<viewW-40;x+=12){if(path.every((point,i)=>i===path.length-1||distToSegment(x,y,point,path[i+1])>=CFG.PATH_CLEARANCE)&&towers.every(t=>dist(x,y,t.x,t.y)>=CFG.TOWER_SPACING))choices.push({x,y,score:Math.hypot(x-path[0].x,y-path[0].y)});}choices.sort((a,b)=>a.score-b.score);const pos=choices[0];if(!pos||pos.score>TOWERS[G.placing].range)throw Error('No legal entry-side tower spot');c.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.x+pos.x,clientY:r.y+pos.y})); })()"
+        },
+        {
+          "click": "#buildBtn"
+        },
+        {
+          "click": ".tower-card[data-type=\"frost\"]"
+        },
+        {
+          "eval": "(() => { const c=document.querySelector('#gameCanvas'),r=c.getBoundingClientRect(),choices=[];for(let y=40;y<viewH-40;y+=12)for(let x=40;x<viewW-40;x+=12){if(path.every((point,i)=>i===path.length-1||distToSegment(x,y,point,path[i+1])>=CFG.PATH_CLEARANCE)&&towers.every(t=>dist(x,y,t.x,t.y)>=CFG.TOWER_SPACING))choices.push({x,y,score:Math.hypot(x-path[0].x,y-path[0].y)});}choices.sort((a,b)=>a.score-b.score);const pos=choices[0];if(!pos||pos.score>TOWERS[G.placing].range)throw Error('No legal entry-side tower spot');c.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.x+pos.x,clientY:r.y+pos.y})); })()"
+        },
+        {
+          "click": "#buildBtn"
+        },
+        {
+          "click": ".tower-card[data-type=\"scatter\"]"
+        },
+        {
+          "eval": "(() => { const c=document.querySelector('#gameCanvas'),r=c.getBoundingClientRect(),choices=[];for(let y=40;y<viewH-40;y+=12)for(let x=40;x<viewW-40;x+=12){if(path.every((point,i)=>i===path.length-1||distToSegment(x,y,point,path[i+1])>=CFG.PATH_CLEARANCE)&&towers.every(t=>dist(x,y,t.x,t.y)>=CFG.TOWER_SPACING))choices.push({x,y,score:Math.hypot(x-path[0].x,y-path[0].y)});}choices.sort((a,b)=>a.score-b.score);const pos=choices[0];if(!pos||pos.score>TOWERS[G.placing].range)throw Error('No legal entry-side tower spot');c.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.x+pos.x,clientY:r.y+pos.y})); })()"
         },
         {
           "click": "#startBtn"
         },
         {
-          "wait": 900
+          "wait": 4200
+        },
+        {
+          "eval": "(() => { if(towers.length!==3)throw Error('Capture did not build all three towers');if(nexusArtImages.size<7)throw Error('Terrain materials have not loaded'); })()"
         },
         {
           "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"

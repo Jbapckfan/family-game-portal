@@ -12,6 +12,9 @@
       "name": "play",
       "steps": [
         {
+          "eval": "(async () => { const end=performance.now()+5000;while(!planetArtImages.has('planet-atlas')&&performance.now()<end)await new Promise(resolve=>setTimeout(resolve,50));if(!planetArtImages.has('planet-atlas')||!planetArtImages.has('deep-space'))throw Error('Planet materials did not load'); })()"
+        },
+        {
           "click": ".diff-btn.easy"
         },
         {

@@ -1,8 +1,12 @@
-const CACHE_NAME = 'particle-conquest-v5-clear-map-20261122';
+const CACHE_NAME = 'particle-conquest-v6-rendered-worlds-20261122';
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './art/deep-space.webp',
+  './art/rock-albedo.webp',
+  './art/cloud-albedo.webp',
+  './art/planet-atlas.webp'
 ];
 
 // Install - cache assets

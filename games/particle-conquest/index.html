@@ -1994,6 +1994,10 @@
         .daily-panel .challenge-name,.daily-panel .challenge-desc,.daily-panel .challenge-description,.daily-panel .challenge-progress,.pause-subtitle,.result-stat-label,.result-subtitle,.upgrade-card .desc,.instructions-body { font-size:14px; color:#d1e0ef; }
         .result-screen::before { animation-iteration-count:2; }
         .ad-free-badge { position:static; display:block; margin-top:16px; font-size:14px; color:#c6d8e9; text-align:center; background:none; border:0; }
+
+        /* Original deep-space art; the HUD and ownership colors keep their clear foreground hierarchy. */
+        .menu { background:linear-gradient(130deg,#081629e8,#0d1029e8),url('art/deep-space.webp') center/cover; }
+        .battle-dock,.hud { box-shadow:inset 0 1px #d8f6ff1a,0 10px 40px #0008; }
     </style>
 </head>
 <body>
@@ -5241,6 +5245,82 @@ class Effect {
     }
 }
 
+// PLANET MATERIAL ART START — cached sphere projection; no gameplay geometry changes.
+const planetArtImages=new Map(),planetAtmosphereCache=new Map();
+let planetProjection=null,planetSpaceCache={key:'',canvas:null},planetArtRevision=0,planetFallback=null;
+const PLANET_SPRITE_RES=256;
+function sphereMaterialPoint(nx,ny) {
+    const rr=nx*nx+ny*ny;if(rr>=1)return null;
+    const nz=Math.sqrt(1-rr);
+    return {u:.5+Math.atan2(nx,nz)/(Math.PI*2),v:.5+Math.asin(ny)/Math.PI,light:.085+Math.max(0,-.55*nx-.45*ny+.704*nz)*.915,rim:Math.pow(1-nz,3)*.085,alpha:Math.min(1,(1-Math.sqrt(rr))*128)};
+}
+function getPlanetProjection() {
+    if(planetProjection)return planetProjection;
+    const count=PLANET_SPRITE_RES**2,u=new Float32Array(count),v=new Float32Array(count),light=new Float32Array(count),rim=new Float32Array(count),alpha=new Float32Array(count);
+    for(let y=0;y<PLANET_SPRITE_RES;y++)for(let x=0;x<PLANET_SPRITE_RES;x++) {
+        const i=y*PLANET_SPRITE_RES+x,p=sphereMaterialPoint((x+.5)/128-1,(y+.5)/128-1);if(!p)continue;
+        u[i]=p.u;v[i]=p.v;light[i]=p.light;rim[i]=p.rim;alpha[i]=p.alpha;
+    }
+    return planetProjection={u,v,light,rim,alpha};
+}
+function rasterPlanetSurface(source,variant) {
+    const canvas=document.createElement('canvas');canvas.width=canvas.height=PLANET_SPRITE_RES;
+    const g=canvas.getContext('2d'),out=g.createImageData(PLANET_SPRITE_RES,PLANET_SPRITE_RES),p=getPlanetProjection();
+    for(let i=0;i<PLANET_SPRITE_RES**2;i++) {
+        if(!p.alpha[i])continue;
+        let red=113,green=132,blue=151;
+        if(source){const u=(p.u[i]+variant*.237)%1,x=Math.min(source.width-1,Math.floor(u*source.width)),y=Math.min(source.height-1,Math.floor(p.v[i]*source.height)),j=(y*source.width+x)*4;red=source.data[j];green=source.data[j+1];blue=source.data[j+2];}
+        const j=i*4;out.data[j]=red*p.light[i]+p.rim[i]*85;out.data[j+1]=green*p.light[i]+p.rim[i]*135;out.data[j+2]=blue*p.light[i]+p.rim[i]*190;out.data[j+3]=p.alpha[i]*255;
+    }
+    g.putImageData(out,0,0);return canvas;
+}
+function loadPlanetArt() {
+    // Only a fallback globe is rasterized locally. All textured spheres are pre-baked.
+    setTimeout(()=>{planetFallback=rasterPlanetSurface(null,0);planetProjection=null;},0);
+    for(const name of ['deep-space','planet-atlas']) {
+        const image=new Image();image.decoding='async';image.onload=()=>{planetArtImages.set(name,image);planetArtRevision++;if(game.state!=='menu')wakeBattleRenderer();};image.onerror=()=>{};image.src='art/'+name+'.webp';
+    }
+}
+
+function planetAtmosphere(color) {
+    if(planetAtmosphereCache.has(color))return planetAtmosphereCache.get(color);
+    const canvas=document.createElement('canvas');canvas.width=canvas.height=192;const g=canvas.getContext('2d');
+    const glow=g.createRadialGradient(96,96,69,96,96,96);glow.addColorStop(0,hexToRgba(color,.025));glow.addColorStop(.35,hexToRgba(color,.16));glow.addColorStop(.58,hexToRgba(color,.32));glow.addColorStop(1,hexToRgba(color,0));g.fillStyle=glow;g.fillRect(0,0,192,192);
+    planetAtmosphereCache.set(color,canvas);return canvas;
+}
+function drawPlanetMaterial(planet,ownerColors) {
+    const radius=planet.size,solid=planet.type==='factory'||planet.type==='fortress'||planet.type==='generator',family=solid||Math.floor(radius*10)%3!==0?'rock':'cloud',variant=Math.floor(radius*11)%4;
+    const atlas=planetArtImages.get('planet-atlas');
+    const atmosphere=planetAtmosphere(ownerColors.main);ctx.drawImage(atmosphere,planet.x-radius*1.2,planet.y-radius*1.2,radius*2.4,radius*2.4);
+    if(atlas)ctx.drawImage(atlas,variant*256,family==='cloud'?256:0,256,256,planet.x-radius,planet.y-radius,radius*2,radius*2);
+    else if(planetFallback)ctx.drawImage(planetFallback,planet.x-radius,planet.y-radius,radius*2,radius*2);
+    else {ctx.fillStyle='#263849';ctx.beginPath();ctx.arc(planet.x,planet.y,radius,0,Math.PI*2);ctx.fill();}
+    ctx.strokeStyle='rgba(214,235,250,.42)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(planet.x,planet.y,radius*.98,Math.PI*1.08,Math.PI*1.62);ctx.stroke();
+}
+function drawPlanetSpace() {
+    const key=canvas.width+':'+canvas.height+':'+planetArtRevision;
+    if(planetSpaceCache.key!==key) {
+        const layer=document.createElement('canvas');layer.width=canvas.width;layer.height=canvas.height;const g=layer.getContext('2d');g.fillStyle='#030814';g.fillRect(0,0,layer.width,layer.height);
+        const image=planetArtImages.get('deep-space');if(image){const scale=Math.max(layer.width/image.naturalWidth,layer.height/image.naturalHeight),w=image.naturalWidth*scale,h=image.naturalHeight*scale;g.drawImage(image,(layer.width-w)/2,(layer.height-h)/2,w,h);}
+        g.fillStyle='rgba(2,6,15,.16)';g.fillRect(0,0,layer.width,layer.height);planetSpaceCache={key,canvas:layer};
+    }
+    ctx.drawImage(planetSpaceCache.canvas,0,0,W,H);
+}
+function drawPlanetReadout(planet,visible) {
+    const count=visible?String(Math.floor(planet.units)):'?',scale=battleScale,font=Math.max(14,planet.size*scale/3),showRate=visible&&planet.owner!==NEUTRAL&&planet.type!=='blackhole';
+    const rateText=showRate?'+'+planet.productionRate.toFixed(1)+'/s':'';
+    const width=Math.max(26,count.length*font*.65+12,rateText.length*14*.58+12)/scale,top=(-font/2-5-(showRate?5:0))/scale,height=(font+10+(showRate?19:0))/scale;
+    ctx.fillStyle='rgba(7,21,37,.94)';ctx.beginPath();ctx.roundRect(planet.x-width/2,planet.y+top,width,height,5/scale);ctx.fill();ctx.strokeStyle='rgba(204,228,246,.22)';ctx.lineWidth=1/scale;ctx.stroke();
+    ctx.fillStyle='#f6fbff';ctx.font=`bold ${font/scale}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(count,planet.x,planet.y-(showRate?5/scale:0));
+    if(showRate){ctx.fillStyle='#d9e9f5';ctx.font=`${14/scale}px system-ui`;ctx.fillText(rateText,planet.x,planet.y+(font/2+7)/scale);}
+    try {const teamLabel=getTeamLabel(planet.owner);if(teamLabel&&visible){ctx.fillStyle=getOwnerColor(planet.owner).main;ctx.font=`bold ${Math.max(10,14*scale)/scale}px system-ui`;ctx.fillText(teamLabel,planet.x,planet.y+Math.max(planet.size*scale+14,30)/scale);}}catch{}
+    if(planet.typeData.icon&&visible) {
+        const pixels=Math.max(12,planet.size*scale*.35),radius=pixels*.62+1,offset=Math.max(planet.size*scale*.68,font/2+(showRate?5:0)+radius+2),y=planet.y-offset/scale;
+        ctx.fillStyle='#0a1728';ctx.beginPath();ctx.arc(planet.x,y,radius/scale,0,Math.PI*2);ctx.fill();ctx.strokeStyle=planet.typeData.color||'#bcd5e8';ctx.lineWidth=1/scale;ctx.stroke();ctx.fillStyle='#f5fbff';ctx.font=`${pixels/scale}px system-ui`;ctx.fillText(planet.typeData.icon,planet.x,y);
+    }
+}
+// PLANET MATERIAL ART END
+
 // Planet class
 class Planet {
     constructor(x, y, size, owner, units, type = 'normal') {
@@ -5353,21 +5433,12 @@ class Planet {
     
     draw() {
         const ownerColors = getOwnerColor(this.owner);
-        const baseColor = this.typeData.color || ownerColors.main;
-        const glowColor = this.typeData.color || ownerColors.glow;
-        const pulse = 1 + Math.sin(this.pulsePhase) * 0.05;
         
         // Black hole special rendering
         if (this.type === 'blackhole') {
-            const bhGrad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2);
-            bhGrad.addColorStop(0, '#000');
-            bhGrad.addColorStop(0.5, 'rgba(50, 0, 50, 0.8)');
-            bhGrad.addColorStop(1, 'transparent');
-            ctx.fillStyle = bhGrad;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
-            ctx.fill();
-            
+            const halo=planetAtmosphere('#a967d1');
+            ctx.drawImage(halo,this.x-this.size*2,this.y-this.size*2,this.size*4,this.size*4);
+
             ctx.strokeStyle = 'rgba(255, 68, 68, 0.53)';
             ctx.lineWidth = 3;
             for (let i = 0; i < 3; i++) {
@@ -5387,6 +5458,8 @@ class Planet {
             return;
         }
         
+        drawPlanetMaterial(this,ownerColors);
+
         // Wormhole special rendering
         if (this.type === 'wormhole') {
             ctx.strokeStyle = 'rgba(170, 68, 170, 0.53)';
@@ -5405,27 +5478,6 @@ class Planet {
                 ctx.stroke();
             }
         }
-        
-        // Glow
-        const gradient = ctx.createRadialGradient(
-            this.x, this.y, this.size * 0.5,
-            this.x, this.y, this.size * 2
-        );
-        gradient.addColorStop(0, hexToRgba(glowColor, 0.25));
-        gradient.addColorStop(1, 'transparent');
-        ctx.fillStyle = gradient;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // Planet body
-        ctx.fillStyle = hexToRgba(baseColor, 0.19);
-        ctx.strokeStyle = baseColor;
-        ctx.lineWidth = this.type === 'fortress' ? 4 : 2;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size * pulse, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
         
         // OWNERSHIP RING
         const isOwned = multiplayerActive ? this.owner >= 0 : this.owner !== NEUTRAL;
@@ -5448,14 +5500,6 @@ class Planet {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size + 6, 0, Math.PI * 2);
             ctx.stroke();
-        }
-        
-        // Type indicator
-        if (this.typeData.icon) {
-            ctx.font = `${this.size * 0.4}px system-ui`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(this.typeData.icon, this.x, this.y - this.size * 0.5);
         }
         
         // SELECTION RING - Enhanced for multi-select
@@ -5531,39 +5575,7 @@ class Planet {
             console.warn('Visibility check error:', e);
         }
 
-        ctx.fillStyle = '#fff';
-        ctx.font = `bold ${Math.max(14 / battleScale, this.size / 3)}px system-ui`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-
-        if (planetVisible) {
-            // Show real unit count
-            ctx.fillText(Math.floor(this.units), this.x, this.y);
-
-            // Production rate indicator (small text showing rate)
-            if (this.owner !== NEUTRAL && this.type !== 'blackhole') {
-                const rate = this.productionRate.toFixed(1);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                ctx.font = '10px system-ui';
-                ctx.fillText(`+${rate}/s`, this.x, this.y + this.size * 0.4);
-            }
-        } else {
-            // Planet in fog - show "?" for unit count (still visible but info hidden)
-            ctx.fillStyle = 'rgba(150, 150, 150, 0.7)';
-            ctx.fillText('?', this.x, this.y);
-        }
-
-        // Ownership label - only show if visible
-        try {
-            const teamLabel = getTeamLabel(this.owner);
-            if (teamLabel && planetVisible) {
-                ctx.fillStyle = getOwnerColor(this.owner).main;
-                ctx.font = 'bold 10px system-ui';
-                ctx.fillText(teamLabel, this.x, this.y + this.size + 18);
-            }
-        } catch (e) {
-            // Ignore team label errors
-        }
+        drawPlanetReadout(this,planetVisible);
     }
     
     containsPoint(x, y) {
@@ -7417,8 +7429,7 @@ function animate(time) {
     ctx.save();
     ctx.translate(shake.x, shake.y);
 
-    ctx.fillStyle = '#000';
-    ctx.fillRect(-10, -10, W + 20, H + 20);
+    drawPlanetSpace();
 
     for (const p of bgParticles) {
         p.update(realDt);
@@ -8240,6 +8251,8 @@ if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
 // Generate icons and register SW
 generateAppIcons();
 registerServiceWorker();
+
+loadPlanetArt();
 
 // Start game loop and hide loader
 setTimeout(() => {

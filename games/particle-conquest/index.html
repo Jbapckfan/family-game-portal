@@ -2722,7 +2722,9 @@ function stopMusic() {
 
 // ==================== DAILY CHALLENGES SYSTEM ====================
 function getTodayKey() {
-    return new Date().toISOString().split('T')[0];
+    // Player's local calendar day (toISOString would roll over at UTC midnight, i.e. evening in the US)
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 function getDailySeed() {
@@ -5700,7 +5702,8 @@ class FlyingParticle {
                         pushTimelineEvent('capture', '🏴', 'Captured a planet');
 
                         // Check if all planets owned for daily challenge
-                        if (!multiplayerActive && planets.every(p => p.owner === PLAYER)) {
+                        // (black holes can never be captured, so they don't count)
+                        if (!multiplayerActive && planets.every(p => p.owner === PLAYER || p.type === 'blackhole')) {
                             currentGameStats.allPlanetsOwned = true;
                         }
                         // Check achievements after capture
@@ -6321,7 +6324,8 @@ function configureBossEncounter(settings) {
     }
 
     if (game.level >= 6 && !planets.some(p => p.type === 'blackhole')) {
-        const hazard = planets.find(p => p.owner === NEUTRAL && p.type !== 'generator');
+        // Never convert half of a wormhole pair (its partner would then emit units into the black hole)
+        const hazard = planets.find(p => p.owner === NEUTRAL && p.type !== 'generator' && p.type !== 'wormhole');
         if (hazard) {
             hazard.type = 'blackhole';
             hazard.typeData = PLANET_TYPES.blackhole;
@@ -6552,7 +6556,8 @@ function sendUnifiedAttack(target, percent) {
     }
 
     for (const planet of game.selectedPlanets) {
-        if (planet !== target && planet.units >= 1) {
+        // A selected planet may have been captured since it was selected
+        if (planet !== target && planet.units >= 1 && isMyPlanet(planet)) {
             if (multiplayerActive) {
                 // In multiplayer: send command to host (host-authoritative)
                 sendMultiplayerCommand('attack', {
@@ -6804,22 +6809,11 @@ function activateAbility(abilityName) {
     // Stealth requires the feature to be enabled
     if (abilityName === 'stealth' && !game.features.stealth) return;
 
-    // Track ability usage
-    playerStats.abilitiesUsed++;
-    if (currentGameStats.abilitiesUsedTypes) {
-        currentGameStats.abilitiesUsedTypes.add(abilityName);
-    }
-    if (abilityName === 'nuke') {
-        currentGameStats.nukesUsed = (currentGameStats.nukesUsed || 0) + 1;
-    }
-
     playSound('ability');
-    // Timeline event for ability use
-    const abilityIcons = { boost: '⚡', shield: '🛡️', emp: '💥', nuke: '☢️', stealth: '👻' };
-    pushTimelineEvent('ability', abilityIcons[abilityName] || '✨', `Used ${abilityName}`);
 
     switch (abilityName) {
         case 'boost':
+            recordAbilityUse(abilityName);
             ab.active = true;
             ab.activeTime = ab.duration + upgradeModifiers.boostDurationBonus;
             ab.cooldown = ab.maxCooldown;
@@ -6827,6 +6821,7 @@ function activateAbility(abilityName) {
             break;
 
         case 'stealth':
+            recordAbilityUse(abilityName);
             ab.active = true;
             ab.activeTime = ab.duration;
             ab.cooldown = ab.maxCooldown;
@@ -6893,8 +6888,23 @@ function useAbilityOnTarget(planet) {
             break;
     }
     
+    recordAbilityUse(abilityName);
     game.activeAbility = null;
     document.getElementById('gameStatus').textContent = 'Select your planet';
+}
+
+// Count an ability only when it actually fires (not when a targeted one is armed or cancelled)
+function recordAbilityUse(abilityName) {
+    playerStats.abilitiesUsed++;
+    if (currentGameStats.abilitiesUsedTypes) {
+        currentGameStats.abilitiesUsedTypes.add(abilityName);
+    }
+    if (abilityName === 'nuke') {
+        currentGameStats.nukesUsed = (currentGameStats.nukesUsed || 0) + 1;
+    }
+    // Timeline event for ability use
+    const abilityIcons = { boost: '⚡', shield: '🛡️', emp: '💥', nuke: '☢️', stealth: '👻' };
+    pushTimelineEvent('ability', abilityIcons[abilityName] || '✨', `Used ${abilityName}`);
 }
 
 function checkWinCondition() {
@@ -7139,6 +7149,10 @@ function restartLevel() {
     game.paused = false;
     document.getElementById('pauseMenu').classList.add('hidden');
     document.getElementById('pauseBtn').classList.remove('hidden');
+    // A restart is a fresh attempt: reset harvest counts and per-game stats
+    playerHarvested = 0;
+    enemyHarvested = 0;
+    resetCurrentGameStats();
     generateLevel();
 }
 
@@ -7601,6 +7615,7 @@ function handleStart(x, y) {
                     selectedHarvestParticle.grabbedBy = getMyTeam();
                     selectedHarvestParticle.targetPlanet = planet;
                     playerHarvested++;
+                    currentGameStats.harvested = playerHarvested;
                     updateHarvestUI();
                     selectedHarvestParticle = null;
                     document.getElementById('gameStatus').textContent = 'Tap more particles!';

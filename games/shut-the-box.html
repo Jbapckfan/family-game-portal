@@ -1920,7 +1920,7 @@ activeVariant = ['traditional','modern','double','lasttile'].includes(storedSett
 function variantTileIds() { return VARIANTS[activeVariant].ids(); }
 function tileValue(id) { return id >= 100 ? id - 100 : id; }
 function tileLabel(id) { return id >= 100 ? `${id - 100}B` : String(id); }
-function usesOneDie(player) { return activeVariant !== 'double' && sumOpen(player) <= 6; }
+function usesOneDie(player) { return activeVariant !== 'double' && getOpenTiles(player).reduce((sum, tile) => sum + tileValue(tile), 0) <= 6; }
 soundMuted = storedSettings.soundMuted === true;
 speedMode = storedSettings.speedMode === true;
 let darkTheme = storedSettings.darkTheme !== false;
@@ -3495,7 +3495,7 @@ function showScreen(id) {
 /* =============== INIT =============== */
 document.addEventListener('keydown', (event) => {
     if (event.target && /input|textarea/i.test(event.target.tagName)) return;
-    if (event.code === 'KeyR' && phase === 'roll') { event.preventDefault(); rollDice(); }
+    if (event.code === 'KeyR' && phase === 'roll' && players[currentPlayerIdx] && !players[currentPlayerIdx].isAI) { event.preventDefault(); rollDice(); }
     if (event.code === 'KeyH' && phase === 'select') { event.preventDefault(); showStrategyCoach(); }
 });
 STBTable.logicalValues = () => diceValues.slice();

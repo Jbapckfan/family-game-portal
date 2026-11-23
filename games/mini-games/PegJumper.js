@@ -401,6 +401,7 @@ const PegJumperGame = () => {
   const timerRef = useRef(null);
   const timeRef = useRef(0);
   const winTimeoutRef = useRef(null);
+  const moveTimeoutRef = useRef(null);
   const howToPlayTriggerRef = useRef(null);
   const [historyStack, setHistoryStack] = useState([]);
   const [moveCount, setMoveCount] = useState(0);
@@ -478,6 +479,10 @@ const PegJumperGame = () => {
     };
   }, []);
   const initializeBoard = useCallback((levelIndex) => {
+    if (moveTimeoutRef.current) {
+      clearTimeout(moveTimeoutRef.current);
+      moveTimeoutRef.current = null;
+    }
     if (winTimeoutRef.current) {
       clearTimeout(winTimeoutRef.current);
       winTimeoutRef.current = null;
@@ -627,7 +632,8 @@ const PegJumperGame = () => {
           newBoard[jumpedRow][jumpedCol] = false;
           setAnimatingMove({ from: start, to: end, jumped: { row: jumpedRow, col: jumpedCol } });
           setSelectedPeg(null);
-          setTimeout(() => {
+          moveTimeoutRef.current = setTimeout(() => {
+            moveTimeoutRef.current = null;
             applyMove(newBoard, start, end, jumpedRow, jumpedCol, isRapidMove);
           }, 370);
         }

@@ -1397,6 +1397,8 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
         let keyboardMirrorIndex = -1; // Index into gameState.mirrors for keyboard focus
         let backgroundParticleInterval = null;
         let lastWinningLayout = [];
+        let lastWinningMoves = 0;
+        let replayToken = 0; // bumped by loadLevel/resetGame to cancel a pending solution replay
 
         // Compact mobile controls: desktop stays open; narrow screens start collapsed.
         const controlsMediaQuery = window.matchMedia('(min-width: 0px)');
@@ -2518,9 +2520,14 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
             const layout = lastWinningLayout.map(m => ({ ...m }));
             hideVictoryModal();
             gameState.won = false;
+            const winningMoves = lastWinningMoves;
             loadLevel(wonLevel);
+            const token = replayToken;
+            moveCount = winningMoves;
+            updateMoveCounter();
             document.getElementById('modeIndicator').textContent = layout.length <= LEVELS[wonLevel].par ? 'IDEAL PAR SOLUTION REPLAY' : 'WINNING SOLUTION REPLAY';
             layout.forEach((saved, i) => setTimeout(() => {
+                if (token !== replayToken) return;
                 const inventory = gameState.mirrorInventory[saved.originalInventoryIndex] || gameState.mirrorInventory.find(item => !item.used);
                 if (!inventory) return;
                 const inventoryIndex = gameState.mirrorInventory.indexOf(inventory);
@@ -2532,7 +2539,7 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
                 inventory.used = true;
                 updateMirrorStorageUI();
                 gameState.laserBeam.calculate(true);
-                if (i === layout.length - 1) setTimeout(() => fireLaser(), 450);
+                if (i === layout.length - 1) setTimeout(() => { if (token === replayToken) fireLaser(); }, 450);
             }, 450 + i * 650));
         }
 
@@ -2774,7 +2781,7 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
                 rays.forEach(edge => {
                     const intersection = this.lineIntersection(
                         startX, startY,
-                        startX + Math.cos(angle) * 1000, startY + Math.sin(angle) * 1000,
+                        startX + Math.cos(angle) * Math.max(canvasCSSWidth, canvasCSSHeight) * 2, startY + Math.sin(angle) * Math.max(canvasCSSWidth, canvasCSSHeight) * 2,
                         edge.x1, edge.y1, edge.x2, edge.y2
                     );
 
@@ -3197,6 +3204,7 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
                     length: m.length,
                     originalInventoryIndex: m.originalInventoryIndex
                 }));
+                lastWinningMoves = moveCount;
 
                 gameState.target.hit = true;
 
@@ -3408,6 +3416,7 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
         window.addEventListener('resize', () => { if (labRunning) sizeLabCanvas(); });
         // Initialize game
         function loadLevel(levelIndex) {
+            replayToken++;
             currentLevel = levelIndex;
             keyboardMirrorIndex = -1;
 
@@ -3803,6 +3812,7 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
         }
 
         function resetGame() {
+            replayToken++;
             ensureAudio();
             // Return mirrors to storage
             gameState.mirrors.forEach(mirror => {

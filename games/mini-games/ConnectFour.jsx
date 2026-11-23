@@ -356,11 +356,12 @@
                 setMoveNumber(nextMoveNumber);
 
                 let win = null;
+                for(let rr=0;rr<ROWS&&!win;rr++)for(let cc=0;cc<COLS&&!win;cc++)if(newBoard[cellIndex(rr,cc)]===player)win=findWinThroughCell(newBoard,rr,cc);
                 for(let rr=0;rr<ROWS&&!win;rr++)for(let cc=0;cc<COLS&&!win;cc++)win=findWinThroughCell(newBoard,rr,cc);
                 if (win) {
                     gameOverRef.current = true;
                     setWinningCells(win);
-                    setWinner(player);
+                    setWinner(newBoard[win[0]]);
                 } else if (boardIsFull(newBoard)) {
                     gameOverRef.current = true;
                     setWinner('draw');
@@ -427,7 +428,7 @@
             };
 
             const popDisc = col => {
-                if(variant!=='pop'||gameOverRef.current)return;const player=currentPlayerRef.current;const bottom=cellIndex(ROWS-1,col);if(boardRef.current[bottom]!==player)return;
+                if(variant!=='pop'||gameOverRef.current)return;if(vsAIRef.current&&currentPlayerRef.current===2)return;const player=currentPlayerRef.current;const bottom=cellIndex(ROWS-1,col);if(boardRef.current[bottom]!==player)return;
                 const next=[...boardRef.current];for(let r=ROWS-1;r>0;r--)next[cellIndex(r,col)]=next[cellIndex(r-1,col)];next[cellIndex(0,col)]=null;boardRef.current=next;setBoard(next);setMoveNumber(n=>n+1);
                 let winning=null,winningPlayer=null;for(let r=0;r<ROWS&&!winning;r++)for(let c=0;c<COLS&&!winning;c++){const found=findWinThroughCell(next,r,c);if(found){winning=found;winningPlayer=next[cellIndex(r,c)];}}
                 if(winning){gameOverRef.current=true;setWinningCells(winning);setWinner(winningPlayer);return;}

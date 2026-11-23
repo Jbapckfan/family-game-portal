@@ -49,7 +49,8 @@ for(const [depth,twoBanks] of [[6.8,false],[8.1,false],[9.2,true],[17,false],[17
 console.log(`${bedChecks} felt corridor/refresh-rate trajectories passed`);
 const current = readFileSync(new URL('../shut-the-box.html',import.meta.url),'utf8');
 const previous = execFileSync('git',['show',(process.env.STB_BASE||'origin/main')+':games/shut-the-box.html'],{encoding:'utf8'}); // compare with the published game, not HEAD, so the check still means something after commit
-const unchanged = ['sumOpen','getOpenTiles','findCombinations','computeValidTiles','usesOneDie','tileValue','tileLabel','futureRollCoverage','rankStrategicCombo','pickBestCombo','recordChampionship','recordGameStats'];
+// usesOneDie is intentionally not pinned: it now uses the raw open total, so Last Tile's doubled score no longer forces two dice.
+const unchanged = ['sumOpen','getOpenTiles','findCombinations','computeValidTiles','tileValue','tileLabel','futureRollCoverage','rankStrategicCombo','pickBestCombo','recordChampionship','recordGameStats'];
 for (const name of unchanged) {
     const pattern = new RegExp('^function '+name+'\\([^\\n]*\\)(?: \\{[^\\n]*\\}| \\{[\\s\\S]*?^\\})','m');
     assert.equal(current.match(pattern)?.[0],previous.match(pattern)?.[0],`${name}: rules, scoring and AI must remain unchanged`);

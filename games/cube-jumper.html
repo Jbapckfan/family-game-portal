@@ -2455,7 +2455,7 @@ function die() {
     cameraX = cp.cameraX;
     gameTime = cp.gameTime;
     player.y = cp.playerY;
-    player.vy = 0;
+    player.vy = cp.vy || 0;
     player.grounded = cp.grounded;
     player.mode = cp.mode;
     player.gravFlipped = cp.gravFlipped;
@@ -2564,7 +2564,7 @@ function win() {
         setTimeout(()=>{ el.classList.add('earned','pop'); audio.collect(); }, 800 + s*250);
       }
     }
-    document.getElementById('next-btn').style.display = selectedLevel < LEVELS.length-1 ? 'inline-block' : 'none';
+    document.getElementById('next-btn').style.display = selectedLevel < LEVELS.length-1 && selectedLevel + 1 < unlockedLevels ? 'inline-block' : 'none';
     document.getElementById('death').classList.remove('hidden');
     document.getElementById('death').classList.add('visible');
   }, 600);
@@ -2650,7 +2650,7 @@ function stepPhysics(dt) {
     }
     const dashMult = player.dashing ? DASH_SPEED_MULT : 1;
     cameraX += speed * dashMult * dt;
-    score = Math.floor(cameraX / 8);
+    score = Math.floor(cameraX / 8) + level.orbs.filter(o => o.collected).length * 50;
     // Time-based decay stays smooth and identical at every physics/render rate.
     beatPulse *= Math.exp(-dt*8.5);
 
@@ -2668,7 +2668,7 @@ function stepPhysics(dt) {
     if (practiceMode && cameraX - lastCheckpointX > 400) {
       lastCheckpointX = cameraX;
       practiceCheckpoints.push({
-        cameraX, gameTime, playerY: player.y, grounded: player.grounded,
+        cameraX: cameraX - speed * dashMult * dt, gameTime: gameTime - dt, playerY: player.y, vy: player.vy, grounded: player.grounded,
         mode: player.mode, gravFlipped: player.gravFlipped, coyoteTimer,
         mini: player.mini, speedMult
       });

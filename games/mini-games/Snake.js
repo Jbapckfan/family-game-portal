@@ -355,7 +355,7 @@ const SnakeGame = () => {
   }, [endGame]);
   const tickMs = (effects.slow > 0 ? 1.45 : 1) * Math.max(70, TICK_MS - (snake.length - 3) * 3);
   React.useEffect(() => {
-    if (mode !== "time" || !isStarted || paused || gameOver) return;
+    if (mode !== "time" || !isStarted || paused || gameOver || showHowToPlay) return;
     const timer = setInterval(() => setTimeLeft((value) => {
       if (document.hidden) return value;
       if (value <= 1) {
@@ -365,7 +365,7 @@ const SnakeGame = () => {
       return value - 1;
     }), 1e3);
     return () => clearInterval(timer);
-  }, [mode, isStarted, paused, gameOver, endGame]);
+  }, [mode, isStarted, paused, gameOver, showHowToPlay, endGame]);
   React.useEffect(() => {
     const target = MISSIONS.find((item) => item.id === mission);
     const progress = mission === "score" ? score : foodsEaten;

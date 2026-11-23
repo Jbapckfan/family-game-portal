@@ -1557,6 +1557,7 @@
         setTurnPhase('reinforce');
         setCurrentPlayerIndex(0);
         setConqueredThisTurn(false);
+        setEarnedCardThisTurn(false);setTradeCount(0);setCardDeck(shuffleArray(CARD_DECK));setBattleState(null);setCardReward(null);setSelectedTerritory(null);setShowCardTrade(false);setMustTradeCards(false);
         setGameLog([{ text: 'Game started!', time: Date.now() }]);
         setGameStats({
           territoriesConquered: {},
@@ -2256,8 +2257,13 @@
             setTroopsToPlace(newTroops);
             setTurnPhase('reinforce');
 
+            const nextPlayerCards = playerCards[nextPlayer.army] || [];
             if (nextPlayer.isAI) {
               setMessage(`🤖 ${nextPlayer.name}'s turn!`);
+            } else if (nextPlayerCards.length >= 5 && canTradeCards(nextPlayerCards)) {
+              setMessage(`Your turn! You have ${nextPlayerCards.length} cards - you MUST trade first!`);
+              setMustTradeCards(true);
+              setShowCardTrade(true);
             } else {
               setMessage(`Your turn! Place your ${newTroops} animals.`);
             }

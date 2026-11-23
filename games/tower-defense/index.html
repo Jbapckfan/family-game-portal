@@ -1482,7 +1482,7 @@ const G = {
     selected: null,
     mapIdx: 0,
     time: 0,
-    spawning: false,
+    spawning: 0, // number of sub-waves still spawning (early send can overlap them)
     achievements: new Set()
 };
 
@@ -1961,14 +1961,22 @@ const SYNERGIES = [
 
 const SYNERGY_RANGE = 120; // Max distance for synergy to activate
 
+// Restore a tower's exact pre-synergy stats (dividing a floored buff back out drifts downward)
+function clearSynergies(t) {
+    if (t.preSynergy) {
+        t.dmg = t.preSynergy.dmg; t.range = t.preSynergy.range; t.rate = t.preSynergy.rate;
+        t.special = { ...t.preSynergy.special };
+        t.preSynergy = null;
+    }
+    t.activeSynergies = [];
+    t.synergyNames = [];
+}
+
 function checkSynergies() {
     // Clear all existing synergy buffs
     towers.forEach(t => {
-        if (t.activeSynergies) {
-            t.activeSynergies.forEach(syn => syn.unapply(t));
-        }
-        t.activeSynergies = [];
-        t.synergyNames = [];
+        clearSynergies(t);
+        t.preSynergy = { dmg: t.dmg, range: t.range, rate: t.rate, special: { ...t.special } };
     });
 
     // Re-apply synergies
@@ -2037,6 +2045,7 @@ function applySpecialization(specIdx) {
 
     const spec = specs[specIdx];
     tower.specialization = spec.name;
+    clearSynergies(tower); // specialize the un-buffed stats; synergies are re-applied below
 
     // Apply multipliers
     tower.dmg = Math.floor(tower.dmg * spec.dmgMult);
@@ -2084,10 +2093,12 @@ function applySpecialization(specIdx) {
         tower.special.teleport = Math.floor(tower.special.teleport * spec.teleportMult);
     }
 
-    // Store base values from specialization for future level-ups
-    tower.baseDmg = tower.dmg;
-    tower.baseRate = tower.rate;
-    tower.baseRange = tower.range;
+    // Store level-1 base values from specialization for future level-ups
+    // (upgrade() re-applies the per-level growth, so remove the levels already gained)
+    tower.baseDmg = tower.dmg / Math.pow(1.4, tower.level - 1);
+    tower.baseRate = tower.rate / Math.pow(1.1, tower.level - 1);
+    tower.baseRange = tower.range - (tower.level - 1) * 12;
+    checkSynergies();
 
     spawnParticles(tower.x, tower.y, 30, '#ffd700');
     showDamageNumber(tower.x, tower.y - 40, spec.name + '!', '#ffd700', true);
@@ -2811,9 +2822,11 @@ class Tower {
 
         G.gold -= cost;
         this.level++;
+        clearSynergies(this);
         this.dmg = Math.floor(this.baseDmg * Math.pow(1.4, this.level - 1));
         this.range = Math.floor(this.baseRange + (this.level - 1) * 12);
         this.rate = this.baseRate * Math.pow(1.1, this.level - 1);
+        checkSynergies(); // keep synergy buffs after the level-up
 
         spawnParticles(this.x, this.y, 20, '#ffd700');
         showDamageNumber(this.x, this.y - 35, `LVL ${this.level}!`, '#ffd700', true);
@@ -2867,23 +2880,27 @@ class Enemy {
     }
 
     update() {
+        if (this.dead) return; // killed earlier this tick: must not walk on into the nexus
         // Effects
         if (this.slowTimer > 0) {
             this.slowTimer -= G.speed;
-            this.spd = this.baseSpd * 0.5;
+            this.spd = this.baseSpd * (1 - (this.slowAmt || 0.5));
         } else {
             this.spd = this.baseSpd;
         }
 
+        // Periodic effects tick on game time (G.time advances by G.speed per step)
+        const crossed = (period) => Math.floor(G.time / period) > Math.floor((G.time - G.speed) / period);
         if (this.burnTimer > 0) {
             this.burnTimer -= G.speed;
-            if (Math.floor(G.time) % 30 === 0) {
+            if (crossed(30)) {
                 this.takeDamage(this.burnDmg, null, false, true);
+                if (this.dead) return;
             }
         }
 
         // Healer ability
-        if (this.healer && Math.floor(G.time) % 60 === 0) {
+        if (this.healer && crossed(60)) {
             enemies.forEach(e => {
                 if (e !== this && !e.dead && dist(this.x, this.y, e.x, e.y) < 80) {
                     e.hp = Math.min(e.maxHp, e.hp + e.maxHp * 0.05);
@@ -3100,17 +3117,18 @@ class Enemy {
 
     applyEffect(type, value, duration) {
         if (type === 'slow') {
+            this.slowAmt = this.slowTimer > 0 ? Math.max(this.slowAmt || 0, value) : value;
             this.slowTimer = Math.max(this.slowTimer, duration);
         } else if (type === 'burn') {
             this.burnTimer = Math.max(this.burnTimer, duration);
             this.burnDmg = value;
         } else if (type === 'teleport') {
-            // Move backwards on path
+            // Move backwards on path (pathProgress is measured along segment pathIdx -> pathIdx + 1)
             let dist = value;
-            while (dist > 0 && this.pathIdx > 0) {
+            while (dist > 0 && this.pathIdx < path.length - 1) {
                 const curr = path[this.pathIdx];
-                const prev = path[this.pathIdx - 1];
-                const segLen = Math.sqrt((curr.x - prev.x) ** 2 + (curr.y - prev.y) ** 2);
+                const next = path[this.pathIdx + 1];
+                const segLen = Math.sqrt((next.x - curr.x) ** 2 + (next.y - curr.y) ** 2);
                 const progDist = this.pathProgress * segLen;
 
                 if (dist <= progDist) {
@@ -3119,6 +3137,7 @@ class Enemy {
                 }
 
                 dist -= progDist;
+                if (this.pathIdx === 0) { this.pathProgress = 0; break; }
                 this.pathIdx--;
                 this.pathProgress = 1;
             }
@@ -3861,7 +3880,7 @@ function animateBg(now = performance.now()) {
 // SPAWNING SYSTEM
 // ═══════════════════════════════════════════════════════════════
 function startWave() {
-    if (G.running) return;
+    if (G.running || G.hp <= 0 || G.wave > missionWaveTarget()) return; // mission already won or lost
     G.running = true;
     G.subWave = 0;
     G.maxSubWaves = Math.min(3 + Math.floor(G.wave / 8), 5);
@@ -3873,7 +3892,7 @@ function startWave() {
 
 function spawnSubWave() {
     G.subWave++;
-    G.spawning = true;
+    G.spawning++;
 
     announce(`WAVE ${G.wave}-${G.subWave}`);
 
@@ -3886,17 +3905,20 @@ function spawnSubWave() {
         playSound('bossSpawn');
     }
 
-    const interval = setInterval(() => {
+    // Spawn gap is in game time, so 2X/3X/5X keep the same enemy spacing on the road
+    const gap = Math.max(150, 500 - G.wave * 8);
+    const spawnNext = () => {
         if (idx >= comp.length || !G.running) {
-            clearInterval(interval);
-            G.spawning = false;
+            G.spawning = Math.max(0, G.spawning - 1);
             return;
         }
         if (!gamePaused && !document.hidden) {
             enemies.push(new Enemy(comp[idx]));
             idx++;
         }
-    }, Math.max(150, 500 - G.wave * 8));
+        setTimeout(spawnNext, gap / G.speed);
+    };
+    setTimeout(spawnNext, gap / G.speed);
 
     updateUI();
 }
@@ -3963,7 +3985,7 @@ function checkWaveComplete() {
             setTimeout(() => {
                 subWavePending = false;
                 if (G.running && !G.spawning) spawnSubWave();
-            }, 1500);
+            }, 1500 / G.speed);
         } else {
             completeWave();
         }
@@ -4101,6 +4123,8 @@ function invalidPlacement() {
 function placeTower(x, y) {
     if (!G.placing) return;
     const t = TOWERS[G.placing];
+    // Gold may have been spent (upgrade) since this tower was picked
+    if (G.gold < t.cost) { announce('Not enough gold!', '#ff5050'); playSound('invalid'); cancelPlacement(); return; }
 
     // Validate
     for (let i = 0; i < path.length - 1; i++) {
@@ -4559,7 +4583,7 @@ let lastFrameTime = 0;
 let stepAccumulator = 0;
 
 function updateStep() {
-    G.time++;
+    G.time += G.speed; // game time (burn and healer ticks use it)
 
     // Update
     towers.forEach(t => t.update());

@@ -1245,6 +1245,7 @@
                 }
                 if (specialMode.startsWith('maker')) {
                     setSpecialMode('maker'); setMakerDraft([]);
+                    dispatch({ type: 'RESET_GAME', preset: currentPreset, allowDuplicates });
                     dispatch({ type: 'SET_MESSAGE', message: 'Code Maker: choose 4 colors, then lock the secret.' });
                     return;
                 }

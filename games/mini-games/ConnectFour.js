@@ -357,11 +357,12 @@ const ConnectFourGame = () => {
     setBoard(newBoard);
     setMoveNumber(nextMoveNumber);
     let win = null;
+    for (let rr = 0; rr < ROWS && !win; rr++) for (let cc = 0; cc < COLS && !win; cc++) if (newBoard[cellIndex(rr, cc)] === player) win = findWinThroughCell(newBoard, rr, cc);
     for (let rr = 0; rr < ROWS && !win; rr++) for (let cc = 0; cc < COLS && !win; cc++) win = findWinThroughCell(newBoard, rr, cc);
     if (win) {
       gameOverRef.current = true;
       setWinningCells(win);
-      setWinner(player);
+      setWinner(newBoard[win[0]]);
     } else if (boardIsFull(newBoard)) {
       gameOverRef.current = true;
       setWinner("draw");
@@ -450,6 +451,7 @@ const ConnectFourGame = () => {
   };
   const popDisc = (col) => {
     if (variant !== "pop" || gameOverRef.current) return;
+    if (vsAIRef.current && currentPlayerRef.current === 2) return;
     const player = currentPlayerRef.current;
     const bottom = cellIndex(ROWS - 1, col);
     if (boardRef.current[bottom] !== player) return;

@@ -502,6 +502,7 @@
             const timerRef = useRef(null);
             const timeRef = useRef(0);
             const winTimeoutRef = useRef(null);
+            const moveTimeoutRef = useRef(null); // pending jump; cleared on reset/level change
             const howToPlayTriggerRef = useRef(null);
 
             // Feature 2: Multi-step undo history stack
@@ -606,6 +607,11 @@
             }, []);
 
             const initializeBoard = useCallback((levelIndex) => {
+                // Cancel a jump still animating so it cannot land on the fresh board
+                if (moveTimeoutRef.current) {
+                    clearTimeout(moveTimeoutRef.current);
+                    moveTimeoutRef.current = null;
+                }
                 // Clear any pending win timeout from previous game
                 if (winTimeoutRef.current) {
                     clearTimeout(winTimeoutRef.current);
@@ -789,7 +795,8 @@
                             setSelectedPeg(null);
 
                             // After animation duration, apply the actual board change
-                            setTimeout(() => {
+                            moveTimeoutRef.current = setTimeout(() => {
+                                moveTimeoutRef.current = null;
                                 applyMove(newBoard, start, end, jumpedRow, jumpedCol, isRapidMove);
                             }, 370);
                         }

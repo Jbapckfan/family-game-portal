@@ -1906,7 +1906,7 @@
 
             handleClick(event) {
                 // In HvH mode, both players can click. In HvAI, only player 0.
-                const humanCanClick = this.gameMode === 'human-vs-human' || this.currentPlayer === 0;
+                const humanCanClick = this.gameMode === 'human-vs-human' || (this.gameMode === 'human-vs-ai' && this.currentPlayer === 0);
                 if (this.gameEnded || !humanCanClick || this.isAiThinking || this.isCameraFlying) return;
 
                 event.preventDefault();
@@ -2378,6 +2378,13 @@
 
                 await this.delay(600);
 
+                // New Game or a mode switch may have happened while thinking
+                if (this.gameEnded || this.gameMode === 'human-vs-human' ||
+                    (this.gameMode === 'human-vs-ai' && this.currentPlayer !== 1)) {
+                    this.setAIThinking(false);
+                    return;
+                }
+
                 // AI strategy based on difficulty
                 let selectedEdge = null;
 
@@ -2512,6 +2519,9 @@
 
                 let bestScore = -Infinity;
                 let bestEdge = availableEdges[0];
+                // minimax scores are from player 1's side; flip them when
+                // player 0 (AI 1 in AI vs AI) is choosing
+                const side = this.currentPlayer === 1 ? 1 : -1;
 
                 // Order moves: prefer moves that don't give opponent a face
                 const ordered = [...availableEdges].sort((a, b) => {
@@ -2531,8 +2541,8 @@
                     );
                     this.undoSimulatedMove(edge, result);
 
-                    if (score > bestScore) {
-                        bestScore = score;
+                    if (side * score > bestScore) {
+                        bestScore = side * score;
                         bestEdge = edge;
                     }
                 }
@@ -2797,7 +2807,8 @@
                     if (this.scores[0] === this.scores[1]) {
                         winner = 'Tie';
                     } else if (this.scores[0] > this.scores[1]) {
-                        winner = this.gameMode === 'human-vs-human' ? 'Player 1' : 'Human';
+                        winner = this.gameMode === 'human-vs-human' ? 'Player 1' :
+                                 this.gameMode === 'ai-vs-ai' ? 'AI 1' : 'Human';
                     } else {
                         winner = this.gameMode === 'human-vs-human' ? 'Player 2' :
                                  this.gameMode === 'ai-vs-ai' ? 'AI 2' : 'AI';
@@ -2828,6 +2839,9 @@
                 } else if (cleanWinner === 'Player 2') {
                     title.textContent = "Player 2 Wins! 🎉";
                     text.textContent = `P2 scored ${this.scores[1]} vs P1's ${this.scores[0]}!${timeSuffix}`;
+                } else if (cleanWinner === 'AI 1') {
+                    title.textContent = "AI 1 Wins! 🤖";
+                    text.textContent = `AI 1 scored ${this.scores[0]} vs AI 2's ${this.scores[1]}!${timeSuffix}`;
                 } else if (cleanWinner === 'AI 2') {
                     title.textContent = "AI 2 Wins! 🤖";
                     text.textContent = `AI 2 scored ${this.scores[1]} vs AI 1's ${this.scores[0]}!${timeSuffix}`;
@@ -2883,7 +2897,8 @@
 
                 // Helper to revert a single move history entry
                 const revertOne = () => {
-                    if (this.moveHistory.length === 0) return null;
+                    // Never undo a tactical scenario's starting edges
+                    if (this.moveHistory.length === 0 || this.moveHistory[this.moveHistory.length - 1].preset) return null;
                     const entry = this.moveHistory.pop();
                     const edge = this.edgeMap.get(entry.edgeKey);
                     const theme = this.themes[this.currentTheme];
@@ -2929,7 +2944,7 @@
                     }
                 } else {
                     // Step 1: Undo AI moves on top of the stack
-                    while (this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 1) {
+                    while (this.moveHistory.length > 0 && this.moveHistory[this.moveHistory.length - 1].player === 1 && !this.moveHistory[this.moveHistory.length - 1].preset) {
                         revertOne();
                     }
 
@@ -3040,6 +3055,11 @@
                 }
 
                 this.updateUI();
+
+                // AI vs AI: start the bots on every new board
+                if (this.gameMode === 'ai-vs-ai') {
+                    setTimeout(() => this.makeAIMove(), 500);
+                }
             }
 
             setupProModes() {
@@ -3066,7 +3086,7 @@
                     ['One-Line Win', 'Three sides are waiting. Find the scoring edge.', 2, [[0,3]], [0,0]],
                     ['Deny the Gift', 'Capture the safe face without opening a chain.', 2, [[1,3],[3,2]], [0,1]],
                     ['Corner Squeeze', 'Two faces share a dangerous corner.', 2, [[0,2],[2,3]], [1,1]],
-                    ['Double Cross', 'Spot the edge that completes two faces.', 3, [[0,3],[1,3],[6,2]], [2,3]],
+                    ['Double Cross', 'Spot the edge that completes two faces.', 3, [[12,3],[24,3],[6,2]], [2,3]],
                     ['Chain Breaker', 'Take points now while limiting the reply.', 3, [[4,3],[5,2],[10,3]], [4,5]],
                     ['Cube Gambit', 'A crowded cube with a comeback still hiding inside.', 3, [[0,3],[2,3],[7,3],[12,2],[15,2]], [7,9]]
                 ];
@@ -3102,6 +3122,9 @@
                     edge.material.opacity = 1;
                     this.moveHistory.push({ edgeKey:key, player, pointsScored:0, newFaces:[], newCubes:[], turnContinued:false, preset:true });
                 });
+                // Faces the preset lines already close belong to the starting
+                // position; they are not free points for the first move
+                this.checkCompletedFaces().forEach(face => this.completedFaces.add(face));
                 this.scores = [...startingScore];
                 this.currentPlayer = 0;
                 this.moveCount = keys.length;
@@ -3182,12 +3205,7 @@
                     this.gameMode = 'human-vs-ai';
                 }
                 this.updateModeUI();
-                this.newGame();
-
-                // In AI-vs-AI mode, start the AI immediately
-                if (this.gameMode === 'ai-vs-ai') {
-                    setTimeout(() => this.makeAIMove(), 500);
-                }
+                this.newGame(); // starts the AI in AI-vs-AI mode
             }
 
             updateModeUI() {

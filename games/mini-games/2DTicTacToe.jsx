@@ -660,7 +660,7 @@
             { title: 'Win in one', goal: 'Finish the row.', board: ['X','X','','O','O','','','',''], answers: [2] },
             { title: 'Block the threat', goal: 'Stop O from winning.', board: ['O','','X','O','X','','','',''], answers: [6] },
             { title: 'Build a fork', goal: 'Create two winning threats.', board: ['X','','','','O','','','','X'], answers: [2,6] },
-            { title: 'Force the draw', goal: 'Find the only safe square.', board: ['X','O','X','X','O','','O','X',''], answers: [8] }
+            { title: 'Force the draw', goal: 'Find the only safe square.', board: ['O','','X','X','O','','O','X',''], answers: [8] }
         ];
 
         const lineResult = (cells, size, needed = size) => {
@@ -712,6 +712,7 @@
             const aiTimer = React.useRef(null);
 
             const reset = React.useCallback((nextPuzzle = puzzleIndex) => {
+                clearTimeout(aiTimer.current);
                 const initial = isPuzzle ? [...TACTICAL_PUZZLES[nextPuzzle].board] : fresh();
                 setCells(initial); setTurn('X'); setOver(false); setActiveMini(null); setMiniWinners(Array(9).fill(''));
                 setStatus(isPuzzle ? TACTICAL_PUZZLES[nextPuzzle].goal : (isCoach ? coachAdvice(initial) : PRO_VARIANTS[kind].subtitle));

@@ -40,7 +40,8 @@ function scoreWord(word, allLetters) {
   return { pts, isPangram };
 }
 function getDailyIdx() {
-  const d = Math.floor((Date.now() - new Date(2025, 0, 1)) / 864e5);
+  const now = new Date(Date.now());
+  const d = Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(2025, 0, 1)) / 864e5);
   return (d % PUZZLES.length + PUZZLES.length) % PUZZLES.length;
 }
 function loadSave(idx, mode) {
@@ -1119,7 +1120,7 @@ function App() {
     streakRecordedRef.current = false;
   }, [pidx, mode, progressMode]);
   useEffect(() => {
-    if (mode === "daily" && gradeBand === "family" && !streakRecordedRef.current && puzzle) {
+    if (!loading && mode === "daily" && gradeBand === "family" && !streakRecordedRef.current && puzzle) {
       const loadedFound = loadSave(pidx, "daily");
       let loadedScore = 0;
       for (const w of loadedFound) {

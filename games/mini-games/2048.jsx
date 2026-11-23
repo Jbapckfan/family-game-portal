@@ -88,7 +88,8 @@
             if (ACTIVE_VARIANT === 'fibonacci') {
                 if (a === 1 && b === 1) return true;
                 const fib = [1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597,2584,4181];
-                return Math.abs(fib.indexOf(a) - fib.indexOf(b)) === 1;
+                const ia = fib.indexOf(a), ib = fib.indexOf(b);
+                return ia >= 0 && ib >= 0 && Math.abs(ia - ib) === 1;
             }
             if (ACTIVE_VARIANT === 'threes') return (a + b === 3) || (a >= 3 && a === b);
             return a === b;

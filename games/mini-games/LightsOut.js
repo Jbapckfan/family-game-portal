@@ -66,7 +66,7 @@ const generateBoard = (gridSize) => {
   let iterations = 0;
   do {
     board = Array.from({ length: gridSize }, () => Array(gridSize).fill(false));
-    const clicks = Math.floor(Math.random() * 8) + 5;
+    const clicks = Math.floor(Math.random() * Math.min(8, gridSize * gridSize - 4)) + 5;
     const usedPositions = /* @__PURE__ */ new Set();
     for (let i = 0; i < clicks; i++) {
       let r, c, key;
@@ -138,17 +138,33 @@ const solveLightsOut = (board) => {
     pivotRow[col] = row;
     for (let r = 0; r < N; r++) {
       if (r !== row && A[r][col] === 1) {
-        for (let k = col; k <= N; k++) {
+        for (let k = 0; k <= N; k++) {
           A[r][k] ^= A[row][k];
         }
       }
     }
     row++;
   }
-  const solution = new Uint8Array(N);
-  for (let c = 0; c < N; c++) {
-    if (pivotRow[c] !== -1) {
-      solution[c] = A[pivotRow[c]][N];
+  const freeCols = [];
+  for (let c = 0; c < N; c++) if (pivotRow[c] === -1) freeCols.push(c);
+  let solution = null;
+  let solutionSize = Infinity;
+  for (let mask = 0; mask < 1 << freeCols.length; mask++) {
+    const candidate = new Uint8Array(N);
+    freeCols.forEach((f, i) => {
+      candidate[f] = mask >> i & 1;
+    });
+    for (let c = 0; c < N; c++) {
+      if (pivotRow[c] !== -1) {
+        let v = A[pivotRow[c]][N];
+        for (const f of freeCols) v ^= A[pivotRow[c]][f] & candidate[f];
+        candidate[c] = v;
+      }
+    }
+    const size = candidate.reduce((sum, v) => sum + v, 0);
+    if (size < solutionSize) {
+      solution = candidate;
+      solutionSize = size;
     }
   }
   for (let i = 0; i < N; i++) {
@@ -630,7 +646,7 @@ const LightsOutGame = () => {
   const handleLightClick = React.useCallback((r, c) => {
     if (checkWinCondition(board)) return;
     if (timedMode && timeRemaining === 0 && moves > 0) return;
-    if (timedMode && moves === 0) {
+    if (timedMode && moves === 0 && !timerActive) {
       setTimeRemaining(getTimeLimit(gridSize));
       setTimerActive(true);
     }
@@ -641,7 +657,7 @@ const LightsOutGame = () => {
     setHintExplanation("");
     setHoveredCell(null);
     triggerRipple(r, c, gridSize);
-  }, [board, gridSize, timedMode, timeRemaining, moves, triggerRipple]);
+  }, [board, gridSize, timedMode, timeRemaining, moves, timerActive, triggerRipple]);
   const handleUndo = React.useCallback(() => {
     if (moveHistory.length === 0) return;
     if (timedMode && timeRemaining === 0 && moves > 0) return;

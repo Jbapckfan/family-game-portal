@@ -381,16 +381,15 @@
 
   function handleSwipe(start,end) {
     const dx=end.x-start.x, dy=end.y-start.y, distance=Math.hypot(dx,dy); const e=state.entities.find(item=>item.kind==="swipe");
-    state.attempts++;
     if (!e || distance < 45) { fail("BIGGER SWIPE!",false,end.x,end.y); return; }
     const dir = Math.abs(dx)>Math.abs(dy) ? (dx>0?1:3) : (dy>0?2:0);
-    if (dir === e.dir) { e.dead=true; state.attempts--; burst(e.x,e.y,e.color,30); addScore(160,e.x,e.y); sound("swipe"); }
+    if (dir === e.dir) { e.dead=true; burst(e.x,e.y,e.color,30); addScore(160,e.x,e.y); sound("swipe"); }
     else { fail("OTHER WAY, CHAMP!",true,e.x,e.y); e.dead=true; }
   }
 
   async function endGame() {
     if (!state.playing) return; state.playing=false; ui.hud.classList.add("hidden");
-    setBest(state.score);
+    state.newBest=state.score>bestScore(); setBest(state.score);
     if(state.gameKind==="solo"){settings.totalScore=(settings.totalScore||0)+state.score;saveSettings()}
     if (state.gameKind === "duel" && state.duelRound === 1) {
       state.duelScores[0]=state.score; state.duelRound=2;
@@ -412,7 +411,7 @@
     if (state.gameKind==="duel") {
       const [a,b]=state.duelScores; const verdict=a===b?"IMPOSSIBLE TIE! BOTH WIN!":a>b?`PLAYER 1 WINS BY ${(a-b).toLocaleString()}!`:`PLAYER 2 WINS BY ${(b-a).toLocaleString()}!`;
       ui.resultKicker.textContent=`PLAYER 1: ${a.toLocaleString()}  ·  PLAYER 2: ${b.toLocaleString()}`; ui.resultScore.textContent=Math.max(a,b).toLocaleString(); ui.duelResult.textContent=`🏆 ${verdict}`; ui.duelResult.classList.remove("hidden");
-    } else {ui.resultKicker.textContent=state.score>=bestScore()?"NEW HIGH SCORE!":"RIOT COMPLETE";offerRecord("score",state.score)}
+    } else {ui.resultKicker.textContent=state.newBest?"NEW HIGH SCORE!":"RIOT COMPLETE";offerRecord("score",state.score)}
     burst(W/2,H*.28,"#ffe14d",60); sound("fever");
   }
 

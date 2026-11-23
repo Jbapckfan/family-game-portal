@@ -46,7 +46,8 @@
     }
 
     function getDailyIdx() {
-        const d = Math.floor((Date.now() - new Date(2025,0,1)) / 86400000);
+        const now = new Date(Date.now());
+        const d = Math.round((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - new Date(2025,0,1)) / 86400000);
         return ((d % PUZZLES.length) + PUZZLES.length) % PUZZLES.length;
     }
 
@@ -901,7 +902,7 @@
 
         // Check if daily puzzle already has Genius rank on load (for streak tracking)
         useEffect(() => {
-            if (mode === 'daily' && gradeBand === 'family' && !streakRecordedRef.current && puzzle) {
+            if (!loading && mode === 'daily' && gradeBand === 'family' && !streakRecordedRef.current && puzzle) {
                 const loadedFound = loadSave(pidx, 'daily');
                 let loadedScore = 0;
                 for (const w of loadedFound) { loadedScore += scoreWord(w, allLetters).pts; }

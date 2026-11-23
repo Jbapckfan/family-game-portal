@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>NEXUS DEFENSE ULTIMATE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&display=swap');
+        @import url('../fonts/fonts.css');
 
         :root {
             --neon-pink: #ff1493;
@@ -1257,6 +1257,12 @@
           .map-info h3 { font-size:16px; line-height:1.25; }
           .map-info p,.map-info .difficulty,.map-info .campaign-stars { line-height:1.3; }
         }
+
+        /* Round 2: all transient notices are clipped to the measured game field. */
+        #fieldCallouts { position:fixed; z-index:90; pointer-events:none; overflow:hidden; }
+        #fieldCallouts #comboDisplay { position:absolute; top:12px; left:12px; right:auto; max-width:calc(100% - 24px); padding:8px 12px; border:1px solid #ffe69a66; border-radius:12px; color:#ffe69a; background:#081422; font-size:clamp(18px,3vw,24px); font-weight:700; font-family:'Orbitron',system-ui,sans-serif; line-height:1.2; text-align:center; white-space:nowrap; text-shadow:none; transform-origin:top left; transition:opacity .2s ease,transform .2s ease; }
+        #fieldCallouts #damageNumbers { position:absolute; inset:0; width:100%; height:100%; z-index:100; }
+        #fieldCallouts .dmg-num { box-sizing:border-box; font-family:system-ui,sans-serif; line-height:1.25; padding:4px 6px; border:1px solid #c4d4e633; border-radius:6px; background:#081422; white-space:normal; overflow-wrap:normal; word-break:normal; text-shadow:0 1px 2px #000; transform-origin:50% 50%; }
     </style>
 </head>
 <body>
@@ -1307,13 +1313,14 @@
 
         <canvas id="gameCanvas"></canvas>
 
-        <div id="comboDisplay">
-            <span id="comboCount">5</span>x COMBO!
+        <div id="fieldCallouts">
+            <div id="comboDisplay">
+                <span id="comboCount">5</span>x COMBO!
+            </div>
+            <div id="damageNumbers"></div>
         </div>
 
         <div id="waveAnnounce"></div>
-
-        <div id="damageNumbers"></div>
 
         <button class="btn" id="cancelPlaceBtn">✕ CANCEL</button>
 
@@ -2408,6 +2415,7 @@ function resize() {
     bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     canvasRect = canvas.getBoundingClientRect();
+    syncNexusCalloutBounds();
 
     // Rescale an active map + towers after rotation / viewport change
     const m = 50;
@@ -2530,28 +2538,10 @@ function drawMapPreview(i) {
     c.height = Math.max(1, Math.round(rect.height * dpr));
     cx.setTransform(c.width / 250, 0, 0, c.height / 120, 0, 0);
 
-    cx.fillStyle = map.bg;
-    cx.fillRect(0, 0, 250, 120);
-
-    const pts = map.path.map(p => ({ x: 15 + p.x * 220, y: 10 + p.y * 100 }));
-
-    // Glow (wider translucent stroke instead of shadowBlur)
-    cx.strokeStyle = map.glow + '40';
-    cx.lineWidth = 14;
-    cx.lineCap = 'round';
-    cx.lineJoin = 'round';
-    cx.beginPath();
-    cx.moveTo(pts[0].x, pts[0].y);
-    pts.forEach(p => cx.lineTo(p.x, p.y));
-    cx.stroke();
-
-    cx.strokeStyle = map.glow;
-    cx.lineWidth = 8;
-    cx.stroke();
-
-    cx.strokeStyle = map.pathFill;
-    cx.lineWidth = 5;
-    cx.stroke();
+    if(rect.width<1||rect.height<1)return;
+    const points=map.path.map(p=>({x:(15+p.x*220)/250*rect.width,y:(10+p.y*100)/120*rect.height}));
+    const preview=makeNexusScene(map,i,rect.width,rect.height,points,8*Math.min(rect.width/250,rect.height/120),Math.min(dpr,2));
+    cx.drawImage(preview,0,0,250,120);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -2760,8 +2750,6 @@ class Tower {
 
     draw() {
         const x = this.x, y = this.y;
-        const pulse = 1 + Math.sin(this.pulsePhase) * 0.05;
-
         // Selected range
         if (G.selected === this) {
             ctx.beginPath();
@@ -2787,67 +2775,9 @@ class Tower {
             ctx.fill();
         }
 
-        // Base glow (layered circles with alpha instead of shadowBlur)
-        ctx.beginPath();
-        ctx.arc(x, y, CFG.TOWER_RADIUS * pulse + 6, 0, Math.PI * 2);
-        ctx.fillStyle = this.color + '18';
-        ctx.fill();
+        drawNexusPlatform(ctx,x,y,CFG.TOWER_RADIUS,this.color);
 
-        ctx.beginPath();
-        ctx.arc(x, y, CFG.TOWER_RADIUS * pulse + 3, 0, Math.PI * 2);
-        ctx.fillStyle = this.color + '25';
-        ctx.fill();
-
-        // Platform
-        ctx.beginPath();
-        ctx.arc(x, y, CFG.TOWER_RADIUS * pulse, 0, Math.PI * 2);
-        if (!this._cachedBaseGrad || this._cachedBaseX !== x || this._cachedBaseY !== y) {
-            this._cachedBaseGrad = ctx.createRadialGradient(x - 5, y - 5, 0, x, y, CFG.TOWER_RADIUS);
-            this._cachedBaseGrad.addColorStop(0, '#3a3a4a');
-            this._cachedBaseGrad.addColorStop(1, '#1a1a2a');
-            this._cachedBaseX = x;
-            this._cachedBaseY = y;
-        }
-        ctx.fillStyle = this._cachedBaseGrad;
-        ctx.fill();
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Inner ring
-        ctx.beginPath();
-        ctx.arc(x, y, CFG.TOWER_RADIUS * 0.7, 0, Math.PI * 2);
-        ctx.strokeStyle = this.color + '60';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Turret
-        ctx.save();
-        ctx.translate(x, y);
-        ctx.rotate(this.rotation);
-
-        if (!this._cachedBarrelGrad) {
-            this._cachedBarrelGrad = ctx.createLinearGradient(0, -7, 0, 7);
-            this._cachedShadeLight = shadeColor(this.color, 20);
-            this._cachedShadeDark = shadeColor(this.color, -30);
-            this._cachedBarrelGrad.addColorStop(0, this._cachedShadeLight);
-            this._cachedBarrelGrad.addColorStop(0.5, this.color);
-            this._cachedBarrelGrad.addColorStop(1, this._cachedShadeDark);
-        }
-        ctx.fillStyle = this._cachedBarrelGrad;
-
-        // Barrel
-        ctx.beginPath();
-        ctx.roundRect(-3, -7, 38, 14, 2);
-        ctx.fill();
-
-        // Barrel tip
-        ctx.beginPath();
-        ctx.arc(35, 0, 6, 0, Math.PI * 2);
-        ctx.fillStyle = this.color + '88';
-        ctx.fill();
-
-        ctx.restore();
+        drawNexusTurret(ctx,x,y,this.rotation,this.color);
         ctx.shadowBlur = 0;
         ctx.shadowColor = 'transparent';
 
@@ -2857,26 +2787,21 @@ class Tower {
             ctx.font = 'bold 14px Orbitron';
             ctx.textAlign = 'center';
             const stars = '★'.repeat(Math.min(this.level - 1, 5));
-            ctx.fillText(stars, x, y + CFG.TOWER_RADIUS + 14);
+            nexusCaption(ctx,stars,x,y+CFG.TOWER_RADIUS+14,'#ffe69a');
         }
 
         // Tier badge / Specialization label
         ctx.fillStyle = this.color;
         ctx.font = 'bold 14px Orbitron';
         if (this.specialization) {
-            ctx.fillText(this.specialization, x, y - CFG.TOWER_RADIUS - 8);
+            nexusCaption(ctx,this.specialization,x,y-CFG.TOWER_RADIUS-8);
         } else {
-            ctx.fillText(`T${this.tier}`, x, y - CFG.TOWER_RADIUS - 8);
+            nexusCaption(ctx,`T${this.tier}`,x,y-CFG.TOWER_RADIUS-8);
         }
 
         // Synergy indicator
         if (this.synergyNames && this.synergyNames.length > 0) {
-            ctx.save();
-            ctx.fillStyle = '#ffd700';
-            ctx.font = '14px Orbitron';
-            ctx.textAlign = 'center';
-            ctx.fillText('★ ' + this.synergyNames[0], x, y + CFG.TOWER_RADIUS + 24);
-            ctx.restore();
+            drawNexusBuffLabel(this);
         }
     }
 
@@ -3006,12 +2931,7 @@ class Enemy {
         const x = this.x, y = this.y;
         const sizeMult = 1 + Math.sin(this.pulse) * 0.08;
         const size = this.size * sizeMult;
-
-        // Glow effect (layered circle with alpha instead of shadowBlur)
-        ctx.beginPath();
-        ctx.arc(x, y, size + (this.boss ? 8 : 4), 0, Math.PI * 2);
-        ctx.fillStyle = this.glow + '30';
-        ctx.fill();
+        ctx.fillStyle='rgba(0,0,0,.42)';ctx.beginPath();ctx.ellipse(x+size*.12,y+size*.62,size*1.05,size*.6,0,0,Math.PI*2);ctx.fill();
 
         // Slow effect ring
         if (this.slowTimer > 0) {
@@ -3031,45 +2951,7 @@ class Enemy {
             ctx.stroke();
         }
 
-        // Body
-        if (this.boss) {
-            // Boss special shape
-            ctx.beginPath();
-            for (let i = 0; i < 8; i++) {
-                const angle = (i / 8) * Math.PI * 2 + this.pulse * 0.3;
-                const r = size * (0.85 + Math.sin(angle * 4 + this.pulse) * 0.15);
-                const px = x + Math.cos(angle) * r;
-                const py = y + Math.sin(angle) * r;
-                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-            }
-            ctx.closePath();
-        } else {
-            ctx.beginPath();
-            ctx.arc(x, y, size, 0, Math.PI * 2);
-        }
-
-        if (!this._cachedGradSize || this._cachedGradSize !== size || this._cachedGradX !== x || this._cachedGradY !== y) {
-            this._cachedGrad = ctx.createRadialGradient(x - size/3, y - size/3, 0, x, y, size);
-            if (!this._cachedShadeColor) {
-                this._cachedShadeColor = shadeColor(this.color, 40);
-            }
-            this._cachedGrad.addColorStop(0, this._cachedShadeColor);
-            this._cachedGrad.addColorStop(1, this.color);
-            this._cachedGradSize = size;
-            this._cachedGradX = x;
-            this._cachedGradY = y;
-        }
-        ctx.fillStyle = this._cachedGrad;
-        ctx.fill();
-
-        ctx.shadowBlur = 0;
-        ctx.shadowColor = 'transparent';
-
-        // Eye/core
-        ctx.beginPath();
-        ctx.arc(x, y, size * 0.3, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.3)';
-        ctx.fill();
+        drawNexusDrone(ctx,x,y,size,this.color,this.type,this.boss,this.pulse);
 
         // Health bar with armor indicator
         const barW = Math.max(size * 2.2, 20);
@@ -3354,26 +3236,215 @@ function updateEffects() {
     }
 }
 
+// NEXUS MATERIAL ART START — rendering only; all road points come from the game path.
+const NEXUS_TERRAIN_FILES=['emerald-terrain','frozen-terrain','volcanic-terrain','crystal-terrain','grid-terrain','rift-terrain'];
+const nexusArtImages=new Map(),nexusMetalSprites=new Map(),nexusDroneSprites=new Map(),nexusTurretSprites=new Map(),nexusCaptionWidths=new Map();
+let nexusArtRevision=0,nexusSceneCache={key:'',canvas:null},nexusPreviewQueued=false;
+function loadNexusArt() {
+    for(const name of [...NEXUS_TERRAIN_FILES,'road-material']) {
+        const image=new Image();image.decoding='async';
+        image.onload=()=>{nexusArtImages.set(name,image);nexusArtRevision++;refreshNexusPreviews();};
+        image.onerror=()=>{};
+        image.src='art/'+name+'.webp';
+    }
+}
+function refreshNexusPreviews() {
+    if(nexusPreviewQueued||document.hidden)return;
+    nexusPreviewQueued=true;
+    requestAnimationFrame(()=>{nexusPreviewQueued=false;MAPS.forEach((_,index)=>drawMapPreview(index));});
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshNexusPreviews();});
+function nexusCanvas(width,height,dpr=1) {
+    const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(width*dpr));canvas.height=Math.max(1,Math.round(height*dpr));
+    const context=canvas.getContext('2d');context.setTransform(dpr,0,0,dpr,0,0);return {canvas,context};
+}
+function nexusCover(context,image,width,height) {
+    const scale=Math.max(width/image.naturalWidth,height/image.naturalHeight),w=image.naturalWidth*scale,h=image.naturalHeight*scale;
+    context.drawImage(image,(width-w)/2,(height-h)/2,w,h);
+}
+function nexusTrace(context,points) {
+    context.beginPath();context.moveTo(points[0].x,points[0].y);for(let i=1;i<points.length;i++)context.lineTo(points[i].x,points[i].y);
+}
+function makeNexusScene(map,index,width,height,points,roadWidth,dpr) {
+    const {canvas,context:g}=nexusCanvas(width,height,dpr),image=nexusArtImages.get(NEXUS_TERRAIN_FILES[index]);
+    g.fillStyle=map.bg;g.fillRect(0,0,width,height);
+    if(image)nexusCover(g,image,width,height);
+    // Fine terrain detail stays visible; only the outer frame gets a gentle vignette.
+    const light=g.createRadialGradient(width*.38,height*.3,0,width*.5,height*.5,Math.max(width,height)*.75);
+    light.addColorStop(0,'rgba(220,237,255,.035)');light.addColorStop(.5,'rgba(8,15,25,.08)');light.addColorStop(1,'rgba(2,6,14,.42)');g.fillStyle=light;g.fillRect(0,0,width,height);
+    if(points.length<2)return canvas;
+    g.lineCap='round';g.lineJoin='round';
+    g.save();g.translate(0,Math.max(2,roadWidth*.08));g.strokeStyle='rgba(5,7,9,.4)';g.lineWidth=roadWidth+18;nexusTrace(g,points);g.stroke();g.restore();
+    g.strokeStyle=['#544d39','#7d939f','#3e3430','#494052','#333c4d','#493b4b'][index];g.lineWidth=roadWidth+12;nexusTrace(g,points);g.stroke();
+    g.strokeStyle='rgba(222,225,209,.22)';g.lineWidth=roadWidth+3;g.stroke();
+    const {canvas:road,context:r}=nexusCanvas(width,height,dpr);r.lineCap='round';r.lineJoin='round';r.strokeStyle='#fff';r.lineWidth=roadWidth;nexusTrace(r,points);r.stroke();
+    r.globalCompositeOperation='source-in';
+    const roadImage=nexusArtImages.get('road-material');
+    if(roadImage){const tile=nexusCanvas(256,256);tile.context.drawImage(roadImage,0,0,256,256);r.fillStyle=r.createPattern(tile.canvas,'repeat');}
+    else r.fillStyle='#7d796f';
+    r.fillRect(0,0,width,height);
+    r.globalCompositeOperation='source-atop';r.fillStyle=['rgba(109,86,47,.3)','rgba(150,179,196,.28)','rgba(55,40,33,.32)','rgba(74,62,95,.24)','rgba(32,46,65,.4)','rgba(84,49,79,.3)'][index];r.fillRect(0,0,width,height);
+    r.globalCompositeOperation='source-over';g.drawImage(road,0,0,width,height);
+    // Small reflective edge ticks describe a maintained route without replacing its geometry.
+    g.strokeStyle='rgba(238,226,194,.16)';g.lineWidth=1;g.setLineDash([5,28]);nexusTrace(g,points);g.stroke();g.setLineDash([]);
+    return canvas;
+}
+function drawNexusScene(map) {
+    const dpr=Math.min(devicePixelRatio||1,2),key=G.mapIdx+':'+viewW+':'+viewH+':'+dpr+':'+nexusArtRevision;
+    if(nexusSceneCache.key!==key){nexusSceneCache={key,canvas:makeNexusScene(map,G.mapIdx,viewW,viewH,path,CFG.PATH_WIDTH,dpr)};}
+    ctx.drawImage(nexusSceneCache.canvas,0,0,viewW,viewH);
+}
+function nexusPlatformSprite(color) {
+    if(nexusMetalSprites.has(color))return nexusMetalSprites.get(color);
+    const {canvas,context:g}=nexusCanvas(96,96,2);g.translate(48,44);
+    g.fillStyle='rgba(0,0,0,.42)';g.beginPath();g.ellipse(2,11,31,22,0,0,Math.PI*2);g.fill();
+    const side=g.createLinearGradient(0,-4,0,28);side.addColorStop(0,'#596878');side.addColorStop(1,'#101923');g.fillStyle=side;g.beginPath();g.ellipse(0,6,26,23,0,0,Math.PI*2);g.fill();
+    const metal=g.createLinearGradient(-20,-23,20,23);metal.addColorStop(0,'#a1adb5');metal.addColorStop(.32,'#546675');metal.addColorStop(1,'#1b2835');g.fillStyle=metal;g.strokeStyle='#bac7cf';g.lineWidth=1;g.beginPath();
+    for(let i=0;i<8;i++){const a=(i+.5)*Math.PI/4,x=Math.cos(a)*26,y=Math.sin(a)*23;i?g.lineTo(x,y):g.moveTo(x,y);}g.closePath();g.fill();g.stroke();
+    g.strokeStyle='rgba(8,17,27,.8)';g.lineWidth=3;g.beginPath();g.ellipse(0,0,20,18,0,0,Math.PI*2);g.stroke();
+    g.strokeStyle=color;g.lineWidth=2;g.beginPath();g.ellipse(0,0,22,20,0,-Math.PI*.9,Math.PI*.25);g.stroke();
+    for(const [x,y] of [[-17,-10],[17,-10],[-17,10],[17,10]]){g.fillStyle='#d3dbe0';g.beginPath();g.arc(x,y,1.7,0,Math.PI*2);g.fill();g.strokeStyle='#2c3a46';g.lineWidth=.8;g.beginPath();g.moveTo(x-1,y);g.lineTo(x+1,y);g.stroke();}
+    const hub=g.createRadialGradient(-5,-6,1,0,0,15);hub.addColorStop(0,'#627b8c');hub.addColorStop(1,'#122232');g.fillStyle=hub;g.beginPath();g.arc(0,0,15,0,Math.PI*2);g.fill();
+    nexusMetalSprites.set(color,canvas);return canvas;
+}
+function drawNexusPlatform(context,x,y,radius,color) {const image=nexusPlatformSprite(color),scale=radius/26;context.drawImage(image,x-48*scale,y-44*scale,96*scale,96*scale);}
+function nexusTurretSprite(color) {
+    if(nexusTurretSprites.has(color))return nexusTurretSprites.get(color);
+    const {canvas,context:g}=nexusCanvas(96,72,2);g.translate(32,36);
+    g.fillStyle='rgba(0,0,0,.4)';g.beginPath();g.roundRect(-13,-7,31,23,5);g.fill();
+    const housing=g.createLinearGradient(-12,-12,18,12);housing.addColorStop(0,'#b4c2ca');housing.addColorStop(.35,'#5a6c7b');housing.addColorStop(1,'#182735');g.fillStyle=housing;g.beginPath();g.roundRect(-13,-12,31,24,5);g.fill();g.strokeStyle='#dae6ed77';g.lineWidth=1;g.stroke();
+    const barrel=g.createLinearGradient(0,-7,0,7);barrel.addColorStop(0,'#b1c7d3');barrel.addColorStop(.35,'#526d80');barrel.addColorStop(.7,shadeColor(color,-30));barrel.addColorStop(1,'#142331');g.fillStyle=barrel;g.beginPath();g.roundRect(-3,-7,38,14,2);g.fill();
+    g.fillStyle='#07111b';g.beginPath();g.arc(35,0,6,0,Math.PI*2);g.fill();g.strokeStyle=color;g.lineWidth=1.5;g.stroke();g.fillStyle=color;g.fillRect(1,-5,20,2);g.fillStyle='rgba(235,248,255,.7)';g.fillRect(-6,-9,12,1);
+    nexusTurretSprites.set(color,canvas);return canvas;
+}
+function drawNexusTurret(context,x,y,rotation,color) {context.save();context.translate(x,y);context.rotate(rotation);context.drawImage(nexusTurretSprite(color),-32,-36,96,72);context.restore();}
+function nexusDroneSprite(color,type,boss) {
+    const armored=boss||['heavy','tank','soldier'].includes(type),key=color+':'+armored;
+    if(nexusDroneSprites.has(key))return nexusDroneSprites.get(key);
+    const {canvas,context:g}=nexusCanvas(128,128,2);g.translate(64,64);
+    const body=g.createRadialGradient(-20,-22,2,2,4,52);body.addColorStop(0,'#eff8ff');body.addColorStop(.25,shadeColor(color,25));body.addColorStop(.62,shadeColor(color,-20));body.addColorStop(1,'#101b29');
+    g.fillStyle=body;g.strokeStyle=shadeColor(color,-45);g.lineWidth=2;g.beginPath();
+    if(armored){for(let i=0;i<8;i++){const a=(i+.5)*Math.PI/4;i?g.lineTo(Math.cos(a)*48,Math.sin(a)*48):g.moveTo(Math.cos(a)*48,Math.sin(a)*48);}g.closePath();}else g.arc(0,0,48,0,Math.PI*2);
+    g.fill();g.stroke();
+    if(armored){g.strokeStyle='#c4d2d975';g.lineWidth=3;for(let i=0;i<4;i++){const a=i*Math.PI/2;g.beginPath();g.moveTo(Math.cos(a)*25,Math.sin(a)*25);g.lineTo(Math.cos(a)*43,Math.sin(a)*43);g.stroke();}}
+    g.strokeStyle='rgba(255,255,255,.6)';g.lineWidth=2;g.beginPath();g.arc(-2,-3,39,Math.PI*1.05,Math.PI*1.65);g.stroke();
+    g.fillStyle='#0b1624';g.beginPath();g.ellipse(4,4,20,16,-.2,0,Math.PI*2);g.fill();
+    const lens=g.createRadialGradient(0,0,1,4,4,14);lens.addColorStop(0,'#f5ffff');lens.addColorStop(.3,color);lens.addColorStop(1,shadeColor(color,-70));g.fillStyle=lens;g.beginPath();g.ellipse(4,4,14,11,-.2,0,Math.PI*2);g.fill();
+    g.fillStyle='rgba(255,255,255,.8)';g.beginPath();g.ellipse(-1,-1,5,3,-.3,0,Math.PI*2);g.fill();
+    nexusDroneSprites.set(key,canvas);return canvas;
+}
+function drawNexusDrone(context,x,y,size,color,type,boss,pulse) {
+    context.save();context.translate(x,y);if(boss)context.rotate(pulse*.3);
+    const image=nexusDroneSprite(color,type,boss),scale=size/48;context.drawImage(image,-64*scale,-64*scale,128*scale,128*scale);context.restore();
+}
+function nexusCaption(context,text,x,y,color='#edf7ff') {
+    context.save();context.font='bold 14px system-ui';
+    const width=nexusCaptionWidth(context,text);
+    context.fillStyle='rgba(6,16,30,.96)';context.beginPath();context.roundRect(x-width/2,y-11,width,22,5);context.fill();context.fillStyle=color;context.textAlign='center';context.textBaseline='middle';context.fillText(text,x,y);context.restore();
+}
+// FIELD CALLOUT LAYOUT START — presentation coordinates only; no new timers or game state.
+const nexusFloatMeasure=document.createElement('canvas').getContext('2d'),nexusCalloutAxes=['x','y'];
+let nexusBuffLayout={width:0,height:0,comboCount:'',entries:[],positions:new Map()};
+function syncNexusCalloutBounds() {
+    const layer=document.getElementById('fieldCallouts');
+    layer.style.left=canvasRect.left+'px';layer.style.top=canvasRect.top+'px';
+    layer.style.width=canvasRect.width+'px';layer.style.height=canvasRect.height+'px';
+}
+function nexusCaptionWidth(context,text) {
+    let width=nexusCaptionWidths.get(text);
+    if(width===undefined){context.save();context.font='bold 14px system-ui';width=context.measureText(text).width+12;context.restore();nexusCaptionWidths.set(text,width);}
+    return width;
+}
+function nexusRoadCrossesLabel(a,b,box,padding) {
+    let lo=0,hi=1;
+    for(const axis of nexusCalloutAxes) {
+        const start=a[axis],delta=b[axis]-start,min=box[axis]-padding,max=box[axis]+(axis==='x'?box.width:box.height)+padding;
+        if(Math.abs(delta)<1e-9){if(start<min||start>max)return false;continue;}
+        const t0=(min-start)/delta,t1=(max-start)/delta;
+        lo=Math.max(lo,Math.min(t0,t1));hi=Math.min(hi,Math.max(t0,t1));if(lo>hi)return false;
+    }
+    return true;
+}
+function layoutNexusComboBox(items,road,width,height,boxWidth,boxHeight) {
+    const valid=box=>!items.some(t=>Math.hypot(t.x-Math.max(box.x,Math.min(t.x,box.x+box.width)),t.y-Math.max(box.y,Math.min(t.y,box.y+box.height)))<52)&&!road.some((point,i)=>i<road.length-1&&nexusRoadCrossesLabel(point,road[i+1],box,CFG.PATH_WIDTH/2+6));
+    for(let y=12;y+boxHeight<=height-12;y+=boxHeight+12) {
+        for(const x of [12,width-boxWidth-12,(width-boxWidth)/2]) {
+            const box={x,y,width:boxWidth,height:boxHeight};if(valid(box))return box;
+        }
+    }
+    return {x:12,y:12,width:boxWidth,height:boxHeight};
+}
+function layoutNexusBuffLabels(items,road,width,height,measure,reserved=[]) {
+    const positions=new Map(),placed=[...reserved],top=68,gap=4;
+    const overlaps=(a,b)=>a.x<b.x+b.width+gap&&a.x+a.width+gap>b.x&&a.y<b.y+b.height+gap&&a.y+a.height+gap>b.y;
+    const hitsTower=(box,t)=>Math.hypot(t.x-Math.max(box.x,Math.min(t.x,box.x+box.width)),t.y-Math.max(box.y,Math.min(t.y,box.y+box.height)))<52;
+    for(const item of items) {
+        if(!item.name)continue;
+        const text='★ '+item.name,w=measure(text),h=22,candidates=[];
+        const add=(x,y)=>candidates.push({x:x-w/2,y:y-h/2,width:w,height:h});
+        add(item.x,item.y+CFG.TOWER_RADIUS+64);
+        for(const radius of [90,120,155,195])for(let i=0;i<16;i++){const angle=i*Math.PI/8;add(item.x+Math.cos(angle)*radius,item.y+Math.sin(angle)*radius);}
+        const valid=box=>box.x>=8&&box.y>=top&&box.x+w<=width-8&&box.y+h<=height-8&&!items.some(t=>hitsTower(box,t))&&!placed.some(b=>overlaps(box,b))&&!road.some((point,i)=>i<road.length-1&&nexusRoadCrossesLabel(point,road[i+1],box,CFG.PATH_WIDTH/2+6));
+        let choices=candidates.filter(valid);
+        if(!choices.length)for(let y=top;y+h<=height-8;y+=12)for(let x=8;x+w<=width-8;x+=12){const box={x,y,width:w,height:h};if(valid(box))choices.push(box);}
+        if(!choices.length) {
+            // Very crowded late-game fields retain the label in bounds with its backing.
+            const x=Math.max(8,Math.min(width-w-8,item.x-w/2)),y=Math.max(top,Math.min(height-h-8,item.y+CFG.TOWER_RADIUS+36));
+            choices=[{x,y,width:w,height:h}];
+        }
+        choices.sort((a,b)=>Math.hypot(a.x+w/2-item.x,a.y+h/2-item.y)-Math.hypot(b.x+w/2-item.x,b.y+h/2-item.y));
+        const box=choices[0];placed.push(box);positions.set(item.tower,{...box,text});
+    }
+    return positions;
+}
+function prepareNexusBuffLabels() {
+    if(viewW<=0||viewH<=0)return;
+    const comboCount=document.getElementById('comboCount').textContent,countChanged=nexusBuffLayout.comboCount!==comboCount;
+    let changed=nexusBuffLayout.width!==viewW||nexusBuffLayout.height!==viewH||nexusBuffLayout.entries.length!==towers.length;
+    if(!changed)for(let i=0;i<towers.length;i++){const a=nexusBuffLayout.entries[i],t=towers[i],name=t.synergyNames&&t.synergyNames[0]||'';if(a.tower!==t||a.x!==t.x||a.y!==t.y||a.name!==name){changed=true;break;}}
+    if(!changed&&!countChanged)return;
+    const comboFont=Math.min(24,Math.max(18,window.innerWidth*.03));
+    nexusFloatMeasure.font='700 '+comboFont+'px Orbitron,system-ui,sans-serif';
+    const comboWidth=Math.min(viewW-24,Math.ceil(nexusFloatMeasure.measureText(comboCount+'x COMBO!').width)+26),comboHeight=Math.ceil(comboFont*1.2+18);
+    if(!changed&&nexusBuffLayout.combo&&nexusBuffLayout.combo.width===comboWidth&&nexusBuffLayout.combo.height===comboHeight){nexusBuffLayout.comboCount=comboCount;return;}
+    const entries=towers.map(t=>({tower:t,x:t.x,y:t.y,name:t.synergyNames&&t.synergyNames[0]||''}));
+    const combo=layoutNexusComboBox(entries,path,viewW,viewH,comboWidth,comboHeight),element=document.getElementById('comboDisplay');
+    element.style.left=combo.x+'px';element.style.top=combo.y+'px';element.style.width=combo.width+'px';
+    nexusBuffLayout={width:viewW,height:viewH,comboCount,combo,entries,positions:layoutNexusBuffLabels(entries,path,viewW,viewH,text=>nexusCaptionWidth(ctx,text),[combo])};
+}
+
+function drawNexusBuffLabel(tower) {
+    const label=nexusBuffLayout.positions.get(tower);if(!label)return;
+    nexusCaption(ctx,label.text,label.x+label.width/2,label.y+label.height/2,'#ffe69a');
+}
+function layoutNexusFloatLabel(x,y,text,isCrit,width,height,measure) {
+    const peak=isCrit?1.8:1,travel=isCrit?80:60,padding=14,maxContent=Math.max(1,(width-16)/peak-padding);
+    const words=String(text).split(/\s+/);let font=isCrit?24:14;
+    const longest=Math.max(...words.map(word=>measure(word,font)));
+    if(longest>maxContent)font=Math.max(14,font*maxContent/longest);
+    const lines=[];let line='';
+    for(const word of words){const next=line?line+' '+word:word;if(line&&measure(next,font)>maxContent){lines.push(line);line=word;}else line=next;}
+    if(line)lines.push(line);
+    const boxWidth=Math.min((width-16)/peak,Math.max(...lines.map(value=>measure(value,font)))+padding),boxHeight=lines.length*font*1.25+10;
+    const side=8+boxWidth*(peak-1)/2,minTop=68+8+travel+boxHeight*(peak-1)/2,maxTop=height-8-boxHeight*(peak+1)/2;
+    return {left:Math.max(side,Math.min(width-side-boxWidth,x-boxWidth/2)),top:Math.max(Math.min(minTop,maxTop),Math.min(maxTop,y)),width:boxWidth,height:boxHeight,font};
+}
+// FIELD CALLOUT LAYOUT END
+
+// NEXUS MATERIAL ART END
+
 // ═══════════════════════════════════════════════════════════════
 // DRAWING
 // ═══════════════════════════════════════════════════════════════
 function draw() {
     const map = MAPS[G.mapIdx];
 
-    const surfaceKey = `${G.mapIdx}:${viewW}:${viewH}`;
-    if (surfaceKey !== surfaceGradientKey) {
-        surfaceGradientKey = surfaceKey;
-        surfaceGradient = ctx.createRadialGradient(viewW*.5,viewH*.42,0,viewW*.5,viewH*.42,Math.max(viewW,viewH)*.72);
-        surfaceGradient.addColorStop(0,map.pathFill);
-        surfaceGradient.addColorStop(.6,map.bg);
-        surfaceGradient.addColorStop(1,'#020610');
-    }
-    ctx.fillStyle = surfaceGradient;
-    ctx.fillRect(0, 0, viewW, viewH);
+    drawNexusScene(map);
 
     drawPath(map);
     drawBase();
 
+    prepareNexusBuffLabels();
     towers.forEach(t => t.draw());
     enemies.forEach(e => e.draw());
 
@@ -3393,36 +3464,6 @@ function draw() {
 function drawPath(map) {
     if (path.length < 2) return;
 
-    // Glow (wider translucent stroke instead of shadowBlur)
-    ctx.strokeStyle = map.glow + '25';
-    ctx.lineWidth = CFG.PATH_WIDTH + 30;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    ctx.moveTo(path[0].x, path[0].y);
-    path.forEach(p => ctx.lineTo(p.x, p.y));
-    ctx.stroke();
-
-    // Outer stroke
-    ctx.strokeStyle = map.pathStroke;
-    ctx.lineWidth = CFG.PATH_WIDTH + 12;
-    ctx.beginPath();
-    ctx.moveTo(path[0].x, path[0].y);
-    path.forEach(p => ctx.lineTo(p.x, p.y));
-    ctx.stroke();
-
-    // Fill
-    ctx.strokeStyle = map.pathFill;
-    ctx.lineWidth = CFG.PATH_WIDTH;
-    ctx.stroke();
-
-    // Center line
-    ctx.strokeStyle = map.pathStroke + '40';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([15, 20]);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
     // Start indicator
     ctx.fillStyle = '#44ff44';
     ctx.beginPath();
@@ -3440,6 +3481,7 @@ function drawBase() {
     const end = path[path.length - 1];
     const x = end.x, y = end.y;
 
+    drawNexusPlatform(ctx,x,y,36,'#b98cff');
     const pulse = 1 + Math.sin(G.time * 0.05) * 0.1;
 
     // Glow (layered circles with alpha instead of shadowBlur)
@@ -3500,7 +3542,7 @@ function drawBase() {
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 14px Orbitron';
     ctx.textAlign = 'center';
-    ctx.fillText('NEXUS', x, y + 75);
+    nexusCaption(ctx,'NEXUS',x,y+75);
 }
 
 function drawProjectiles() {
@@ -4255,6 +4297,7 @@ function updateCombo() {
     } else {
         el.classList.remove('visible');
     }
+    prepareNexusBuffLabels();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -4285,10 +4328,14 @@ function showDamageNumber(x, y, text, color, isCrit = false) {
     const el = document.createElement('div');
     el.className = 'dmg-num' + (isCrit ? ' crit' : '');
     el.textContent = text;
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
+    const layout=layoutNexusFloatLabel(x,y,text,isCrit,viewW,viewH,(value,size)=>{
+        nexusFloatMeasure.font='700 '+size+'px system-ui,sans-serif';return nexusFloatMeasure.measureText(value).width;
+    });
+    el.style.left = layout.left + 'px';
+    el.style.top = layout.top + 'px';
+    el.style.width = layout.width + 'px';
     el.style.color = color;
-    el.style.fontSize = isCrit ? '24px' : '14px';
+    el.style.fontSize = layout.font + 'px';
     document.getElementById('damageNumbers').appendChild(el);
     setTimeout(() => el.remove(), 1000);
 }
@@ -4570,6 +4617,7 @@ document.addEventListener('visibilitychange', () => {
     if (bgSleeping && !gameLoopRunning) { bgSleeping = false; bgLastTime = 0; requestAnimationFrame(animateBg); }
 });
 init();
+loadNexusArt();
 </script>
 </body>
 </html>

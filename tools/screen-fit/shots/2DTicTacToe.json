@@ -1,0 +1,25 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "clickText": "1 vs 1 (Local)"
+        },
+        {
+          "click": "[aria-label^=\"Row 1, column 1\"]"
+        },
+        {
+          "click": "[aria-label^=\"Row 2, column 2\"]"
+        },
+        {
+          "wait": 350
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+/* Original beeswax grain on recessed wax cells. Hex positions/motion stay intact. */
+.bee-play {
+  --text-primary: #fff2d5;
+  --text-secondary: #eddcbb;
+  --text-muted: #e1cda9;
+  --text-dim: #d7c19a;
+  --accent-gold: #ffd16d;
+  --accent-purple: #d6bbff;
+  --divider-color: #9b7c49;
+  color: var(--text-primary);
+  background-color: #2e2118;
+  background-image: radial-gradient(ellipse at 40% 5%, #b4833b28, transparent 65%), repeating-linear-gradient(3deg, #fff4cb04 0 1px, transparent 1px 5px), linear-gradient(145deg, #483323, #251c16);
+  border-color: #a18757;
+  box-shadow: inset 0 1px 1px #fff0c54d, inset 0 -3px 2px #0f090787, 0 18px 36px #0005;
+}
+.hex-btn {
+  --wax-rim-high: #fff3d1;
+  --wax-rim-low: #bb8e4e;
+  color: #2c1b08;
+  background-color: var(--wax-rim-low);
+  background-image: linear-gradient(145deg, var(--wax-rim-high), #d8b573 48%, var(--wax-rim-low) 84%);
+  box-shadow: none;
+  text-shadow: 0 1px 0 #fff8;
+  filter: drop-shadow(0 3px 1px #291808a3);
+}
+.hex-btn::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 7%;
+  clip-path: inherit;
+  background-color: #f5e4ba;
+  background-image: radial-gradient(ellipse at 50% 32%, #fff8, transparent 70%), linear-gradient(150deg, #fff4db99, #ead7b399), url('./beeswax.jpg');
+  background-size: cover;
+  background-blend-mode: soft-light, normal, normal;
+  box-shadow: inset 0 5px 8px #8053264d, inset 0 -2px 1px #fff5;
+  pointer-events: none;
+}
+.hex-outer::after,
+.hex-center::after {
+  z-index: -2;
+  inset: 2%;
+  border: 0;
+  background: linear-gradient(145deg, #ffffff8c, transparent 25%, transparent 72%, #8b592e44);
+  pointer-events: none;
+}
+.hex-center {
+  --wax-rim-high: #ffe9a2;
+  --wax-rim-low: #aa6918;
+  color: #201104;
+  background-image: linear-gradient(145deg, #ffe6a1, #dea338 48%, #9d601d);
+  text-shadow: 0 1px 0 #ffe7a37d;
+}
+.hex-center::before {
+  background-image: radial-gradient(ellipse at 50% 32%, #fff5, transparent 70%), linear-gradient(150deg, #f7c653, #dba12d), url('./beeswax.jpg');
+  background-blend-mode: soft-light, multiply, normal;
+  box-shadow: inset 0 5px 8px #7b491952, inset 0 -2px 1px #ffe9a180;
+}
+.light-theme .bee-play {
+  --text-primary: #382719;
+  --text-secondary: #503c26;
+  --text-muted: #604a30;
+  --text-dim: #695039;
+  --accent-gold: #734008;
+  --accent-purple: #602c85;
+  --divider-color: #a58a62;
+  color: var(--text-primary);
+  background-color: #f0e4cd;
+  background-image: radial-gradient(ellipse at 40% 5%, #fff8, transparent 65%), repeating-linear-gradient(3deg, #946b3407 0 1px, transparent 1px 5px), linear-gradient(145deg, #f7ecd8, #dfccb0);
+  border-color: #a58a62;
+  box-shadow: inset 0 1px #fff9, inset 0 -3px 2px #9e7e402b, 0 16px 32px #49321524;
+}
+.light-theme .bee-play .center-highlight { color: #734008; text-shadow: none; }
+.light-theme .bee-play > div:first-child span { color: #70450c !important; text-shadow: none !important; }
+@media (hover: hover) {
+  .hex-btn:hover { filter: brightness(1.04); }
+}
+.hex-btn:active,
+.hex-btn.pressed { filter: brightness(.96); }

@@ -1,0 +1,42 @@
+/* Blue-green baize in a padded leather rail. Card sizes and game grids stay intact. */
+:root { --table-ink:#f0f6ed;--table-chip:#102d36;--table-felt:#174d56;--table-pool:#bce7de36;--table-mood:#ffa6d0;--table-goal:#85eaff;--table-inset:#0b222c;--table-panel-top:#173743;--table-room:#253d43;--table-room-edge:#0c1b26; }
+body[data-skin="sunset"] { --table-chip:#321e2c;--table-felt:#5c3341;--table-pool:#f3d7b436;--table-mood:#ffc1cb;--table-goal:#ffdc9c;--table-inset:#261823;--table-panel-top:#513145;--table-room:#443037;--table-room-edge:#1d1725; }
+body[data-skin="arcade"] { --table-chip:#172c23;--table-felt:#274b37;--table-pool:#cbe6a036;--table-mood:#ffc0ef;--table-goal:#b3f4a1;--table-inset:#102219;--table-panel-top:#294b38;--table-room:#2c4033;--table-room-edge:#101e19; }
+body { background:radial-gradient(ellipse at 48% 40%,var(--table-room),var(--table-room-edge) 75%); }
+.app::before { opacity:.07; }
+.game-board {
+  --rail:9px;position:relative;isolation:isolate;
+  background:#8c5538 url('leather-rail.jpg') center/320px 320px;
+  border-color:#b98c67;border-radius:28px;
+  box-shadow:inset 0 3px 4px #f6c99a66,inset 0 -4px 5px #2c1a10db,0 6px 0 #3e291d,0 12px 28px #0006;
+}
+.game-board::before {
+  content:'';position:absolute;inset:var(--rail);z-index:-1;pointer-events:none;border-radius:20px;
+  background:radial-gradient(ellipse at 44% 36%,var(--table-pool) 0,transparent 67%),url('felt.jpg') center/384px 384px,var(--table-felt);
+  background-blend-mode:screen,screen,normal;
+  filter:brightness(1.16);
+  box-shadow:inset 0 2px 10px #041f29e0,inset 0 0 35px #041b2a80,0 0 0 1px #35251a;
+}
+.game-board::after {
+  content:'';position:absolute;inset:3px;z-index:6;pointer-events:none;border:1px dashed #e8c79a8c;border-radius:24px;
+}
+.playing-card { box-shadow:0 1px 0 #ded8c9,0 3px 0 #c0b9a8,0 5px 4px #061c24df,0 13px 20px #061a2470,inset 0 0 0 1px #d2cbbb66; }
+.card-back { box-shadow:inset 0 0 0 3px #28385f,inset 0 0 0 4px #e1d9f677,0 2px 0 #ded8c9,0 5px 0 #aca797,0 8px 6px #061923cc,0 15px 22px #06172370; }
+.zone-heading { color:var(--table-ink);background:var(--table-chip);border-radius:10px;box-shadow:0 0 0 5px var(--table-chip),0 5px 9px #061c2580; }
+.count-pill,.slot-number { background:var(--table-inset);color:#f0f6ed;box-shadow:inset 0 1px #d1edec24,0 2px 5px #0004; }
+.ai-mood { color:var(--table-mood); }
+.reserve { color:var(--table-ink);background:linear-gradient(var(--table-panel-top),var(--table-chip));border-color:#a2c8cd80;box-shadow:inset 0 1px #e3f8f62c,inset 0 -2px #05131c,0 5px 8px #05192280; }
+.reserve strong { color:#ffe0a0; }
+.versus { color:#edf7f2;background:var(--table-chip);border-radius:12px;box-shadow:0 0 0 7px var(--table-chip),0 5px 9px #061c2580; }
+.versus strong { color:var(--table-goal); }
+.icon-button,.home-button,.status-strip { color:var(--table-ink);background:var(--table-chip);border-color:#9cc4c445;box-shadow:inset 0 1px #e3f8f51a,0 3px 8px #0004; }
+.message { color:#edf7f2; }
+.icon-button,.home-button,.status-strip,.combo,.message,.timer { font-size:14px; }
+@media(max-width:700px) {
+  .game-board { --rail:5px;border-radius:22px; }
+  .game-board::before { border-radius:16px; }
+  .game-board::after { inset:2px;border-radius:19px; }
+}
+@media(hover:hover) {
+  .icon-button:hover,.home-button:hover { background:var(--table-panel-top); }
+}

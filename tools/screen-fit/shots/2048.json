@@ -1,0 +1,186 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowUp"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowUp"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowUp"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowUp"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowUp"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowLeft"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowDown"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowRight"
+        },
+        {
+          "wait": 180
+        },
+        {
+          "key": "ArrowUp"
+        },
+        {
+          "wait": 180
+        }
+      ],
+      "settle": 300
+    },
+    {
+      "name": "candy",
+      "steps": [
+        {
+          "eval": "(() => { const control = document.querySelector('select:has(option[value=\"candy\"])'); if (!control) throw new Error('Theme control missing'); control.value = 'candy'; control.dispatchEvent(new Event('change', { bubbles: true })); })()"
+        },
+        {
+          "wait": 250
+        },
+        {
+          "eval": "if (document.querySelector('.mini-board').dataset.tileTheme !== 'candy') throw new Error('Theme change did not reach the board');"
+        }
+      ]
+    },
+    {
+      "name": "wood",
+      "steps": [
+        {
+          "eval": "(() => { const control = document.querySelector('select:has(option[value=\"classic\"])'); if (!control) throw new Error('Theme control missing'); control.value = 'classic'; control.dispatchEvent(new Event('change', { bubbles: true })); })()"
+        },
+        {
+          "wait": 250
+        },
+        {
+          "eval": "if (document.querySelector('.mini-board').dataset.tileTheme !== 'classic') throw new Error('Theme change did not reach the board');"
+        }
+      ]
+    }
+  ]
+}

@@ -5,6 +5,13 @@
       "steps": [
         {
           "eval": "(() => { const a=document.querySelector('a.home-button,a.back-btn,a.home-link,a.nav-button,body > a'); if(!a)throw Error('Missing home link'); const r=a.getBoundingClientRect(); if(r.width<44||r.height<44||!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Menu covered or too small'); })()"
+        },
+        {
+          "only": [
+            "phone",
+            "tabletPortrait"
+          ],
+          "eval": "(() => {if(!document.body.classList.contains('compact-controls'))throw Error('Compact controls did not initialize');const buttons=[...document.querySelector('#rightPanel').children].filter(e=>e.tagName==='BUTTON');if(buttons.length!==4)throw Error('Phone action row is not New Game/Hint/Undo/Settings');for(const e of buttons){const b=e.getBoundingClientRect();if(b.width<44||b.height<44||parseFloat(getComputedStyle(e).fontSize)<14)throw Error('Action control too small');}if(document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight)throw Error('Compact page overflow');})()"
         }
       ]
     },
@@ -22,6 +29,58 @@
         }
       ],
       "settle": 150
+    },
+    {
+      "name": "settings",
+      "steps": [
+        {
+          "click": "#settingsButton",
+          "only": [
+            "phone",
+            "tabletPortrait"
+          ]
+        },
+        {
+          "only": [
+            "phone",
+            "tabletPortrait"
+          ],
+          "eval": "(() => {const d=document.querySelector('#settingsDrawer');if(d.hidden||!window.dotsControls.isOpen())throw Error('Drawer did not open');const a=document.querySelector('.portal-home'),r=a.getBoundingClientRect();if(!a.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)))throw Error('Drawer covers Menu');for(const id of ['secondaryActions','difficultyBtn','gridBtn','timerPreferences','layerControls'])if(!d.contains(document.getElementById(id)))throw Error('Drawer lost '+id);if(!document.querySelector('#leftPanel').contains(document.getElementById('p1TimerRow')))throw Error('Live clock moved into settings');for(const e of d.querySelectorAll('button,select,[role=button]')){const b=e.getBoundingClientRect();if(b.width&&b.height&&(b.width<44||b.height<44||parseFloat(getComputedStyle(e).fontSize)<14))throw Error('Drawer target or text too small');}})()"
+        }
+      ]
+    },
+    {
+      "name": "settings-saved",
+      "steps": [
+        {
+          "click": "#muteBtn",
+          "only": [
+            "phone",
+            "tabletPortrait"
+          ]
+        },
+        {
+          "only": [
+            "phone",
+            "tabletPortrait"
+          ],
+          "eval": "if(JSON.parse(localStorage.getItem('dots3d_controls_v1')).soundMuted!==game.soundMuted)throw Error('Sound preference was not saved')"
+        },
+        {
+          "click": "#settingsClose",
+          "only": [
+            "phone",
+            "tabletPortrait"
+          ]
+        },
+        {
+          "only": [
+            "phone",
+            "tabletPortrait"
+          ],
+          "eval": "if(dotsControls.isOpen()||document.querySelector('#boardViewport').inert||document.documentElement.scrollHeight>innerHeight)throw Error('Drawer did not return to the board')"
+        }
+      ]
     }
   ]
 }

@@ -1269,7 +1269,9 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
 @media(hover:hover){.game-button:hover:not(:disabled),.controls-toggle:hover,.lab-tool:hover{filter:brightness(1.12)}}
 @media(max-width:700px){.level-panel{padding:6px 8px!important}.level-panel .level-text{font-size:14px!important;letter-spacing:0}.level-panel .level-progress,.level-panel .move-counter{font-size:14px!important}.controls-toggle{font-size:14px!important;padding:6px 3px}.instruction-text{font-size:14px}.mirror-slots-row{gap:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
-</style><style>.victory-title,.victory-stars,.win-message,.win-stars{animation-iteration-count:2!important}.mirror-touch-controls button:active{transform:translateY(2px);box-shadow:inset 0 2px 4px #0008}</style></head>
+</style><style>.victory-title,.victory-stars,.win-message,.win-stars{animation-iteration-count:2!important}.mirror-touch-controls button:active{transform:translateY(2px);box-shadow:inset 0 2px 4px #0008}</style><style id="rough-optics-bench">
+canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-image:radial-gradient(ellipse at 30% 0,#e2e4d822,transparent 65%),linear-gradient(145deg,#030d1820,#06111c44),url('./Snake-assets/slate-surface-r1.jpg')!important;background-size:cover!important}.mirror-toolbar{background:linear-gradient(#34434bec,#101b2df7)!important;border-color:#b4c3c3!important;box-shadow:inset 0 1px #e5eee933,0 -5px 15px #0005}.ui-panel{border-color:#8a9da5}.mirror-slot{background:linear-gradient(145deg,#b5c5c080,#182a3e)!important;border:1px solid #cad4c7!important;box-shadow:inset 0 1px #f0f3e680,0 3px 5px #0008!important}
+</style></head>
 <body>
   <a href="../../" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;">&#x1F3E0; Menu</a>
     <div class="game-container">
@@ -2182,7 +2184,7 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
         let gridCacheCanvas = null;
         let gridCacheKey = '';
         function drawBackgroundGrid() {
-            const gridDpr = window.devicePixelRatio || 1;
+            const gridDpr = Math.min(window.devicePixelRatio || 1, 2);
             const key = canvasCSSWidth + 'x' + canvasCSSHeight + '@' + gridDpr + ':' + snapToGridEnabled;
             if (gridCacheKey !== key) {
                 gridCacheKey = key;
@@ -2208,6 +2210,8 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
                 }
                 gctx.stroke();
 
+                // Physical tapped mounting holes are visual only; the original grid/snap coordinates remain.
+                for(let x=GRID_SIZE;x<canvasCSSWidth;x+=GRID_SIZE*2)for(let y=GRID_SIZE;y<canvasCSSHeight;y+=GRID_SIZE*2){gctx.fillStyle='#050d13';gctx.beginPath();gctx.arc(x,y,1.6,0,Math.PI*2);gctx.fill();gctx.strokeStyle='#e0ece940';gctx.lineWidth=.6;gctx.beginPath();gctx.arc(x,y+0.5,2.2,0,Math.PI*2);gctx.stroke();}
                 // If snap is enabled, draw slightly brighter grid
                 if (snapToGridEnabled) {
                     gctx.strokeStyle = 'rgba(0, 200, 150, 0.12)';
@@ -2537,6 +2541,55 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
         // ================================================================
 
         // Laser Source class
+        // Render-only caches: static hardware is painted once per size/state/DPR.
+        const opticSpriteCache = new Map();
+        function opticRoundRect(g,x,y,w,h,r) {
+            g.beginPath();g.moveTo(x+r,y);g.lineTo(x+w-r,y);g.quadraticCurveTo(x+w,y,x+w,y+r);g.lineTo(x+w,y+h-r);g.quadraticCurveTo(x+w,y+h,x+w-r,y+h);g.lineTo(x+r,y+h);g.quadraticCurveTo(x,y+h,x,y+h-r);g.lineTo(x,y+r);g.quadraticCurveTo(x,y,x+r,y);g.closePath();
+        }
+        function getOpticSprite(kind,length,active,color) {
+            const ratio=Math.min(window.devicePixelRatio||1,2),len=Math.max(8,length||55);
+            const key=kind+':'+len+':'+active+':'+color+'@'+ratio;
+            if(opticSpriteCache.has(key))return opticSpriteCache.get(key);
+            const width=kind==='target'?92:Math.ceil(len+20),height=kind==='target'?92:kind==='emitter'?50:36;
+            const surface=document.createElement('canvas');surface.width=Math.ceil(width*ratio);surface.height=Math.ceil(height*ratio);
+            const g=surface.getContext('2d');g.setTransform(ratio,0,0,ratio,0,0);
+            let originX=width/2,originY=height/2;
+            const bolt=(x,y,r=1.6)=>{g.fillStyle='#c7c9bd';g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.fill();g.strokeStyle='#31404a';g.lineWidth=.8;g.beginPath();g.moveTo(x-r*.6,y);g.lineTo(x+r*.6,y);g.stroke();};
+            if(kind==='emitter') {
+                originX=10+len;originY=25;
+                g.shadowColor='#0009';g.shadowBlur=5;g.shadowOffsetY=4;
+                const metal=g.createLinearGradient(0,10,0,39);metal.addColorStop(0,'#9aa8a8');metal.addColorStop(.18,'#475b65');metal.addColorStop(.55,'#20323e');metal.addColorStop(1,'#0a1520');
+                g.fillStyle=metal;g.strokeStyle='#b9c6c4';g.lineWidth=.8;opticRoundRect(g,10,11,len-4,28,5);g.fill();g.stroke();g.shadowBlur=0;g.shadowOffsetY=0;
+                g.strokeStyle='#0c1822';g.lineWidth=2;for(let x=16;x<10+len-12;x+=5){g.beginPath();g.moveTo(x,13);g.lineTo(x,37);g.stroke();}
+                g.strokeStyle='#d7e3dc66';g.lineWidth=.8;for(let x=17;x<10+len-12;x+=5){g.beginPath();g.moveTo(x,14);g.lineTo(x,35);g.stroke();}
+                const collar=g.createLinearGradient(0,10,0,40);collar.addColorStop(0,'#edf0e3');collar.addColorStop(.25,'#8c9b9b');collar.addColorStop(.7,'#304650');collar.addColorStop(1,'#0b1820');
+                g.fillStyle=collar;opticRoundRect(g,originX-9,10,10,30,3);g.fill();
+                g.fillStyle='#070b10';g.beginPath();g.ellipse(originX,25,3.8,12,0,0,Math.PI*2);g.fill();
+                g.shadowColor=color||'#ff1493';g.shadowBlur=7;g.fillStyle=color||'#ff1493';g.beginPath();g.ellipse(originX+.3,25,2.2,8.5,0,0,Math.PI*2);g.fill();g.shadowBlur=0;
+                g.fillStyle='#fff0f5';g.beginPath();g.ellipse(originX+1,23,1,3,0,0,Math.PI*2);g.fill();bolt(13,16,1.3);bolt(13,34,1.3);
+            } else if(kind==='mirror') {
+                originX=10+len/2;originY=18;
+                g.shadowColor='#000b';g.shadowBlur=4;g.shadowOffsetY=4;
+                const frame=g.createLinearGradient(0,12,0,23);frame.addColorStop(0,'#edf0df');frame.addColorStop(.3,'#899ba5');frame.addColorStop(.6,'#223440');frame.addColorStop(1,'#111f27');
+                g.fillStyle=frame;g.strokeStyle=active?(color||'#a5f3fc'):'#c3d1cc';g.lineWidth=1;opticRoundRect(g,10,13,len,10,2);g.fill();g.stroke();g.shadowBlur=0;g.shadowOffsetY=0;
+                const glass=g.createLinearGradient(10,14,10+len,21);glass.addColorStop(0,'#b8e1ec');glass.addColorStop(.3,'#416c7a');glass.addColorStop(.46,'#efffff');glass.addColorStop(.53,'#7297a5');glass.addColorStop(1,'#213d50');
+                g.fillStyle=glass;g.fillRect(13,15,Math.max(2,len-6),6);g.strokeStyle='#e9ffffd9';g.lineWidth=.8;g.beginPath();g.moveTo(13,15.5);g.lineTo(10+len-3,15.5);g.stroke();bolt(11.5,18,1);bolt(10+len-1.5,18,1);
+            } else {
+                originX=46;originY=46;
+                if(active){const halo=g.createRadialGradient(46,46,5,46,46,42);halo.addColorStop(0,'#c8ffeac9');halo.addColorStop(.4,'#00e6aa77');halo.addColorStop(1,'#00e6aa00');g.fillStyle=halo;g.fillRect(0,0,92,92);}
+                g.shadowColor='#0009';g.shadowBlur=5;g.shadowOffsetY=4;
+                const base=g.createLinearGradient(20,20,72,72);base.addColorStop(0,'#a0b0ae');base.addColorStop(.18,'#455e68');base.addColorStop(1,'#0a1824');g.fillStyle=base;g.strokeStyle='#b8ccc5';g.lineWidth=.8;opticRoundRect(g,27,27,38,38,5);g.fill();g.stroke();g.shadowBlur=0;g.shadowOffsetY=0;
+                for(const x of [31,61])for(const y of [31,61])bolt(x,y,1.8);
+                const rim=g.createRadialGradient(39,36,2,46,46,20);rim.addColorStop(0,'#f3f3e2');rim.addColorStop(.35,'#9fb1b1');rim.addColorStop(.7,'#233944');rim.addColorStop(1,'#b3c7c8');g.fillStyle=rim;g.beginPath();g.arc(46,46,20,0,Math.PI*2);g.fill();
+                const lens=g.createRadialGradient(41,39,2,46,46,18);lens.addColorStop(0,active?'#e5fff6':'#31564f');lens.addColorStop(.35,active?'#4cf7be':'#112d32');lens.addColorStop(1,active?'#008b71':'#020e15');g.fillStyle=lens;g.beginPath();g.arc(46,46,17,0,Math.PI*2);g.fill();
+                g.strokeStyle=active?'#cefff0':'#67948f';g.lineWidth=.7;g.beginPath();g.arc(46,46,10,0,Math.PI*2);g.moveTo(33,46);g.lineTo(59,46);g.moveTo(46,33);g.lineTo(46,59);g.stroke();
+                g.strokeStyle='#ffffff90';g.lineWidth=1.5;g.beginPath();g.arc(46,46,15,Math.PI*1.05,Math.PI*1.5);g.stroke();
+                if(active){g.fillStyle='#f0fff7';g.beginPath();g.arc(46,46,4,0,Math.PI*2);g.fill();}
+                for(const x of [35,46,57]){g.fillStyle=active?'#8affd5':'#465f5b';g.beginPath();g.arc(x,65,1.4,0,Math.PI*2);g.fill();}
+            }
+            const sprite={image:surface,width,height,originX,originY};opticSpriteCache.set(key,sprite);return sprite;
+        }
+
         class LaserSource {
             constructor(x, y, angle) {
                 this.x = x;
@@ -2547,45 +2600,14 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
             }
 
             draw() {
-                // Draw glow
-                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 3);
-                gradient.addColorStop(0, this.color);
-                gradient.addColorStop(0.5, this.color + '80');
-                gradient.addColorStop(1, 'transparent');
-
-                ctx.save();
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius * 2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-
-                // Draw laser source
-                ctx.save();
-                ctx.fillStyle = this.color;
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 15;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-
-                // Draw direction indicator
-                const dirX = this.x + Math.cos(this.angle) * (this.radius + 10);
-                const dirY = this.y + Math.sin(this.angle) * (this.radius + 10);
-
-                ctx.save();
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 3;
-                ctx.lineCap = 'round';
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 10;
-                ctx.beginPath();
-                ctx.moveTo(this.x + Math.cos(this.angle) * this.radius,
-                          this.y + Math.sin(this.angle) * this.radius);
-                ctx.lineTo(dirX, dirY);
-                ctx.stroke();
-                ctx.restore();
+                // Keep the optical aperture at exactly x/y plus the original radius.
+                const bx=-Math.cos(this.angle),by=-Math.sin(this.angle);
+                const edgeX=Math.abs(bx)<1e-6?Infinity:(bx<0?this.x/-bx:(canvasCSSWidth-this.x)/bx);
+                const edgeY=Math.abs(by)<1e-6?Infinity:(by<0?this.y/-by:(canvasCSSHeight-this.y)/by);
+                const length=Math.round(Math.max(22,Math.min(60,Math.min(edgeX,edgeY)+this.radius-4)));
+                const sprite=getOpticSprite('emitter',length,false,this.color);
+                ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.angle);
+                ctx.drawImage(sprite.image,this.radius-sprite.originX,-sprite.originY,sprite.width,sprite.height);ctx.restore();
             }
         }
 
@@ -2605,82 +2627,8 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
             }
 
             draw() {
-                const t = Date.now() / 1000;
-
-                if (this.hit) {
-                    const pulse = 0.8 + 0.2 * Math.sin(t * 10);
-                    const glowRadius = this.radius * (3 + Math.sin(t * 8) * 0.8);
-
-                    const hitGlow = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, glowRadius);
-                    hitGlow.addColorStop(0, '#ffffff');
-                    hitGlow.addColorStop(0.3, '#00ffcc');
-                    hitGlow.addColorStop(0.6, '#00ffcc60');
-                    hitGlow.addColorStop(1, 'transparent');
-
-                    ctx.save();
-                    ctx.globalAlpha = pulse;
-                    ctx.fillStyle = hitGlow;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, glowRadius, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-
-                    ctx.save();
-                    ctx.fillStyle = '#ffffff';
-                    ctx.shadowColor = '#00ffcc';
-                    ctx.shadowBlur = 30;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius * 0.6, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-
-                    const ringPhase = (t * 3) % 1;
-                    ctx.save();
-                    ctx.strokeStyle = '#00ffcc';
-                    ctx.lineWidth = 2;
-                    ctx.globalAlpha = 1 - ringPhase;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius * (1 + ringPhase * 2), 0, Math.PI * 2);
-                    ctx.stroke();
-                    ctx.restore();
-                    return;
-                }
-
-                const idlePulse = 1 + 0.05 * Math.sin(t * 2);
-
-                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 2 * idlePulse);
-                gradient.addColorStop(0, this.color);
-                gradient.addColorStop(0.5, this.color + '60');
-                gradient.addColorStop(1, 'transparent');
-
-                ctx.save();
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius * 1.5 * idlePulse, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-
-                ctx.save();
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 3;
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 10;
-
-                for (let i = 1; i <= 3; i++) {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, (this.radius / 3) * i * idlePulse, 0, Math.PI * 2);
-                    ctx.stroke();
-                }
-                ctx.restore();
-
-                ctx.save();
-                ctx.fillStyle = this.color;
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 15;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
+                const sprite=getOpticSprite('target',0,this.hit,this.color);
+                ctx.drawImage(sprite.image,this.x-sprite.originX,this.y-sprite.originY,sprite.width,sprite.height);
             }
         }
 
@@ -2792,89 +2740,13 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
             }
 
             draw() {
-                const endpoints = this.getEndpoints();
-
-                const isSelected = this.isSelected;
-                const alpha = this.isPlaced ? 1.0 : 0.6;
-
-                const glowIntensity = this.length / 60;
-                ctx.save();
-                ctx.globalAlpha = alpha;
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = isSelected ? 25 * glowIntensity : 15 * glowIntensity;
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = isSelected ? 8 : 6;
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(endpoints.x1, endpoints.y1);
-                ctx.lineTo(endpoints.x2, endpoints.y2);
-                ctx.stroke();
-                ctx.restore();
-
-                ctx.save();
-                ctx.globalAlpha = alpha;
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = Math.max(2, this.length / 30);
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(endpoints.x1, endpoints.y1);
-                ctx.lineTo(endpoints.x2, endpoints.y2);
-                ctx.stroke();
-                ctx.restore();
-
-                const kbIndex = gameState.mirrors.indexOf(this);
-                if (kbIndex !== -1 && kbIndex === keyboardMirrorIndex) {
-                    ctx.save();
-                    ctx.strokeStyle = '#00ffff';
-                    ctx.lineWidth = 2;
-                    ctx.shadowColor = '#00ffff';
-                    ctx.shadowBlur = 12;
-                    ctx.setLineDash([4, 3]);
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.length / 2 + 10, 0, Math.PI * 2);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-                    ctx.restore();
-                }
-
-                if (isSelected) {
-                    ctx.save();
-                    ctx.fillStyle = this.color;
-                    ctx.shadowColor = this.color;
-                    ctx.shadowBlur = 10;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                }
-
-                if (this.isPlaced) {
-                    const normalX = -Math.sin(this.angle);
-                    const normalY = Math.cos(this.angle);
-                    const normalLength = 15;
-
-                    for (let side = -1; side <= 1; side += 2) {
-                        const normalEndX = this.x + normalX * normalLength * side;
-                        const normalEndY = this.y + normalY * normalLength * side;
-
-                        ctx.save();
-                        ctx.strokeStyle = this.color;
-                        ctx.lineWidth = 1;
-                        ctx.globalAlpha = 0.3;
-                        ctx.setLineDash([2, 2]);
-                        ctx.beginPath();
-                        ctx.moveTo(this.x, this.y);
-                        ctx.lineTo(normalEndX, normalEndY);
-                        ctx.stroke();
-
-                        ctx.setLineDash([]);
-                        ctx.fillStyle = this.color;
-                        ctx.beginPath();
-                        ctx.arc(normalEndX, normalEndY, 1.5, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.restore();
-                    }
-                }
+                const sprite=getOpticSprite('mirror',this.length,this.isSelected,this.color);
+                ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.angle);ctx.globalAlpha=this.isPlaced?1:.6;
+                ctx.drawImage(sprite.image,-sprite.originX,-sprite.originY,sprite.width,sprite.height);ctx.restore();
+                const kbIndex=gameState.mirrors.indexOf(this);
+                if(kbIndex!==-1&&kbIndex===keyboardMirrorIndex){ctx.save();ctx.strokeStyle='#a5f3fc';ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.beginPath();ctx.arc(this.x,this.y,this.length/2+8,0,Math.PI*2);ctx.stroke();ctx.restore();}
+                if(this.isSelected){ctx.save();ctx.fillStyle='#fef3c7';ctx.beginPath();ctx.arc(this.x,this.y,2.3,0,Math.PI*2);ctx.fill();ctx.restore();}
+                if(this.isPlaced){const nx=-Math.sin(this.angle),ny=Math.cos(this.angle);ctx.save();ctx.strokeStyle='#c1e2ec';ctx.lineWidth=1;ctx.globalAlpha=.3;ctx.setLineDash([2,2]);for(let side=-1;side<=1;side+=2){ctx.beginPath();ctx.moveTo(this.x,this.y);ctx.lineTo(this.x+nx*15*side,this.y+ny*15*side);ctx.stroke();}ctx.restore();}
             }
         }
 
@@ -3411,7 +3283,7 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
                 ctx.stroke();
                 ctx.restore();
 
-                if (!prefersReducedMotion && Math.random() < 0.08 && endProgress > 0.1) {
+                if (laserAnimating && !prefersReducedMotion && Math.random() < 0.08 && endProgress > 0.1) {
                     const t = Math.random() * endProgress;
                     const x = segment.startX + (segment.endX - segment.startX) * t;
                     const y = segment.startY + (segment.endY - segment.startY) * t;
@@ -4556,6 +4428,8 @@ canvas#gameCanvas{top:max(88px,calc(env(safe-area-inset-top) + 76px))}.level-pan
 
         function drawLabPart(p, index) {
             labCtx.save(); labCtx.translate(p.x,p.y); labCtx.rotate(p.type==='prism' ? p.angle+labFrame/100 : p.angle||0);
+            if(p.type==='laser'){const sprite=getOpticSprite('emitter',45,false,p.color);labCtx.drawImage(sprite.image,-sprite.originX,-sprite.originY,sprite.width,sprite.height);labCtx.restore();return;}
+            if(p.type==='mirror'||p.type==='oneway'){const sprite=getOpticSprite('mirror',50,false,p.color);labCtx.drawImage(sprite.image,-sprite.originX,-sprite.originY,sprite.width,sprite.height);if(p.type==='oneway'){labCtx.fillStyle='#e2f7ff';labCtx.font='18px system-ui';labCtx.fillText('›',-4,-8);}labCtx.restore();return;}
             labCtx.shadowBlur=12; labCtx.shadowColor=p.color||'#67e8f9'; labCtx.strokeStyle=p.color||'#67e8f9'; labCtx.fillStyle=p.color||'#67e8f9'; labCtx.lineWidth=5;
             if(p.type==='laser'){labCtx.beginPath();labCtx.arc(0,0,10,0,Math.PI*2);labCtx.fill();labCtx.beginPath();labCtx.moveTo(8,0);labCtx.lineTo(24,0);labCtx.stroke();}
             if(p.type==='mirror'||p.type==='oneway'){labCtx.beginPath();labCtx.moveTo(-25,0);labCtx.lineTo(25,0);labCtx.stroke();if(p.type==='oneway'){labCtx.font='18px sans-serif';labCtx.fillText('›',-4,-8);}}

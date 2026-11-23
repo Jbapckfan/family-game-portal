@@ -1,0 +1,1549 @@
+
+    const { useState, useEffect, useCallback, useRef, useMemo } = React;
+
+    // =================== CONFIG ===================
+    const RANKS = [
+        { name: 'Beginner',   pct: 0,    emoji: '' },
+        { name: 'Good Start', pct: 0.02, emoji: '&#x2B50;' },
+        { name: 'Moving Up',  pct: 0.05, emoji: '&#x1F31F;' },
+        { name: 'Good',       pct: 0.08, emoji: '&#x1F44D;' },
+        { name: 'Solid',      pct: 0.15, emoji: '&#x1F4AA;' },
+        { name: 'Nice',       pct: 0.25, emoji: '&#x1F525;' },
+        { name: 'Great',      pct: 0.40, emoji: '&#x1F389;' },
+        { name: 'Amazing',    pct: 0.50, emoji: '&#x1F680;' },
+        { name: 'Genius',     pct: 0.70, emoji: '&#x1F9E0;' },
+        { name: 'Queen Bee',  pct: 1.00, emoji: '&#x1F41D;' },
+    ];
+
+    const RANK_EMOJIS = ['', '\u2B50', '\u{1F31F}', '\u{1F44D}', '\u{1F4AA}', '\u{1F525}', '\u{1F389}', '\u{1F680}', '\u{1F9E0}', '\u{1F41D}'];
+
+    function getRank(score, max) {
+        if (!max) return { idx: 0, ...RANKS[0] };
+        const pct = score / max;
+        let idx = 0;
+        for (let i = 0; i < RANKS.length; i++) {
+            if (pct >= RANKS[i].pct) idx = i;
+        }
+        return { idx, ...RANKS[idx] };
+    }
+
+    function getNextRank(score, max) {
+        if (!max) return null;
+        const pct = score / max;
+        for (const r of RANKS) {
+            if (pct < r.pct) return r;
+        }
+        return null;
+    }
+
+    function scoreWord(word, allLetters) {
+        const all = new Set(allLetters);
+        const wl = new Set(word);
+        const isPangram = allLetters.length >= 7 && [...all].every(l => wl.has(l));
+        let pts = word.length === 4 ? 1 : word.length;
+        if (isPangram) pts += 7;
+        return { pts, isPangram };
+    }
+
+    function getDailyIdx() {
+        const d = Math.floor((Date.now() - new Date(2025,0,1)) / 86400000);
+        return ((d % PUZZLES.length) + PUZZLES.length) % PUZZLES.length;
+    }
+
+    function loadSave(idx, mode) {
+        try { return JSON.parse(localStorage.getItem(`sb-${mode}-${idx}`)) || []; }
+        catch { return []; }
+    }
+    function writeSave(idx, mode, words) {
+        try { localStorage.setItem(`sb-${mode}-${idx}`, JSON.stringify(words)); } catch {}
+    }
+
+    // =================== DEFINITION CACHE ===================
+    const definitionCache = {};
+
+    async function fetchDefinition(word) {
+        if (definitionCache[word]) return definitionCache[word];
+        try {
+            const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+            if (!resp.ok) throw new Error('Not found');
+            const data = await resp.json();
+            if (data && data[0] && data[0].meanings && data[0].meanings[0]) {
+                const meaning = data[0].meanings[0];
+                const result = {
+                    word: data[0].word,
+                    partOfSpeech: meaning.partOfSpeech || '',
+                    definition: meaning.definitions[0]?.definition || 'No definition available.',
+                };
+                definitionCache[word] = result;
+                return result;
+            }
+            throw new Error('No meanings');
+        } catch (e) {
+            const result = { word, partOfSpeech: '', definition: 'Definition not available.' };
+            definitionCache[word] = result;
+            return result;
+        }
+    }
+
+    // =================== NUMBER WORDS HELPER ===================
+    function numWord(n) {
+        const words = ['zero','one','two','three','four','five','six','seven','eight','nine','ten',
+                       'eleven','twelve','thirteen','fourteen','fifteen'];
+        return n <= 15 ? words[n] : String(n);
+    }
+
+    // =================== PERSONAL STATS ===================
+    function loadStats() {
+        try { return JSON.parse(localStorage.getItem('sb-personal-stats')) || getDefaultStats(); }
+        catch { return getDefaultStats(); }
+    }
+    function getDefaultStats() {
+        return { totalWords: 0, totalPangrams: 0, puzzlesPlayed: 0, rankSum: 0, longestWord: '', sessions: [] };
+    }
+    function saveStats(stats) {
+        try { localStorage.setItem('sb-personal-stats', JSON.stringify(stats)); } catch {}
+    }
+
+    // =================== THEME PERSISTENCE ===================
+    function loadTheme() {
+        try { return localStorage.getItem('sb-theme') || 'dark'; } catch { return 'dark'; }
+    }
+    function saveTheme(theme) {
+        try { localStorage.setItem('sb-theme', theme); } catch {}
+    }
+
+    // =================== MUTE PERSISTENCE ===================
+    function loadMuted() {
+        try { return localStorage.getItem('sb-muted') === 'true'; } catch { return false; }
+    }
+    function saveMuted(m) {
+        try { localStorage.setItem('sb-muted', String(m)); } catch {}
+    }
+
+    // =================== STREAK PERSISTENCE ===================
+    function getDefaultStreak() {
+        return { currentStreak: 0, bestStreak: 0, lastGeniusDate: null };
+    }
+    function loadStreak() {
+        try { return JSON.parse(localStorage.getItem('sb-genius-streak')) || getDefaultStreak(); }
+        catch { return getDefaultStreak(); }
+    }
+    function saveStreak(streak) {
+        try { localStorage.setItem('sb-genius-streak', JSON.stringify(streak)); } catch {}
+    }
+    function getTodayDateStr() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function getYesterdayDateStr() {
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function updateStreakForGenius(streakData) {
+        const today = getTodayDateStr();
+        const yesterday = getYesterdayDateStr();
+        if (streakData.lastGeniusDate === today) {
+            // Already recorded genius today, no change
+            return streakData;
+        }
+        const updated = { ...streakData };
+        if (streakData.lastGeniusDate === yesterday) {
+            // Consecutive day! Extend streak
+            updated.currentStreak = streakData.currentStreak + 1;
+        } else {
+            // Streak broken or first time
+            updated.currentStreak = 1;
+        }
+        updated.lastGeniusDate = today;
+        if (updated.currentStreak > updated.bestStreak) {
+            updated.bestStreak = updated.currentStreak;
+        }
+        saveStreak(updated);
+        return updated;
+    }
+
+    // =================== COMMON 3-LETTER WORDS (for Practice Mode) ===================
+    const COMMON_3_LETTER_WORDS = new Set([
+        'ace','act','add','age','ago','aid','aim','air','all','and','ant','any','ape','apt','arc','are','ark','arm',
+        'art','ash','ask','ate','awe','axe','bad','bag','ban','bar','bat','bay','bed','bee','bet','bid','big','bin',
+        'bit','bog','bow','box','boy','bud','bug','bun','bus','but','buy','cab','cam','can','cap','car','cat','cob',
+        'cod','cog','cop','cot','cow','cry','cub','cud','cup','cur','cut','dab','dad','dam','day','den','dew','did',
+        'dig','dim','din','dip','doe','dog','don','dot','dry','dub','dud','due','dug','dun','duo','dye','ear','eat',
+        'eel','egg','ego','elf','elk','elm','emu','end','era','eve','ewe','eye','fab','fad','fan','far','fat','fax',
+        'fed','fee','fen','few','fig','fin','fir','fit','fix','fly','fob','foe','fog','fop','for','fox','fry','fun',
+        'fur','gab','gag','gal','gap','gas','gel','gem','get','gig','gin','gnu','gob','god','got','gum','gun','gust',
+        'gut','guy','gym','had','hag','ham','has','hat','hay','hen','her','hew','hex','hid','him','hip','his','hit',
+        'hob','hod','hog','hop','hot','how','hub','hue','hug','hum','hut','ice','icy','ill','imp','ink','inn','ion',
+        'ire','irk','its','ivy','jab','jag','jam','jar','jaw','jay','jet','jig','job','jog','jot','joy','jug','jut',
+        'keg','ken','key','kid','kin','kit','lab','lad','lag','lap','law','lay','lea','led','leg','let','lid','lie',
+        'lip','lit','log','lot','low','lug','mad','man','map','mar','mat','maw','may','men','met','mid','mix','mob',
+        'mod','mop','mow','mud','mug','mum','nab','nag','nap','nay','net','new','nil','nip','nit','nod','nor','not',
+        'now','nub','nun','nut','oak','oar','oat','odd','ode','off','oft','ohm','oil','old','one','opt','orb','ore',
+        'our','out','owe','owl','own','pad','pal','pan','pap','par','pat','paw','pay','pea','peg','pen','pep','per',
+        'pet','pew','pie','pig','pin','pit','ply','pod','pop','pot','pow','pro','pry','pub','pug','pun','pup','pus',
+        'put','rag','ram','ran','rap','rat','raw','ray','red','ref','rib','rid','rig','rim','rip','rob','rod','roe',
+        'rot','row','rub','rug','rum','run','rut','rye','sac','sad','sag','sap','sat','saw','say','sea','set','sew',
+        'she','shy','sin','sip','sir','sis','sit','six','ski','sky','sly','sob','sod','son','sop','sot','sow','soy',
+        'spa','spy','sty','sub','sue','sum','sun','sup','tab','tad','tag','tan','tap','tar','tat','tax','tea','ten',
+        'the','thy','tic','tie','tin','tip','toe','ton','too','top','tot','tow','toy','try','tub','tug','tun','two',
+        'ugh','undo','urn','use','van','vat','vet','vex','via','vie','vim','vow','wad','wag','war','was','wax','way',
+        'web','wed','wet','who','why','wig','win','wit','woe','wok','won','woo','wop','wow','yak','yam','yap','yaw',
+        'yea','yes','yet','yew','yin','you','yow','zap','zed','zen','zig','zip','zoo'
+    ]);
+
+    // Build practice words for a puzzle (standard words + valid 3-letter words from puzzle letters)
+    function getPracticeWords(puzzle) {
+        const allLetters = new Set([...puzzle.letters, puzzle.center]);
+        const practiceList = [];
+        // Include all standard puzzle words (no center letter requirement in practice)
+        for (const w of puzzle.words) {
+            practiceList.push(w);
+        }
+        // Add valid 3-letter words that can be formed from the puzzle letters
+        for (const w of COMMON_3_LETTER_WORDS) {
+            if ([...w].every(l => allLetters.has(l))) {
+                practiceList.push(w);
+            }
+        }
+        return [...new Set(practiceList)]; // deduplicate
+    }
+
+    function scorePracticeWord(word, allLetters) {
+        const all = new Set(allLetters);
+        const wl = new Set(word);
+        const isPangram = allLetters.length >= 7 && [...all].every(l => wl.has(l));
+        let pts = word.length <= 4 ? 1 : word.length;
+        if (isPangram) pts += 7;
+        return { pts, isPangram };
+    }
+
+    // =================== HEX POSITION DATA ===================
+    const HEX_POSITIONS = [
+        { x: -117, y: -137 },  // pos 0
+        { x: 17, y: -137 },    // pos 1
+        { x: 82, y: -50 },     // pos 2
+        { x: 17, y: 37 },      // pos 3
+        { x: -117, y: 37 },    // pos 4
+        { x: -182, y: -50 },   // pos 5
+    ];
+
+    // =================== CONFETTI ===================
+    function Confetti({ active }) {
+        if (!active) return null;
+        const colors = ['#fbbf24','#ec4899','#8b5cf6','#06b6d4','#34d399','#f43f5e','#3b82f6'];
+        const pieces = Array.from({ length: 40 }, (_, i) => {
+            const style = {
+                left: `${Math.random() * 100}%`,
+                background: colors[i % colors.length],
+                '--dur': `${1.5 + Math.random() * 1.5}s`,
+                '--delay': `${Math.random() * 0.5}s`,
+                width: `${6 + Math.random() * 6}px`,
+                height: `${4 + Math.random() * 10}px`,
+                opacity: 0.9,
+                transform: `rotate(${Math.random()*360}deg)`,
+            };
+            return <div key={i} className="confetti-piece" style={style} />;
+        });
+        return <>{pieces}</>;
+    }
+
+    // =================== SPARKLE BURST ===================
+    function SparkleBurst({ active }) {
+        if (!active) return null;
+        const colors = ['#fbbf24','#ec4899','#8b5cf6','#06b6d4','#34d399'];
+        const particles = Array.from({ length: 16 }, (_, i) => {
+            const angle = (i / 16) * Math.PI * 2;
+            const dist = 30 + Math.random() * 50;
+            return (
+                <div key={i} className="sparkle-particle" style={{
+                    left: '50%', top: '50%',
+                    background: colors[i % colors.length],
+                    boxShadow: `0 0 6px ${colors[i % colors.length]}`,
+                    '--tx': `${Math.cos(angle) * dist}px`,
+                    '--ty': `${Math.sin(angle) * dist}px`,
+                    animationDelay: `${Math.random() * 0.15}s`,
+                }} />
+            );
+        });
+        return <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>{particles}</div>;
+    }
+
+    // =================== TOAST ===================
+    function Toast({ data, onDone }) {
+        useEffect(() => {
+            const t = setTimeout(onDone, data.type === 'pangram' ? 2800 : data.type === 'rankup' ? 2500 : 1400);
+            return () => clearTimeout(t);
+        }, []);
+        return <div className={`toast toast-${data.type}`} dangerouslySetInnerHTML={{ __html: data.message }} />;
+    }
+
+    // =================== RANK BANNER ===================
+    function RankBanner({ rank, onDone }) {
+        useEffect(() => {
+            const t = setTimeout(onDone, 2500);
+            return () => clearTimeout(t);
+        }, []);
+        return (
+            <div className="rank-banner">
+                <div className="rank-banner-text">
+                    {RANK_EMOJIS[rank.idx]} {rank.name}! {RANK_EMOJIS[rank.idx]}
+                </div>
+            </div>
+        );
+    }
+
+    // =================== RANK BAR ===================
+    function RankBar({ score, maxScore, justReachedIdx }) {
+        const pct = maxScore > 0 ? Math.min(score / maxScore, 1) : 0;
+        const rank = getRank(score, maxScore);
+        const next = getNextRank(score, maxScore);
+
+        // Shimmer only briefly after a score change (avoids an infinite repaint loop while idle)
+        const [shimmering, setShimmering] = useState(false);
+        const firstScoreRef = useRef(true);
+        useEffect(() => {
+            if (firstScoreRef.current) { firstScoreRef.current = false; return; }
+            if (score <= 0) return;
+            setShimmering(true);
+            const t = setTimeout(() => setShimmering(false), 2500);
+            return () => clearTimeout(t);
+        }, [score]);
+
+        return (
+            <div style={{ padding: '0 4px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                    <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--accent-gold)',
+                                   textShadow: '0 0 12px rgba(251,191,36,0.35)' }}>
+                        {RANK_EMOJIS[rank.idx]} {rank.name}
+                    </span>
+                    <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
+                        <span style={{ color: 'var(--accent-purple)', fontWeight: 700 }}>{score}</span>
+                        {next && <span> / {Math.ceil(maxScore * next.pct)} for {next.name}</span>}
+                    </span>
+                </div>
+                <div className="rank-bar-wrap">
+                    <div className={`rank-fill ${shimmering ? 'shimmering' : ''}`} style={{ width: `${Math.max(pct * 100, 1)}%` }} />
+                    {RANKS.slice(1).map((r, i) => (
+                        <div key={i}
+                             className={`rank-dot ${pct >= r.pct ? 'active' : ''} ${justReachedIdx === i + 1 ? 'just-reached' : ''}`}
+                             style={{ left: `${r.pct * 100}%` }}
+                             title={`${r.name} (${Math.round(r.pct * 100)}%)`}
+                        />
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    // =================== DEFINITION TOOLTIP ===================
+    function DefinitionTooltip({ defData, position, onClose }) {
+        if (!defData || !position) return null;
+        return (
+            <div className="def-tooltip" style={{ left: position.x, top: position.y }}
+                 onClick={e => e.stopPropagation()}>
+                <span className="def-close" onClick={onClose}>&times;</span>
+                <div className="def-word">{defData.word}</div>
+                {defData.partOfSpeech && <div className="def-pos">{defData.partOfSpeech}</div>}
+                <div className="def-text">{defData.definition}</div>
+            </div>
+        );
+    }
+
+    // =================== WORDS PANEL (with letter filter) ===================
+    function WordsPanel({ found, pangrams, isOpen, onToggle, total, latestWord, revealedWords, onWordClick }) {
+        const [filterLetter, setFilterLetter] = useState(null);
+
+        // Get unique first letters from found words
+        const firstLetters = useMemo(() => {
+            const s = new Set(found.map(w => w[0]));
+            return [...s].sort();
+        }, [found]);
+
+        // Filter words based on selected letter
+        const filteredFound = filterLetter ? found.filter(w => w[0] === filterLetter) : found;
+        const filteredRevealed = filterLetter
+            ? (revealedWords || []).filter(w => w[0] === filterLetter)
+            : (revealedWords || []);
+
+        return (
+            <div style={{ marginTop: 14 }}>
+                <div onClick={onToggle}
+                     style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                              padding: '10px 14px', borderRadius: 14,
+                              background: 'var(--panel-bg)', border: '1px solid var(--panel-border)',
+                              transition: 'all 0.2s' }}>
+                    <span style={{ fontWeight: 700, fontSize: 16 }}>
+                        {found.length > 0 ? `${found.length} of ${total} words` : 'No words found yet'}
+                    </span>
+                    <span style={{ fontSize: 16, transition: 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+                                   transform: isOpen ? 'rotate(180deg)' : 'rotate(0)', color: 'var(--word-filter-color)' }}>
+                        &#x25BC;
+                    </span>
+                </div>
+                <div className={`words-panel ${isOpen ? 'open' : ''}`}
+                     style={{ padding: isOpen ? '10px 4px' : '0 4px' }}>
+                    {found.length === 0 && (!revealedWords || revealedWords.length === 0) ? (
+                        <p style={{ textAlign: 'center', color: 'var(--text-dimmer)', fontSize: 14, padding: 16 }}>
+                            Type or click letters to make words!
+                        </p>
+                    ) : (
+                        <>
+                            {firstLetters.length > 1 && (
+                                <div className="word-filter-tabs">
+                                    <button className={`word-filter-tab ${filterLetter===null?'active':''}`}
+                                            onClick={()=>setFilterLetter(null)}>All</button>
+                                    {firstLetters.map(l => (
+                                        <button key={l}
+                                                className={`word-filter-tab ${filterLetter===l?'active':''}`}
+                                                onClick={()=>setFilterLetter(filterLetter===l?null:l)}>
+                                            {l.toUpperCase()}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                                {filteredFound.map((w, i) => (
+                                    <span key={w}
+                                          className={`word-chip ${pangrams.includes(w) ? 'pangram' : ''} ${w === latestWord ? 'latest' : ''}`}
+                                          onClick={(e) => onWordClick && onWordClick(w, e)}>
+                                        {w}
+                                    </span>
+                                ))}
+                                {filteredRevealed.map((w) => (
+                                    <span key={'rev-'+w}
+                                          className={`word-chip revealed ${pangrams.includes(w) ? 'pangram' : ''}`}>
+                                        {w}
+                                    </span>
+                                ))}
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    // =================== HINT MODAL (with two-letter pair grid) ===================
+    function HintModal({ onClose, puzzle, found }) {
+        const [hintTab, setHintTab] = useState('letter');
+        const unfound = puzzle.words.filter(w => !found.includes(w));
+
+        // Group by first letter, then by length
+        const groups = {};
+        for (const w of unfound) {
+            const letter = w[0];
+            if (!groups[letter]) groups[letter] = {};
+            const len = w.length;
+            if (!groups[letter][len]) groups[letter][len] = 0;
+            groups[letter][len]++;
+        }
+        const sortedLetters = Object.keys(groups).sort();
+
+        // Two-letter pair groups
+        const twoLetterGroups = {};
+        for (const w of unfound) {
+            const pair = w.slice(0, 2).toUpperCase();
+            if (!twoLetterGroups[pair]) twoLetterGroups[pair] = 0;
+            twoLetterGroups[pair]++;
+        }
+        const sortedPairs = Object.keys(twoLetterGroups).sort();
+
+        return (
+            <div className="modal-overlay" onClick={onClose}>
+                <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 420 }}>
+                    <h2 className="font-title" style={{ fontSize: 24, color: 'var(--accent-gold)', marginBottom: 6, textAlign: 'center' }}>
+                        Hints
+                    </h2>
+                    <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14, marginBottom: 12 }}>
+                        {unfound.length} word{unfound.length !== 1 ? 's' : ''} remaining
+                    </p>
+                    {unfound.length === 0 ? (
+                        <p style={{ textAlign: 'center', color: 'var(--accent-green)', fontSize: 16, fontWeight: 700, padding: 20 }}>
+                            You found every word! Amazing!
+                        </p>
+                    ) : (
+                        <>
+                            <div className="hint-tab-bar">
+                                <button className={`hint-tab ${hintTab==='letter'?'active':''}`}
+                                        onClick={()=>setHintTab('letter')}>By Letter</button>
+                                <button className={`hint-tab ${hintTab==='pair'?'active':''}`}
+                                        onClick={()=>setHintTab('pair')}>Two-Letter Pairs</button>
+                            </div>
+                            {hintTab === 'letter' ? (
+                                <div className="hint-grid">
+                                    {sortedLetters.map(letter => {
+                                        const lengths = Object.keys(groups[letter]).map(Number).sort((a,b) => a - b);
+                                        const parts = lengths.map(len => {
+                                            const count = groups[letter][len];
+                                            return `${numWord(count)} ${len}-letter`;
+                                        });
+                                        return (
+                                            <React.Fragment key={letter}>
+                                                <span className="hint-letter">{letter}:</span>
+                                                <span className="hint-detail">{parts.join(', ')}</span>
+                                            </React.Fragment>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="two-letter-grid">
+                                    {sortedPairs.map(pair => (
+                                        <div key={pair} className="two-letter-cell">
+                                            <div className="two-letter-pair">{pair}</div>
+                                            <div className="two-letter-count">{twoLetterGroups[pair]}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </>
+                    )}
+                    <button className="game-btn game-btn-enter" onClick={onClose}
+                            style={{ display: 'block', margin: '18px auto 0', width: '100%', fontSize: 16 }}>
+                        Got It
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // =================== RULES MODAL ===================
+    function RulesModal({ onClose, puzzle, practiceMode }) {
+        return (
+            <div className="modal-overlay" onClick={onClose}>
+                <div className="modal-box" onClick={e => e.stopPropagation()}>
+                    <h2 className="font-title" style={{ fontSize: 26, color: practiceMode ? '#34d399' : 'var(--accent-gold)', marginBottom: 18, textAlign: 'center' }}>
+                        {practiceMode ? 'Practice Mode' : 'How to Play'}
+                    </h2>
+                    <div style={{ fontSize: 15, lineHeight: 1.8, color: 'var(--text-secondary)' }}>
+                        {practiceMode ? (
+                            <>
+                                <p style={{ marginBottom: 12 }}>Practice making words with relaxed rules! Build your skills before tackling the standard game.</p>
+                                <div style={{ background: 'var(--stat-bg)', borderRadius: 12, padding: '12px 16px', marginBottom: 12 }}>
+                                    <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Words must be <b>3+ letters</b></p>
+                                    <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Letters <b>can be reused</b></p>
+                                    <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Center letter is <b>NOT required</b></p>
+                                    <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Scored <b>separately</b> from standard mode</p>
+                                </div>
+                                <div style={{ background: 'var(--stat-bg)', borderRadius: 12, padding: '12px 16px', marginBottom: 12 }}>
+                                    <p style={{ margin: '4px 0', fontWeight: 700, color: '#34d399' }}>Scoring</p>
+                                    <p style={{ margin: '4px 0' }}>3 or 4-letter words = <b>1 point</b></p>
+                                    <p style={{ margin: '4px 0' }}>Longer words = <b>1 point per letter</b></p>
+                                    <p style={{ margin: '4px 0' }}>Pangram (all 7 letters) = <b>+7 bonus!</b></p>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <p style={{ marginBottom: 12 }}>Make words using the 7 letters. Every word <b>must</b> contain the
+                                <span style={{ color: 'var(--accent-gold)', fontWeight: 700 }}> center letter</span>.</p>
+                                <div style={{ background: 'var(--stat-bg)', borderRadius: 12, padding: '12px 16px', marginBottom: 12 }}>
+                                    <p style={{ margin: '4px 0' }}><span style={{color:'var(--accent-purple)'}}>&#x2022;</span> Words must be <b>4+ letters</b></p>
+                                    <p style={{ margin: '4px 0' }}><span style={{color:'var(--accent-purple)'}}>&#x2022;</span> Letters <b>can be reused</b></p>
+                                    <p style={{ margin: '4px 0' }}><span style={{color:'var(--accent-purple)'}}>&#x2022;</span> <b>Center letter</b> is required</p>
+                                </div>
+                                <div style={{ background: 'var(--stat-bg)', borderRadius: 12, padding: '12px 16px', marginBottom: 12 }}>
+                                    <p style={{ margin: '4px 0', fontWeight: 700, color: 'var(--accent-gold)' }}>Scoring</p>
+                                    <p style={{ margin: '4px 0' }}>4-letter words = <b>1 point</b></p>
+                                    <p style={{ margin: '4px 0' }}>Longer words = <b>1 point per letter</b></p>
+                                    <p style={{ margin: '4px 0' }}>Pangram (all 7 letters) = <b>+7 bonus!</b></p>
+                                </div>
+                                <p style={{ textAlign: 'center', fontSize: 14, color: 'var(--text-muted)' }}>
+                                    This puzzle: <b>{puzzle.wordCount}</b> words &bull; <b>{puzzle.pangrams.length}</b> pangram{puzzle.pangrams.length!==1?'s':''} &bull; max <b>{puzzle.maxScore}</b> pts
+                                </p>
+                            </>
+                        )}
+                    </div>
+                    <button className="game-btn game-btn-enter" onClick={onClose}
+                            style={{ display: 'block', margin: '18px auto 0', width: '100%', fontSize: 16 }}>
+                        Let's Go!
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // =================== PERSONAL STATS MODAL ===================
+    function StatsModal({ onClose, stats, streakData }) {
+        const avgRank = stats.puzzlesPlayed > 0
+            ? RANKS[Math.min(Math.round(stats.rankSum / stats.puzzlesPlayed), RANKS.length - 1)].name
+            : 'N/A';
+        return (
+            <div className="modal-overlay" onClick={onClose}>
+                <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: 380 }}>
+                    <h2 className="font-title" style={{ fontSize: 24, color: 'var(--accent-gold)', marginBottom: 16, textAlign: 'center' }}>
+                        Your Stats
+                    </h2>
+                    <div className="stat-card">
+                        <span className="stat-card-label">Puzzles Played</span>
+                        <span className="stat-card-value">{stats.puzzlesPlayed}</span>
+                    </div>
+                    <div className="stat-card">
+                        <span className="stat-card-label">Total Words Found</span>
+                        <span className="stat-card-value">{stats.totalWords}</span>
+                    </div>
+                    <div className="stat-card">
+                        <span className="stat-card-label">Total Pangrams</span>
+                        <span className="stat-card-value">{stats.totalPangrams}</span>
+                    </div>
+                    <div className="stat-card">
+                        <span className="stat-card-label">Average Rank</span>
+                        <span className="stat-card-value">{avgRank}</span>
+                    </div>
+                    <div className="stat-card">
+                        <span className="stat-card-label">Longest Word</span>
+                        <span className="stat-card-value" style={{ textTransform: 'uppercase', fontSize: 15, letterSpacing: 1 }}>
+                            {stats.longestWord || '--'}
+                        </span>
+                    </div>
+                    {streakData && (
+                        <>
+                            <div style={{ marginTop: 12, marginBottom: 4, fontSize: 14, fontWeight: 700,
+                                          color: 'var(--accent-gold)', textAlign: 'center', textTransform: 'uppercase',
+                                          letterSpacing: 1 }}>
+                                {'\u{1F525}'} Genius Streak
+                            </div>
+                            <div className="stat-card">
+                                <span className="stat-card-label">Current Streak</span>
+                                <span className="stat-card-value">{streakData.currentStreak} day{streakData.currentStreak !== 1 ? 's' : ''}</span>
+                            </div>
+                            <div className="stat-card">
+                                <span className="stat-card-label">Best Streak</span>
+                                <span className="stat-card-value">{streakData.bestStreak} day{streakData.bestStreak !== 1 ? 's' : ''}</span>
+                            </div>
+                        </>
+                    )}
+                    <button className="game-btn game-btn-enter" onClick={onClose}
+                            style={{ display: 'block', margin: '18px auto 0', width: '100%', fontSize: 16 }}>
+                        Close
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // =================== WORD LENGTH DISTRIBUTION ===================
+    function WordLengthDistribution({ puzzle, found }) {
+        // Build length distribution data
+        const allByLen = {};
+        const foundByLen = {};
+        for (const w of puzzle.words) {
+            const len = w.length;
+            allByLen[len] = (allByLen[len] || 0) + 1;
+        }
+        for (const w of found) {
+            const len = w.length;
+            foundByLen[len] = (foundByLen[len] || 0) + 1;
+        }
+        const lengths = Object.keys(allByLen).map(Number).sort((a,b) => a - b);
+        const maxCount = Math.max(...Object.values(allByLen), 1);
+
+        return (
+            <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 14,
+                          background: 'var(--panel-bg)', border: '1px solid var(--panel-border)' }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 8,
+                              textTransform: 'uppercase', letterSpacing: 1 }}>
+                    Word Lengths
+                </div>
+                {lengths.map(len => {
+                    const total = allByLen[len];
+                    const foundCount = foundByLen[len] || 0;
+                    const totalPct = (total / maxCount) * 100;
+                    const foundPct = (foundCount / maxCount) * 100;
+                    return (
+                        <div key={len} className="dist-row">
+                            <span className="dist-label">{len}</span>
+                            <div className="dist-bar-outer">
+                                <div className="dist-bar-inner dist-bar-total" style={{ width: `${totalPct}%` }} />
+                                <div className="dist-bar-inner dist-bar-found" style={{ width: `${foundPct}%` }} />
+                            </div>
+                            <span className="dist-count">{foundCount}/{total}</span>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
+    // =================== SPRINT FINAL SCREEN ===================
+    function SprintFinalScreen({ score, wordsFound, maxScore, totalWords, pangrams, onPlayAgain, onExit }) {
+        const rank = getRank(score, maxScore);
+        return (
+            <div className="sprint-final-overlay" onClick={onExit}>
+                <div className="sprint-final-box" onClick={e => e.stopPropagation()}>
+                    <div style={{ fontSize: 42, marginBottom: 4 }}>&#x23F1;&#xFE0F;</div>
+                    <h2 className="font-title" style={{ fontSize: 28, color: '#06b6d4', marginBottom: 4 }}>
+                        Time's Up!
+                    </h2>
+                    <p style={{ color: '#94a3b8', fontSize: 14, marginBottom: 20 }}>Sprint Complete</p>
+
+                    <div style={{ fontSize: 48, fontWeight: 800, color: '#fbbf24',
+                                  textShadow: '0 0 30px rgba(251,191,36,0.4)', marginBottom: 4 }}>
+                        {score}
+                    </div>
+                    <div style={{ fontSize: 14, color: '#94a3b8', marginBottom: 20 }}>points</div>
+
+                    <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: 14, padding: '12px 18px', marginBottom: 20 }}>
+                        <div className="sprint-stat">
+                            <span className="sprint-stat-label">Words Found</span>
+                            <span className="sprint-stat-value">{wordsFound} / {totalWords}</span>
+                        </div>
+                        <div className="sprint-stat">
+                            <span className="sprint-stat-label">Pangrams</span>
+                            <span className="sprint-stat-value">{pangrams}</span>
+                        </div>
+                        <div className="sprint-stat">
+                            <span className="sprint-stat-label">Rank Achieved</span>
+                            <span className="sprint-stat-value">{RANK_EMOJIS[rank.idx]} {rank.name}</span>
+                        </div>
+                        <div className="sprint-stat" style={{ borderBottom: 'none' }}>
+                            <span className="sprint-stat-label">Score %</span>
+                            <span className="sprint-stat-value">{maxScore > 0 ? Math.round((score / maxScore) * 100) : 0}%</span>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 10 }}>
+                        <button className="game-btn" onClick={onExit} style={{ flex: 1 }}>
+                            Back
+                        </button>
+                        <button className="game-btn game-btn-enter" onClick={onPlayAgain} style={{ flex: 1 }}>
+                            Sprint Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // =================== MAIN APP ===================
+    function App() {
+        const [loading, setLoading] = useState(true);
+        const [mode, setMode] = useState('daily');
+        const [gradeBand, setGradeBand] = useState(() => { try { return localStorage.getItem('sb-grade-band') || 'family'; } catch { return 'family'; } });
+        const [adaptiveSkill, setAdaptiveSkill] = useState(() => { try { return Number(localStorage.getItem('sb-adaptive-skill') || 2); } catch { return 2; } });
+        const [randomIdx, setRandomIdx] = useState(() => Math.floor(Math.random() * PUZZLES.length));
+        const [sprintIdx, setSprintIdx] = useState(() => Math.floor(Math.random() * PUZZLES.length));
+
+        // Sprint state
+        const [sprintActive, setSprintActive] = useState(false);
+        const [sprintTimeLeft, setSprintTimeLeft] = useState(180);
+        const [sprintFinished, setSprintFinished] = useState(false);
+        const [sprintFinalStats, setSprintFinalStats] = useState(null);
+        const sprintTimerRef = useRef(null);
+
+        const pidx = mode === 'daily' ? getDailyIdx() : mode === 'sprint' ? sprintIdx : randomIdx;
+        const basePuzzle = PUZZLES[pidx];
+        const puzzle = useMemo(() => {
+            if (!basePuzzle || gradeBand === 'family' || mode === 'sprint') return basePuzzle;
+            const baseMax = { k2: 5, g34: 7, g56: 9 }[gradeBand] || 7;
+            const maxLength = baseMax + Math.floor(adaptiveSkill / 4);
+            let words = basePuzzle.words.filter(word => word.length <= maxLength);
+            if (words.length < 8) words = [...basePuzzle.words].sort((a,b)=>a.length-b.length).slice(0, Math.min(12, basePuzzle.words.length));
+            const pangrams = basePuzzle.pangrams.filter(word => words.includes(word));
+            const maxScore = words.reduce((total, word) => total + scoreWord(word, [...basePuzzle.letters, basePuzzle.center]).pts, 0);
+            return { ...basePuzzle, words, pangrams, wordCount: words.length, maxScore, adaptiveMaxLength: maxLength };
+        }, [basePuzzle, gradeBand, adaptiveSkill, mode]);
+        const progressMode = gradeBand === 'family' || mode === 'sprint' ? mode : `${mode}-kids-${gradeBand}`;
+        const allLetters = useMemo(() => puzzle ? [...puzzle.letters, puzzle.center] : [], [pidx]);
+        const letterSet = useMemo(() => new Set(allLetters), [allLetters]);
+
+        const [word, setWord] = useState('');
+        const [found, setFound] = useState(() => loadSave(pidx, progressMode));
+        // Guards against the save effects firing with stale `found`/`practiceFound`
+        // before the reload effects have loaded the new puzzle's save
+        const loadedKeyRef = useRef(null);
+        const practiceLoadedKeyRef = useRef(null);
+        const [shuffleOrder, setShuffleOrder] = useState([0,1,2,3,4,5]);
+        const [toast, setToast] = useState(null);
+        const [floats, setFloats] = useState([]);
+        const [sparkles, setSparkles] = useState(false);
+        const [confetti, setConfetti] = useState(false);
+        const [wordsOpen, setWordsOpen] = useState(false);
+        const [showRules, setShowRules] = useState(false);
+        const [showHints, setShowHints] = useState(false);
+        const [shaking, setShaking] = useState(false);
+        const [shuffleSpin, setShuffleSpin] = useState(false);
+        const [rankBanner, setRankBanner] = useState(null);
+        const [latestWord, setLatestWord] = useState('');
+        const [justReachedIdx, setJustReachedIdx] = useState(-1);
+        const [pressedHex, setPressedHex] = useState(null);
+        const [revealedWords, setRevealedWords] = useState([]);
+        const [answersRevealed, setAnswersRevealed] = useState(false);
+
+        // Definition tooltip state
+        const [defData, setDefData] = useState(null);
+        const [defPos, setDefPos] = useState(null);
+        const [defLoading, setDefLoading] = useState(false);
+
+        // Feature: Theme toggle (Feature 6)
+        const [theme, setTheme] = useState(() => loadTheme());
+
+        // Feature: Sound mute toggle (Feature 2)
+        const [muted, setMuted] = useState(() => {
+            const m = loadMuted();
+            SoundManager.setMuted(m);
+            return m;
+        });
+
+        // Feature: Personal stats (Feature 3)
+        const [personalStats, setPersonalStats] = useState(() => loadStats());
+        const [showStats, setShowStats] = useState(false);
+        const statsTrackedRef = useRef(new Set());
+
+        // Feature: Animated hex shuffle (Feature 4)
+        const [hexAnimating, setHexAnimating] = useState(false);
+        const prevShuffleRef = useRef([0,1,2,3,4,5]);
+
+        // Feature: Genius Streak Counter
+        const [streakData, setStreakData] = useState(() => loadStreak());
+        const streakRecordedRef = useRef(false);
+
+        // Feature: Practice Mode
+        const [practiceMode, setPracticeMode] = useState(false);
+        const [practiceFound, setPracticeFound] = useState([]);
+        const practiceWordsRef = useRef([]);
+
+        // Apply theme to document
+        useEffect(() => {
+            if (theme === 'light') {
+                document.documentElement.classList.add('light-theme');
+            } else {
+                document.documentElement.classList.remove('light-theme');
+            }
+        }, [theme]);
+
+        function toggleTheme() {
+            const newTheme = theme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+            saveTheme(newTheme);
+        }
+
+        function toggleMute() {
+            const newMuted = !muted;
+            setMuted(newMuted);
+            SoundManager.setMuted(newMuted);
+            saveMuted(newMuted);
+            if (!newMuted) SoundManager.init();
+        }
+
+        // Load puzzles on mount
+        useEffect(() => {
+            loadPuzzles().then(() => {
+                setLoading(false);
+                // Re-initialize random index with full puzzle set
+                setRandomIdx(Math.floor(Math.random() * PUZZLES.length));
+                setSprintIdx(Math.floor(Math.random() * PUZZLES.length));
+            });
+        }, []);
+
+        // Compute practice word list when puzzle changes
+        useEffect(() => {
+            if (puzzle) {
+                practiceWordsRef.current = getPracticeWords(puzzle);
+            }
+        }, [pidx, gradeBand, adaptiveSkill]);
+
+        // Load practice save when puzzle or practice mode changes
+        useEffect(() => {
+            if (practiceMode) {
+                setPracticeFound(loadSave(pidx, 'practice'));
+                practiceLoadedKeyRef.current = 'practice-' + pidx;
+            }
+        }, [pidx, practiceMode]);
+
+        // Save practice progress (only after this puzzle's practice save has been loaded)
+        useEffect(() => {
+            if (practiceMode && practiceLoadedKeyRef.current === 'practice-' + pidx) {
+                writeSave(pidx, 'practice', practiceFound);
+            }
+        }, [practiceFound, pidx, practiceMode]);
+
+        // Compute score (standard)
+        const score = useMemo(() => {
+            let s = 0;
+            for (const w of found) { s += scoreWord(w, allLetters).pts; }
+            return s;
+        }, [found, allLetters]);
+
+        // Compute practice score
+        const practiceScore = useMemo(() => {
+            let s = 0;
+            for (const w of practiceFound) { s += scorePracticeWord(w, allLetters).pts; }
+            return s;
+        }, [practiceFound, allLetters]);
+
+        // Save (not in sprint mode; only after this puzzle's save has been loaded,
+        // so a stale `found` from the previous puzzle/mode never overwrites the new key)
+        useEffect(() => {
+            if (mode !== 'sprint' && loadedKeyRef.current === progressMode + '-' + pidx) {
+                writeSave(pidx, progressMode, found);
+            }
+        }, [found, pidx, mode, progressMode]);
+
+        // Reload on puzzle change
+        useEffect(() => {
+            if (mode === 'sprint') {
+                setFound([]);
+            } else {
+                setFound(loadSave(pidx, progressMode));
+            }
+            loadedKeyRef.current = progressMode + '-' + pidx;
+            setWord('');
+            setToast(null);
+            setLatestWord('');
+            setJustReachedIdx(-1);
+            setRevealedWords([]);
+            setAnswersRevealed(false);
+            setDefData(null);
+            setPracticeFound(loadSave(pidx, 'practice'));
+            practiceLoadedKeyRef.current = 'practice-' + pidx;
+            streakRecordedRef.current = false;
+        }, [pidx, mode, progressMode]);
+
+        // Check if daily puzzle already has Genius rank on load (for streak tracking)
+        useEffect(() => {
+            if (mode === 'daily' && gradeBand === 'family' && !streakRecordedRef.current && puzzle) {
+                const loadedFound = loadSave(pidx, 'daily');
+                let loadedScore = 0;
+                for (const w of loadedFound) { loadedScore += scoreWord(w, allLetters).pts; }
+                const loadedRank = getRank(loadedScore, puzzle.maxScore);
+                if (loadedRank.name === 'Genius' || loadedRank.name === 'Queen Bee') {
+                    streakRecordedRef.current = true;
+                    const newStreakData = updateStreakForGenius(streakData);
+                    setStreakData(newStreakData);
+                }
+            }
+        }, [mode, pidx, loading, gradeBand]);
+
+        // Sprint timer
+        useEffect(() => {
+            if (mode === 'sprint' && sprintActive && !sprintFinished) {
+                sprintTimerRef.current = setInterval(() => {
+                    setSprintTimeLeft(prev => {
+                        if (prev <= 1) {
+                            clearInterval(sprintTimerRef.current);
+                            return 0;
+                        }
+                        return prev - 1;
+                    });
+                }, 1000);
+                return () => clearInterval(sprintTimerRef.current);
+            }
+        }, [mode, sprintActive, sprintFinished]);
+
+        // End sprint when timer hits 0
+        useEffect(() => {
+            if (mode === 'sprint' && sprintActive && sprintTimeLeft <= 0 && !sprintFinished) {
+                setSprintFinished(true);
+                setSprintActive(false);
+                clearInterval(sprintTimerRef.current);
+                const pangramCount = found.filter(w => puzzle.pangrams.includes(w)).length;
+                setSprintFinalStats({
+                    score,
+                    wordsFound: found.length,
+                    maxScore: puzzle.maxScore,
+                    totalWords: puzzle.wordCount,
+                    pangrams: pangramCount,
+                });
+            }
+        }, [sprintTimeLeft, sprintActive, sprintFinished, mode]);
+
+        // Close definition tooltip on outside click
+        useEffect(() => {
+            const handler = () => { setDefData(null); setDefPos(null); };
+            if (defData) {
+                window.addEventListener('click', handler);
+                return () => window.removeEventListener('click', handler);
+            }
+        }, [defData]);
+
+        // Keyboard (subscribe once; route through a ref so the handler always
+        // sees the latest render's state — avoids stale-closure drops on fast typing)
+        const keyHandlerRef = useRef(null);
+        keyHandlerRef.current = (e) => {
+            if (showRules || showHints || showStats || sprintFinished) return;
+            if (mode === 'sprint' && !sprintActive) return;
+            const k = e.key.toLowerCase();
+            if (k === 'enter') { e.preventDefault(); submitWord(); }
+            else if (k === 'backspace') { e.preventDefault(); setWord(p => p.slice(0,-1)); }
+            else if (k === ' ') { e.preventDefault(); doShuffle(); }
+            else if (k.length === 1 && /[a-z]/.test(k)) {
+                if (letterSet.has(k)) { setWord(p => p + k); SoundManager.play('letter'); }
+                else { triggerShake(); }
+            }
+        };
+        useEffect(() => {
+            const h = (e) => keyHandlerRef.current(e);
+            window.addEventListener('keydown', h);
+            return () => window.removeEventListener('keydown', h);
+        }, []);
+
+        function addLetter(l) {
+            if (mode === 'sprint' && !sprintActive) return;
+            setWord(p => p + l);
+            setPressedHex(l);
+            setTimeout(() => setPressedHex(null), 200);
+            SoundManager.play('letter');
+        }
+
+        function triggerShake() {
+            setShaking(true); setTimeout(() => setShaking(false), 500);
+            SoundManager.play('reject');
+        }
+
+        function updateAdaptiveSkill(delta) {
+            if (gradeBand === 'family' || mode === 'sprint') return;
+            setAdaptiveSkill(previous => {
+                const next = Math.max(0, Math.min(11, previous + delta));
+                try { localStorage.setItem('sb-adaptive-skill', String(next)); } catch {}
+                return next;
+            });
+        }
+
+        function chooseGradeBand(nextBand) {
+            setGradeBand(nextBand);
+            try { localStorage.setItem('sb-grade-band', nextBand); } catch {}
+            setWord(''); setToast(null); setPracticeMode(false);
+        }
+
+        function showMsg(message, type) { setToast({ message, type, id: Date.now() }); }
+
+        function submitWord() {
+            if (mode === 'sprint' && !sprintActive) return;
+            const w = word.toLowerCase().trim();
+            if (!w) return;
+            setWord('');
+
+            // Practice mode has relaxed rules
+            if (practiceMode) {
+                if (w.length < 3) { showMsg('Too short! (3+ letters)', 'error'); triggerShake(); return; }
+                if ([...w].some(l => !letterSet.has(l))) { showMsg('Invalid letter!', 'error'); triggerShake(); return; }
+                if (practiceFound.includes(w)) { showMsg('Already found!', 'error'); triggerShake(); return; }
+                // Check against practice word list (standard words + 3-letter words)
+                if (!practiceWordsRef.current.includes(w)) { showMsg('Not in word list', 'error'); triggerShake(); return; }
+
+                // Valid practice word!
+                const { pts, isPangram } = scorePracticeWord(w, allLetters);
+
+                if (isPangram) {
+                    showMsg(`&#x1F31F; PANGRAM! +${pts} &#x1F31F;`, 'pangram');
+                    setSparkles(true); setTimeout(() => setSparkles(false), 800);
+                    setConfetti(true); setTimeout(() => setConfetti(false), 3000);
+                    SoundManager.play('pangram');
+                } else {
+                    const msgs = pts === 1
+                        ? ['Nice!', 'Good!', 'Yes!', 'Got it!', 'Yep!']
+                        : pts <= 5
+                        ? ['Great! +' + pts, 'Sweet! +' + pts, 'Solid! +' + pts]
+                        : ['Amazing! +' + pts, 'Brilliant! +' + pts, 'Superb! +' + pts];
+                    showMsg(msgs[Math.floor(Math.random() * msgs.length)], 'success');
+                    SoundManager.play('accept');
+                }
+
+                setFloats(p => [...p, { id: Date.now(), pts }]);
+                setTimeout(() => setFloats(p => p.slice(1)), 1100);
+
+                const newPracticeFound = [...practiceFound, w].sort();
+                setPracticeFound(newPracticeFound);
+                setLatestWord(w);
+                setTimeout(() => setLatestWord(''), 2000);
+                return;
+            }
+
+            // Standard mode validation
+            if (w.length < 4) { showMsg('Too short!', 'error'); triggerShake(); return; }
+            if (!w.includes(puzzle.center)) {
+                showMsg(`Missing center letter <b>${puzzle.center.toUpperCase()}</b>`, 'error');
+                triggerShake(); return;
+            }
+            if ([...w].some(l => !letterSet.has(l))) { showMsg('Invalid letter!', 'error'); triggerShake(); return; }
+            if (found.includes(w)) { showMsg('Already found!', 'error'); triggerShake(); return; }
+            if (!puzzle.words.includes(w)) {
+                showMsg(gradeBand === 'family' ? 'Not in word list' : `Not in this grade-level list yet (adaptive max: ${puzzle.adaptiveMaxLength} letters)`, 'error');
+                updateAdaptiveSkill(-0.35); triggerShake(); return;
+            }
+
+            // Valid!
+            const { pts, isPangram } = scoreWord(w, allLetters);
+            const oldRank = getRank(score, puzzle.maxScore);
+
+            if (isPangram) {
+                showMsg(`&#x1F31F; PANGRAM! +${pts} &#x1F31F;`, 'pangram');
+                setSparkles(true); setTimeout(() => setSparkles(false), 800);
+                setConfetti(true); setTimeout(() => setConfetti(false), 3000);
+                SoundManager.play('pangram');
+            } else {
+                const msgs = pts === 1
+                    ? ['Nice!', 'Good!', 'Yes!', 'Got it!', 'Yep!']
+                    : pts <= 5
+                    ? ['Great! +' + pts, 'Sweet! +' + pts, 'Solid! +' + pts]
+                    : ['Amazing! +' + pts, 'Brilliant! +' + pts, 'Superb! +' + pts];
+                showMsg(msgs[Math.floor(Math.random() * msgs.length)], 'success');
+                SoundManager.play('accept');
+            }
+
+            // Score float
+            setFloats(p => [...p, { id: Date.now(), pts }]);
+            setTimeout(() => setFloats(p => p.slice(1)), 1100);
+
+            const newFound = [...found, w].sort();
+            setFound(newFound);
+            updateAdaptiveSkill(w.length >= (puzzle.adaptiveMaxLength || 99) - 1 ? 0.7 : 0.2);
+            setLatestWord(w);
+            setTimeout(() => setLatestWord(''), 2000);
+
+            // Remove from revealed if it was there
+            if (revealedWords.includes(w)) {
+                setRevealedWords(prev => prev.filter(rw => rw !== w));
+            }
+
+            // Feature 3: Update personal stats
+            const updatedStats = { ...personalStats };
+            updatedStats.totalWords++;
+            if (isPangram) updatedStats.totalPangrams++;
+            if (!updatedStats.longestWord || w.length > updatedStats.longestWord.length) {
+                updatedStats.longestWord = w;
+            }
+            // Track unique puzzle sessions
+            const sessionKey = `${mode}-${pidx}`;
+            if (!statsTrackedRef.current.has(sessionKey)) {
+                statsTrackedRef.current.add(sessionKey);
+                updatedStats.puzzlesPlayed++;
+            }
+            setPersonalStats(updatedStats);
+            saveStats(updatedStats);
+
+            // Check rank up
+            const newScore = score + pts;
+            const newRank = getRank(newScore, puzzle.maxScore);
+            if (newRank.idx > oldRank.idx) {
+                setJustReachedIdx(newRank.idx);
+                SoundManager.play('rankup');
+                setTimeout(() => {
+                    setRankBanner(newRank);
+                    if (newRank.name === 'Genius' || newRank.name === 'Queen Bee') {
+                        setConfetti(true);
+                        setTimeout(() => setConfetti(false), 4000);
+                    }
+                }, 500);
+                setTimeout(() => setJustReachedIdx(-1), 4000);
+
+                // Update avg rank in stats
+                const rankStats = { ...updatedStats };
+                rankStats.rankSum = (rankStats.rankSum || 0) + newRank.idx;
+                setPersonalStats(rankStats);
+                saveStats(rankStats);
+
+                // Feature: Streak - track genius in daily mode
+                if (mode === 'daily' && (newRank.name === 'Genius' || newRank.name === 'Queen Bee') && !streakRecordedRef.current) {
+                    streakRecordedRef.current = true;
+                    const newStreakData = updateStreakForGenius(streakData);
+                    setStreakData(newStreakData);
+                }
+            }
+        }
+
+        function doShuffle() {
+            setShuffleSpin(true);
+            setTimeout(() => setShuffleSpin(false), 500);
+            prevShuffleRef.current = [...shuffleOrder];
+            setHexAnimating(true);
+            setShuffleOrder(prev => {
+                const a = [...prev];
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            });
+            setTimeout(() => setHexAnimating(false), 500);
+        }
+
+        function newRandom() {
+            let i; do { i = Math.floor(Math.random() * PUZZLES.length); } while (i === randomIdx);
+            setRandomIdx(i);
+        }
+
+        // Sprint functions
+        function startSprint() {
+            const idx = Math.floor(Math.random() * PUZZLES.length);
+            setSprintIdx(idx);
+            setSprintTimeLeft(180);
+            setSprintActive(true);
+            setSprintFinished(false);
+            setSprintFinalStats(null);
+            setFound([]);
+            setWord('');
+            setRevealedWords([]);
+            setAnswersRevealed(false);
+        }
+
+        function sprintAgain() {
+            startSprint();
+        }
+
+        function exitSprint() {
+            setSprintFinished(false);
+            setSprintFinalStats(null);
+            setMode('daily');
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function getTimerClass() {
+            if (sprintTimeLeft <= 30) return 'sprint-timer danger';
+            if (sprintTimeLeft <= 60) return 'sprint-timer warning';
+            return 'sprint-timer';
+        }
+
+        // Definition lookup handler
+        function handleWordClick(w, e) {
+            e.stopPropagation();
+            const rect = e.target.getBoundingClientRect();
+            let x = rect.left;
+            let y = rect.bottom + 8;
+            // Keep tooltip on screen
+            if (x + 300 > window.innerWidth) x = window.innerWidth - 310;
+            if (x < 10) x = 10;
+            if (y + 100 > window.innerHeight) y = rect.top - 80;
+
+            setDefPos({ x, y });
+            setDefData({ word: w, partOfSpeech: '', definition: 'Loading...' });
+            setDefLoading(true);
+
+            fetchDefinition(w).then(result => {
+                setDefData(result);
+                setDefLoading(false);
+            });
+        }
+
+        // Show Answers logic
+        const rank = getRank(score, puzzle ? puzzle.maxScore : 0);
+        const foundPct = puzzle ? found.length / puzzle.wordCount : 0;
+        const canRevealAnswers = !answersRevealed && (foundPct >= 0.5 || rank.name === 'Queen Bee');
+
+        function handleRevealAnswers() {
+            if (window.confirm('Are you sure you want to reveal all remaining words? This cannot be undone.')) {
+                const unfound = puzzle.words.filter(w => !found.includes(w)).sort();
+                setRevealedWords(unfound);
+                setAnswersRevealed(true);
+                setWordsOpen(true);
+            }
+        }
+
+        // Loading screen
+        if (loading || !puzzle) {
+            return (
+                <div className="loading-screen">
+                    <div className="loading-spinner" />
+                    <div style={{ color: 'var(--accent-purple)', fontSize: 18, fontWeight: 600 }}>Loading puzzles...</div>
+                </div>
+            );
+        }
+
+        return (
+            <div className="bee-layout" style={{ maxWidth: 440, margin: '0 auto', padding: '56px 16px 30px', position: 'relative' }}>
+                <aside className="bee-settings">
+                {/* Title */}
+                <div style={{ textAlign: 'center', marginBottom: 6 }}>
+                    <h1 className="font-title" style={{
+                        fontSize: 34, color: 'var(--accent-gold)',
+                        textShadow: '0 0 25px rgba(251,191,36,0.35), 0 0 50px rgba(251,191,36,0.15)',
+                        marginBottom: 2, lineHeight: 1.2
+                    }}>
+                        &#x1F41D; Spelling Bee
+                    </h1>
+                    <p style={{ fontSize: 14, color: 'var(--text-muted)', margin: 0 }}>
+                        How many words can you spell?
+                    </p>
+                </div>
+
+                {/* Mode + Help + Theme + Mute + Stats */}
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
+                    <div className="mode-toggle">
+                        <button className={`mode-btn ${mode==='daily'?'active':''}`} onClick={()=>{setMode('daily');setWord('');setDefData(null);}}>
+                            Daily
+                        </button>
+                        <button className={`mode-btn ${mode==='random'?'active':''}`} onClick={()=>{setMode('random');setWord('');setDefData(null);}}>
+                            Free Play
+                        </button>
+                        <button className={`mode-btn ${mode==='sprint'?'active':''}`} onClick={()=>{setMode('sprint');setWord('');setDefData(null);setPracticeMode(false);if(!sprintActive){startSprint();}}}>
+                            Sprint
+                        </button>
+                    </div>
+                    <button onClick={() => setShowRules(true)} aria-label="How to play"
+                            style={{ width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--accent-purple-border)',
+                                     background: 'var(--accent-purple-bg)', color: 'var(--word-filter-color)', cursor: 'pointer',
+                                     fontSize: 17, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                     fontFamily: 'serif', transition: 'all 0.2s' }}>
+                        ?
+                    </button>
+                    <button className="theme-toggle-btn" onClick={toggleTheme} title={theme==='dark'?'Switch to light theme':'Switch to dark theme'}>
+                        {theme === 'dark' ? '\u2600\uFE0F' : '\u{1F319}'}
+                    </button>
+                    <button className="mute-toggle-btn" onClick={toggleMute} title={muted?'Unmute':'Mute'}>
+                        {muted ? '\u{1F507}' : '\u{1F50A}'}
+                    </button>
+                    <button className="mute-toggle-btn" onClick={() => setShowStats(true)} title="Your Stats"
+                            style={{ fontSize: 14 }}>
+                        {'\u{1F4CA}'}
+                    </button>
+                </div>
+
+                {mode !== 'sprint' && <div style={{display:'flex',justifyContent:'center',alignItems:'center',gap:8,marginBottom:12,flexWrap:'wrap'}}>
+                    <label htmlFor="grade-band" style={{fontSize: 14,color:'var(--text-muted)',fontWeight:700}}>Vocabulary:</label>
+                    <select id="grade-band" value={gradeBand} onChange={event=>chooseGradeBand(event.target.value)} style={{background:'var(--panel-bg)',color:'var(--text-primary)',border:'1px solid var(--accent-purple-border)',borderRadius:8,padding:'7px 9px',fontWeight:700}}>
+                        <option value="family">Family / All Words</option>
+                        <option value="k2">Grades K–2</option>
+                        <option value="g34">Grades 3–4</option>
+                        <option value="g56">Grades 5–6</option>
+                    </select>
+                    {gradeBand !== 'family' && <span style={{fontSize: 14,color:'#34d399',background:'rgba(16,185,129,.12)',border:'1px solid rgba(52,211,153,.3)',borderRadius:999,padding:'5px 9px'}}>
+                        Adaptive level {Math.floor(adaptiveSkill)+1} · words up to {puzzle.adaptiveMaxLength} letters
+                    </span>}
+                </div>}
+
+                {/* Practice Mode Toggle + Streak Badge Row */}
+                {mode !== 'sprint' && (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
+                        <div className="practice-toggle">
+                            <button className={`practice-toggle-btn ${!practiceMode ? 'standard-active' : ''}`}
+                                    onClick={() => { setPracticeMode(false); setWord(''); }}>
+                                Standard
+                            </button>
+                            <button className={`practice-toggle-btn ${practiceMode ? 'active' : ''}`}
+                                    onClick={() => { setPracticeMode(true); setWord(''); }}>
+                                Practice
+                            </button>
+                        </div>
+                        {practiceMode && (
+                            <span className="practice-indicator">
+                                3+ letters &bull; no center required
+                            </span>
+                        )}
+                        {!practiceMode && mode === 'daily' && streakData.currentStreak > 0 && (
+                            <div className="streak-badge" title={`Best streak: ${streakData.bestStreak} day${streakData.bestStreak !== 1 ? 's' : ''}`}>
+                                <span className="streak-fire">{'\u{1F525}'}</span>
+                                <span className="streak-num">{streakData.currentStreak}</span>
+                                <span>day{streakData.currentStreak !== 1 ? 's' : ''}</span>
+                                {streakData.bestStreak > streakData.currentStreak && (
+                                    <span className="streak-badge-best">(best: {streakData.bestStreak})</span>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Sprint Timer */}
+                {mode === 'sprint' && sprintActive && (
+                    <div style={{ textAlign: 'center', marginBottom: 12 }}>
+                        <div className={getTimerClass()}>
+                            &#x23F1;&#xFE0F; {formatTime(sprintTimeLeft)}
+                        </div>
+                    </div>
+                )}
+
+                {/* Sprint Start Screen (if sprint mode but not active and not finished) */}
+                {mode === 'sprint' && !sprintActive && !sprintFinished && (
+                    <div style={{ textAlign: 'center', padding: '30px 0' }}>
+                        <div style={{ fontSize: 48, marginBottom: 12 }}>&#x23F1;&#xFE0F;</div>
+                        <h2 className="font-title" style={{ fontSize: 24, color: '#06b6d4', marginBottom: 8 }}>Sprint Mode</h2>
+                        <p style={{ color: '#94a3b8', fontSize: 15, marginBottom: 20, lineHeight: 1.6 }}>
+                            Score as many points as you can in <b style={{color:'#06b6d4'}}>3 minutes</b>!
+                        </p>
+                        <button className="game-btn game-btn-enter" onClick={startSprint} style={{ fontSize: 18, padding: '14px 40px' }}>
+                            Start Sprint
+                        </button>
+                    </div>
+                )}
+
+                </aside>
+                {/* Main game area (show for daily/random, or sprint when active) */}
+                {(mode !== 'sprint' || sprintActive) && (
+                    <>
+                        <section className="bee-play">
+                        {/* Rank Bar (standard) or Practice Score */}
+                        {practiceMode ? (
+                            <div style={{ padding: '0 4px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                                    <span style={{ fontSize: 18, fontWeight: 800, color: '#34d399',
+                                                   textShadow: '0 0 12px rgba(52,211,153,0.35)' }}>
+                                        {'\u{1F331}'} Practice Mode
+                                    </span>
+                                    <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>
+                                        <span style={{ color: '#34d399', fontWeight: 700 }}>{practiceScore}</span> pts
+                                        {' \u2022 '}
+                                        <span style={{ color: '#34d399', fontWeight: 700 }}>{practiceFound.length}</span> words
+                                    </span>
+                                </div>
+                                <div style={{ height: 6, borderRadius: 999, background: 'var(--bar-bg)',
+                                              border: '1px solid var(--bar-border)' }}>
+                                    <div style={{ height: '100%', borderRadius: 999, width: `${Math.min((practiceFound.length / Math.max(practiceWordsRef.current.length, 1)) * 100, 100)}%`,
+                                                  background: 'linear-gradient(90deg, #34d399, #06b6d4)', transition: 'width 0.5s' }} />
+                                </div>
+                            </div>
+                        ) : (
+                            <RankBar score={score} maxScore={puzzle.maxScore} justReachedIdx={justReachedIdx} />
+                        )}
+
+                        {/* Current Word */}
+                        <div style={{ textAlign: 'center', margin: '20px 0 6px', position: 'relative', minHeight: 52 }}>
+                            <div className={`current-word ${shaking ? 'shake-anim' : ''}`}>
+                                {word.length === 0 ? (
+                                    <span style={{ color: 'var(--text-dim)', fontSize: 20, fontWeight: 400, letterSpacing: 1 }}>
+                                        Type or click letters...
+                                    </span>
+                                ) : (
+                                    [...word].map((l, i) => (
+                                        <span key={i}
+                                              className={`current-letter ${!practiceMode && l===puzzle.center ? 'center-highlight' : ''}`}>
+                                            {l.toUpperCase()}
+                                        </span>
+                                    ))
+                                )}
+                            </div>
+                            <div style={{ height: 2, margin: '6px auto 0', width: '65%', maxWidth: 260,
+                                          background: 'linear-gradient(90deg, transparent, var(--divider-color), transparent)' }} />
+
+                            {/* Score floats */}
+                            {floats.map(f => (
+                                <div key={f.id} className="score-float" style={{ left: '50%', top: '30%', transform: 'translateX(-50%)' }}>
+                                    +{f.pts}
+                                </div>
+                            ))}
+
+                            <SparkleBurst active={sparkles} />
+                        </div>
+
+                        {/* Honeycomb with animated shuffle */}
+                        <div className="hex-grid" style={{ margin: '14px auto 18px' }}>
+                            <div className={`hex-btn ${practiceMode ? 'hex-outer' : 'hex-center'} hex-pos-c ${pressedHex===puzzle.center?'pressed':''}`}
+                                 draggable="false" onDragStart={e => e.preventDefault()}
+                                 onClick={() => addLetter(puzzle.center)}>
+                                {puzzle.center.toUpperCase()}
+                            </div>
+                            {puzzle.letters.map((letter, letterIdx) => {
+                                // Find which visual position this letter occupies
+                                const visualPos = shuffleOrder.indexOf(letterIdx);
+                                const pos = HEX_POSITIONS[visualPos];
+                                return (
+                                    <div key={letter}
+                                         className={`hex-btn hex-outer ${hexAnimating ? 'hex-animated' : ''} ${pressedHex===letter?'pressed':''}`}
+                                         style={{
+                                             left: '50%', top: '50%',
+                                             transform: `translate(${pos.x}%, ${pos.y}%)`,
+                                             transition: hexAnimating ? 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'filter 0.15s',
+                                         }}
+                                         draggable="false" onDragStart={e => e.preventDefault()}
+                                         onClick={() => addLetter(letter)}>
+                                        {letter.toUpperCase()}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginTop: 4 }}>
+                            <button className="game-btn" onClick={() => setWord(p => p.slice(0,-1))}>
+                                Delete
+                            </button>
+                            <button className="game-btn" onClick={doShuffle} title="Shuffle (Space)">
+                                <span className={`shuffle-icon ${shuffleSpin?'spinning':''}`}>&#x21BB;</span> Shuffle
+                            </button>
+                            <button className="game-btn game-btn-enter" onClick={submitWord}>
+                                Enter
+                            </button>
+                        </div>
+
+                        {/* Secondary buttons row: Hint + New Puzzle (random) + Show Answers */}
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
+                            {mode !== 'sprint' && !practiceMode && (
+                                <button className="game-btn" onClick={() => setShowHints(true)} style={{ fontSize: 14 }}>
+                                    &#x1F4A1; Hint
+                                </button>
+                            )}
+                            {mode === 'random' && (
+                                <button className="game-btn" onClick={newRandom} style={{ fontSize: 14 }}>
+                                    &#x1F504; New Puzzle
+                                </button>
+                            )}
+                            {mode !== 'sprint' && !practiceMode && canRevealAnswers && (
+                                <button className="game-btn" onClick={handleRevealAnswers}
+                                        style={{ fontSize: 14, borderColor: 'rgba(100,116,139,0.4)', color: '#94a3b8' }}>
+                                    &#x1F441; Show Answers
+                                </button>
+                            )}
+                        </div>
+
+                        </section>
+                        <section className="bee-words">
+                        {/* Words Panel */}
+                        <WordsPanel found={practiceMode ? practiceFound : found} pangrams={puzzle.pangrams}
+                                    isOpen={wordsOpen} onToggle={() => setWordsOpen(p => !p)}
+                                    total={practiceMode ? practiceWordsRef.current.length : puzzle.wordCount}
+                                    latestWord={latestWord}
+                                    revealedWords={!practiceMode && answersRevealed ? revealedWords : []}
+                                    onWordClick={handleWordClick} />
+
+                        {/* Word Length Distribution (Feature 7) - standard mode only */}
+                        {!practiceMode && found.length > 0 && (
+                            <WordLengthDistribution puzzle={puzzle} found={found} />
+                        )}
+
+                        {/* Puzzle Info */}
+                        <div style={{ textAlign: 'center', marginTop: 16, fontSize: 14, color: 'var(--text-dim)' }}>
+                            Puzzle #{pidx + 1} &bull;{' '}
+                            {practiceMode ? (
+                                <>{practiceWordsRef.current.length} practice words</>
+                            ) : (
+                                <>{puzzle.wordCount} words &bull;{' '}
+                                {puzzle.pangrams.length} pangram{puzzle.pangrams.length !== 1 ? 's' : ''} &bull;{' '}
+                                Max {puzzle.maxScore} pts</>
+                            )}
+                            {puzzlesLoadError && <span style={{ color: '#f59e0b' }}> (offline mode)</span>}
+                        </div>
+                        </section>
+                    </>
+                )}
+
+                {/* Toast */}
+                {toast && <Toast key={toast.id} data={toast} onDone={() => setToast(null)} />}
+
+                {/* Rank Banner */}
+                {rankBanner && <RankBanner rank={rankBanner} onDone={() => setRankBanner(null)} />}
+
+                {/* Confetti */}
+                <Confetti active={confetti} />
+
+                {/* Rules Modal */}
+                {showRules && <RulesModal onClose={() => setShowRules(false)} puzzle={puzzle} practiceMode={practiceMode} />}
+
+                {/* Hint Modal */}
+                {showHints && <HintModal onClose={() => setShowHints(false)} puzzle={puzzle} found={found} />}
+
+                {/* Stats Modal (Feature 3) */}
+                {showStats && <StatsModal onClose={() => setShowStats(false)} stats={personalStats} streakData={streakData} />}
+
+                {/* Definition Tooltip */}
+                {defData && <DefinitionTooltip defData={defData} position={defPos} onClose={() => { setDefData(null); setDefPos(null); }} />}
+
+                {/* Sprint Final Screen */}
+                {sprintFinished && sprintFinalStats && (
+                    <SprintFinalScreen
+                        score={sprintFinalStats.score}
+                        wordsFound={sprintFinalStats.wordsFound}
+                        maxScore={sprintFinalStats.maxScore}
+                        totalWords={sprintFinalStats.totalWords}
+                        pangrams={sprintFinalStats.pangrams}
+                        onPlayAgain={sprintAgain}
+                        onExit={exitSprint}
+                    />
+                )}
+            </div>
+        );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));

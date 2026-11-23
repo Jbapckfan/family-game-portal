@@ -1,0 +1,25 @@
+{
+  "shots": [
+    {
+      "name": "start",
+      "steps": []
+    },
+    {
+      "name": "play",
+      "steps": [
+        {
+          "click": ".mq-cell"
+        },
+        {
+          "wait": 300
+        },
+        {
+          "eval": "(async () => { const cell=document.querySelector('.mq-cell:not(.revealed):not(.flagged):not(:disabled)'); if(!cell)return; const mode=document.querySelector('.mq-mark-mode button'); if(mode.getAttribute('aria-pressed')!=='true')mode.click(); await new Promise(resolve=>requestAnimationFrame(resolve)); cell.click(); })()"
+        },
+        {
+          "wait": 200
+        }
+      ]
+    }
+  ]
+}

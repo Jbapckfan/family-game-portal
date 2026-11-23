@@ -1,8 +1,12 @@
-const CACHE_NAME = 'particle-conquest-v5-clear-map-20261122';
+const CACHE_NAME = 'particle-conquest-v7-scoped-cache-20261122';
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './art/deep-space.webp',
+  './art/rock-albedo.webp',
+  './art/cloud-albedo.webp',
+  './art/planet-atlas.webp'
 ];
 
 // Install - cache assets
@@ -20,7 +24,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
+        keys.filter(key => key.startsWith('particle-conquest-') && key !== CACHE_NAME)
             .map(key => caches.delete(key))
       );
     })

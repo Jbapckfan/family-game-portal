@@ -1,0 +1,70 @@
+/* A machined housing and backlit/smoked glass. Theme hue stays in --lo-primary. */
+.mini-board {
+  position: relative;
+  isolation: isolate;
+  background-color: #11171c !important;
+  background-image: linear-gradient(145deg, #ffffff0b, transparent 35%, #0008), url('./brushed-metal.jpg') !important;
+  background-size: cover !important;
+  border-color: #81909a !important;
+  box-shadow: inset 0 1px 1px #ffffff6b, inset 0 -3px 2px #000c, 0 5px 0 #020508, 0 18px 32px #0008 !important;
+}
+.mini-board::before,
+.mini-board::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #dae0de, #56636a 45%, #172027 50%, #8e989c 65%);
+  box-shadow: 0 1px 1px #000b, inset 0 1px #fff6;
+  pointer-events: none;
+}
+.mini-board::before { left: 8px; }
+.mini-board::after { right: 8px; }
+.mini-board [role="gridcell"] {
+  border-width: 1px;
+  border-radius: 12px;
+  background-clip: padding-box;
+}
+.mini-board [role="gridcell"][aria-pressed="true"] {
+  background-color: rgb(var(--lo-primary)) !important;
+  background-image: radial-gradient(ellipse at 32% 18%, #ffffff9c, transparent 53%), linear-gradient(155deg, #ffffff24, transparent 45%, #00000024);
+  border-color: rgba(var(--lo-primary), .95) !important;
+  box-shadow: inset 0 2px 1px #ffffffc4, inset 2px 0 3px #ffffff5c, inset 0 -4px 4px #00252d66, 0 3px 0 #020c12, 0 0 10px rgba(var(--lo-primary), .55), 0 5px 14px rgba(var(--lo-primary), .32) !important;
+}
+.mini-board [role="gridcell"][aria-pressed="false"] {
+  background-color: #0c151b !important;
+  background-image: linear-gradient(145deg, #34434e, #121b24 42%, #080e14);
+  border-color: #71828d !important;
+  box-shadow: inset 0 1px 1px #ffffff38, inset 1px 0 1px #ffffff14, inset 0 -3px 3px #000c, 0 3px 0 #02070b, 0 5px 7px #0009 !important;
+}
+.mini-board [role="gridcell"]::after {
+  content: '';
+  position: absolute;
+  inset: 7% 9% 55%;
+  border: 0;
+  border-top: 1px solid #ffffff5c;
+  border-radius: 50% 45% 30% 30%;
+  background: linear-gradient(160deg, #ffffff20, transparent 70%);
+  pointer-events: none;
+}
+.mini-board [role="gridcell"]::before {
+  content: '';
+  position: absolute;
+  bottom: 10%;
+  left: 44%;
+  width: 12%;
+  height: 2px;
+  border-radius: 2px;
+  background: #61717d;
+  pointer-events: none;
+}
+.mini-board [role="gridcell"][aria-pressed="true"]::before {
+  background: #f0ffff;
+  box-shadow: 0 0 6px #ffffffb3;
+}
+@media (hover: hover) {
+  .mini-board [role="gridcell"]:hover { filter: brightness(1.06); }
+}
+.mini-board [role="gridcell"]:active { filter: brightness(.92); }

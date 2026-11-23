@@ -1,0 +1,626 @@
+
+        // --- CONFIGURATION ---
+        let GRID_SIZE = 4;
+        let ACTIVE_VARIANT = 'classic';
+        const BEST_SCORE_KEY = 'familyPortal2048BestScore';
+        const WIN_VALUE = 2048;
+
+        const TILE_STYLES = {
+            2:    { bg: '#0f2942', text: '#a5f3fc' },
+            4:    { bg: '#0e3b5c', text: '#7dd3fc' },
+            8:    { bg: '#1e3a8a', text: '#93c5fd' },
+            16:   { bg: '#3730a3', text: '#a5b4fc' },
+            32:   { bg: '#5b21b6', text: '#c4b5fd' },
+            64:   { bg: '#7e22ce', text: '#e9d5ff' },
+            128:  { bg: '#a21caf', text: '#f5d0fe' },
+            256:  { bg: '#be185d', text: '#fbcfe8' },
+            512:  { bg: '#c2410c', text: '#fed7aa' },
+            1024: { bg: '#b45309', text: '#fde68a' },
+            2048: { bg: '#a16207', text: '#fef3c7' },
+        };
+        const SUPER_TILE_STYLE = { bg: '#111827', text: '#fef08a' };
+
+        const getTileStyle = (value) => TILE_STYLES[value] || SUPER_TILE_STYLE;
+        const getTileFontSizeClass = (value) => {
+            if (value >= 10000) return 'text-lg md:text-xl';
+            if (value >= 1000) return 'text-2xl md:text-3xl';
+            return 'text-3xl md:text-4xl';
+        };
+
+        // --- BOARD HELPERS ---
+        let idCounter = 1;
+        const nextTileId = () => idCounter++;
+
+        const emptyCells = (tiles) => {
+            const occupied = new Set(tiles.map(t => `${t.row},${t.col}`));
+            const cells = [];
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (!occupied.has(`${r},${c}`)) cells.push({ row: r, col: c });
+                }
+            }
+            return cells;
+        };
+
+        const spawnRandomTile = (tiles) => {
+            const cells = emptyCells(tiles);
+            if (cells.length === 0) return tiles;
+            const cell = cells[Math.floor(Math.random() * cells.length)];
+            const value = ACTIVE_VARIANT === 'fibonacci' ? (Math.random() < .75 ? 1 : 2)
+                : ACTIVE_VARIANT === 'threes' ? (Math.random() < .45 ? 1 : Math.random() < .82 ? 2 : 3)
+                : (Math.random() < 0.9 ? 2 : 4);
+            return [...tiles, { id: nextTileId(), value, row: cell.row, col: cell.col }];
+        };
+
+        const createInitialTiles = () => {
+            idCounter = 1;
+            let tiles = [];
+            tiles = spawnRandomTile(tiles);
+            tiles = spawnRandomTile(tiles);
+            if (ACTIVE_VARIANT === 'obstacles') {
+                const centerA = Math.floor(GRID_SIZE / 2) - 1;
+                const occupied = new Set(tiles.map(t=>`${t.row},${t.col}`));
+                [[centerA,centerA],[centerA+1,centerA+1]].forEach(([row,col])=>{
+                    if(!occupied.has(`${row},${col}`)) tiles.push({id:nextTileId(),value:-1,row,col,obstacle:true});
+                });
+            }
+            return tiles;
+        };
+
+        // Build the 4 "lines" (rows or columns) to process for a given move direction.
+        // Each line is an array of 4 slots ordered so slot 0 is the edge tiles compress toward.
+        const buildLineCoords = (direction) => {
+            const lines = [];
+            for (let i = 0; i < GRID_SIZE; i++) {
+                const line = [];
+                for (let s = 0; s < GRID_SIZE; s++) {
+                    if (direction === 'left') line.push({ row: i, col: s });
+                    else if (direction === 'right') line.push({ row: i, col: GRID_SIZE - 1 - s });
+                    else if (direction === 'up') line.push({ row: s, col: i });
+                    else line.push({ row: GRID_SIZE - 1 - s, col: i });
+                }
+                lines.push(line);
+            }
+            return lines;
+        };
+
+        const valuesCanMerge = (a, b) => {
+            if (ACTIVE_VARIANT === 'fibonacci') {
+                if (a === 1 && b === 1) return true;
+                const fib = [1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597,2584,4181];
+                return Math.abs(fib.indexOf(a) - fib.indexOf(b)) === 1;
+            }
+            if (ACTIVE_VARIANT === 'threes') return (a + b === 3) || (a >= 3 && a === b);
+            return a === b;
+        };
+
+        const compressLine = (lineTiles) => {
+            const present = lineTiles.filter(Boolean);
+            const result = [];
+            let scoreGained = 0;
+            const mergedIds = [];
+            let i = 0;
+            while (i < present.length) {
+                const cur = present[i];
+                const next = present[i + 1];
+                if (next && valuesCanMerge(cur.value, next.value)) {
+                    const mergedValue = ACTIVE_VARIANT === 'threes' && cur.value >= 3 ? cur.value * 2 : cur.value + next.value;
+                    result.push({ id: cur.id, value: mergedValue });
+                    scoreGained += mergedValue;
+                    mergedIds.push(cur.id);
+                    i += 2;
+                } else {
+                    result.push({ id: cur.id, value: cur.value });
+                    i += 1;
+                }
+            }
+            while (result.length < lineTiles.length) result.push(null);
+            return { result, scoreGained, mergedIds };
+        };
+
+        // Returns null if the move is illegal (nothing moves or merges).
+        const applyMove = (tiles, direction) => {
+            const grid = {};
+            tiles.forEach(t => { grid[`${t.row},${t.col}`] = t; });
+
+            const lineCoords = buildLineCoords(direction);
+            const newTiles = [];
+            let scoreGained = 0;
+            const mergedIds = [];
+            let moved = false;
+
+            lineCoords.forEach((coords) => {
+                const lineTiles = coords.map(({ row, col }) => grid[`${row},${col}`] || null);
+                const result = Array(GRID_SIZE).fill(null);
+                let segmentStart = 0;
+                for (let barrier = 0; barrier <= GRID_SIZE; barrier++) {
+                    const isBarrier = barrier === GRID_SIZE || (lineTiles[barrier] && lineTiles[barrier].obstacle);
+                    if (!isBarrier) continue;
+                    const compressed = compressLine(lineTiles.slice(segmentStart, barrier));
+                    compressed.result.forEach((entry,i)=>{ result[segmentStart+i]=entry; });
+                    scoreGained += compressed.scoreGained;
+                    mergedIds.push(...compressed.mergedIds);
+                    if (barrier < GRID_SIZE) result[barrier] = lineTiles[barrier];
+                    segmentStart = barrier + 1;
+                }
+
+                result.forEach((entry, slot) => {
+                    if (!entry) return;
+                    const { row, col } = coords[slot];
+                    const original = tiles.find(t => t.id === entry.id);
+                    if (original && (original.row !== row || original.col !== col)) moved = true;
+                    newTiles.push({ id: entry.id, value: entry.value, row, col, obstacle: !!entry.obstacle });
+                });
+            });
+
+            if (newTiles.length !== tiles.length) moved = true;
+            if (!moved) return null;
+
+            return { tiles: newTiles, scoreGained, mergedIds };
+        };
+
+        const boardIsFull = (tiles) => tiles.length === GRID_SIZE * GRID_SIZE;
+
+        const hasAnyMoves = (tiles) => {
+            if (!boardIsFull(tiles)) return true;
+            const grid = {};
+            tiles.forEach(t => { grid[`${t.row},${t.col}`] = t.value; });
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const value = grid[`${r},${c}`];
+                    if (value === -1) continue;
+                    const right = grid[`${r},${c + 1}`];
+                    const down = grid[`${r + 1},${c}`];
+                    if ((right !== -1 && valuesCanMerge(value,right)) || (down !== -1 && valuesCanMerge(value,down))) return true;
+                }
+            }
+            return false;
+        };
+
+        // --- COMPONENTS ---
+        const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
+            const closeButtonRef = React.useRef(null);
+            const modalRef = React.useRef(null);
+
+            React.useEffect(() => {
+                if (isOpen && closeButtonRef.current) {
+                    closeButtonRef.current.focus();
+                }
+            }, [isOpen]);
+
+            const handleClose = React.useCallback(() => {
+                onClose();
+                requestAnimationFrame(() => {
+                    if (triggerRef && triggerRef.current) {
+                        triggerRef.current.focus();
+                    }
+                });
+            }, [onClose, triggerRef]);
+
+            React.useEffect(() => {
+                if (!isOpen) return;
+
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        handleClose();
+                        return;
+                    }
+
+                    if (e.key === 'Tab' && modalRef.current) {
+                        const focusableEls = modalRef.current.querySelectorAll(
+                            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                        );
+                        if (focusableEls.length === 0) return;
+
+                        const firstEl = focusableEls[0];
+                        const lastEl = focusableEls[focusableEls.length - 1];
+
+                        if (e.shiftKey) {
+                            if (document.activeElement === firstEl) {
+                                e.preventDefault();
+                                lastEl.focus();
+                            }
+                        } else {
+                            if (document.activeElement === lastEl) {
+                                e.preventDefault();
+                                firstEl.focus();
+                            }
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [isOpen, handleClose]);
+
+            if (!isOpen) return null;
+            return (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={handleClose}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="how-to-play-title"
+                    ref={modalRef}
+                >
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" aria-hidden="true" />
+                    <div
+                        className="relative bg-gray-900 border border-amber-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl shadow-amber-500/20 animate-fade-in"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            ref={closeButtonRef}
+                            onClick={handleClose}
+                            className="absolute top-2 right-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-amber-300 hover:text-white transition-colors text-2xl leading-none rounded-lg"
+                            aria-label="Close instructions"
+                        >
+                            &times;
+                        </button>
+                        <h2 id="how-to-play-title" className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent mb-4">
+                            How to Play
+                        </h2>
+                        <ul className="text-amber-100/90 text-sm space-y-3 list-none">
+                            <li className="flex gap-2">
+                                <span className="text-amber-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Use <strong className="text-amber-300">arrow keys, WASD, or swipe</strong> to slide every tile in one direction.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-amber-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>When two tiles with the <strong className="text-amber-300">same number</strong> touch, they merge into one!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-amber-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Build your way up to the <strong className="text-yellow-300">2048 tile</strong> to win. Keep going after that for a high score!</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-amber-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span>Game ends when the board is full and <strong className="text-amber-300">no more merges</strong> are possible.</span>
+                            </li>
+                        </ul>
+                        <button
+                            onClick={handleClose}
+                            className="mt-5 w-full py-2 min-h-[44px] rounded-lg font-bold text-black bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 transition-all"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        // Keep the authored tile colors; choose a readable number color for every theme.
+        const readableTileText = (background, preferred) => {
+            const channels = color => {
+                if (color.startsWith('#')) return [1, 3, 5].map(index => parseInt(color.slice(index, index + 2), 16) / 255);
+                const [hue, saturation, lightness] = color.match(/[0-9.]+/g).map(Number);
+                const h = (hue % 360) / 60, s = saturation / 100, l = lightness / 100;
+                const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(h % 2 - 1)), m = l - c / 2;
+                const base = h < 1 ? [c,x,0] : h < 2 ? [x,c,0] : h < 3 ? [0,c,x] : h < 4 ? [0,x,c] : h < 5 ? [x,0,c] : [c,0,x];
+                return base.map(value => value + m);
+            };
+            const luminance = color => channels(color).map(value => value <= .04045 ? value / 12.92 : Math.pow((value + .055) / 1.055, 2.4)).reduce((total,value,index) => total + value * [.2126,.7152,.0722][index], 0);
+            const base = luminance(background);
+            const contrast = color => { const foreground = luminance(color); return (Math.max(base, foreground) + .05) / (Math.min(base, foreground) + .05); };
+            if (contrast(preferred) >= 4.5) return preferred;
+            return contrast('#000000') >= contrast('#ffffff') ? '#000000' : '#ffffff';
+        };
+
+        const Tile = React.memo(({ tile, justMerged, theme }) => {
+            let style = tile.obstacle ? {bg:'#334155',text:'#94a3b8'} : getTileStyle(tile.value);
+            if (!tile.obstacle && theme === 'candy') {
+                const hue=(Math.log2(Math.max(2,tile.value))*37)%360;style={bg:`hsl(${hue} 72% 42%)`,text:'#fff7ed'};
+            } else if (!tile.obstacle && theme === 'classic') {
+                const light=Math.max(28,76-Math.log2(Math.max(2,tile.value))*5);style={bg:`hsl(32 55% ${light}%)`,text:light>50?'#422006':'#fef3c7'};
+            }
+            const cellPercent = 100 / GRID_SIZE;
+            return (
+                <div
+                    className="tile-slot absolute p-1.5 md:p-2"
+                    style={{
+                        width: `${cellPercent}%`,
+                        height: `${cellPercent}%`,
+                        left: `${tile.col * cellPercent}%`,
+                        top: `${tile.row * cellPercent}%`,
+                    }}
+                >
+                    <div
+                        className={`tile-face w-full h-full rounded-lg flex items-center justify-center font-bold shadow-lg ${getTileFontSizeClass(tile.value)} ${justMerged ? 'tile-merged' : ''}`}
+                        data-value={tile.value}
+                        style={{
+                            backgroundColor: style.bg,
+                            color: readableTileText(style.bg, style.text),
+                            boxShadow: `0 0 16px ${style.bg}aa, inset 0 0 8px rgba(0,0,0,0.35)`,
+                        }}
+                    >
+                        {tile.obstacle ? '✦' : tile.value}
+                    </div>
+                </div>
+            );
+        });
+
+        const Game2048 = () => {
+            const MODES_2048 = [
+                {id:'classic',label:'Classic 4×4',size:4},{id:'mini',label:'Quick 3×3',size:3},
+                {id:'giant',label:'Giant 5×5',size:5},{id:'fibonacci',label:'Fibonacci',size:4},
+                {id:'threes',label:'Threes Style',size:4},{id:'obstacles',label:'Obstacles',size:4}
+            ];
+            const [variant, setVariant] = React.useState('classic');
+            const [gridSize, setGridSize] = React.useState(4);
+            GRID_SIZE = gridSize; ACTIVE_VARIANT = variant;
+            const [tiles, setTiles] = React.useState(() => createInitialTiles());
+            const [score, setScore] = React.useState(0);
+            const [best, setBest] = React.useState(0);
+            const [mergedIds, setMergedIds] = React.useState(() => new Set());
+            const [won, setWon] = React.useState(false);
+            const [continuedAfterWin, setContinuedAfterWin] = React.useState(false);
+            const [gameOver, setGameOver] = React.useState(false);
+            const [showHowToPlay, setShowHowToPlay] = React.useState(false);
+            const [undoSnapshot, setUndoSnapshot] = React.useState(null);
+            const [undosLeft, setUndosLeft] = React.useState(3);
+            const [theme, setTheme] = React.useState(() => localStorage.getItem('familyPortal2048Theme') || 'neon');
+            const [records, setRecords] = React.useState(() => { try { return JSON.parse(localStorage.getItem('familyPortal2048Records')) || {games:0,moves:0,highest:0,variants:[]}; } catch { return {games:0,moves:0,highest:0,variants:[]}; } });
+            const [moveTotal, setMoveTotal] = React.useState(0);
+
+            const tilesRef = React.useRef(tiles);
+            const busyRef = React.useRef(false);
+            const mergeTimeoutRef = React.useRef(null);
+            const busyTimeoutRef = React.useRef(null);
+            const touchStartRef = React.useRef(null);
+            const howToPlayTriggerRef = React.useRef(null);
+            const newGameButtonRef = React.useRef(null);
+
+            React.useEffect(() => { tilesRef.current = tiles; }, [tiles]);
+
+            React.useEffect(() => {
+                const stored = Number(localStorage.getItem(BEST_SCORE_KEY) || 0);
+                if (!Number.isNaN(stored)) setBest(stored);
+            }, []);
+
+            React.useEffect(() => {
+                if (score > best) {
+                    setBest(score);
+                    localStorage.setItem(BEST_SCORE_KEY, String(score));
+                }
+            }, [score, best]);
+
+            React.useEffect(() => () => {
+                if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+                if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
+            }, []);
+
+            const performMove = React.useCallback((direction) => {
+                if (busyRef.current || showHowToPlay || gameOver || (won && !continuedAfterWin)) return;
+
+                const outcome = applyMove(tilesRef.current, direction);
+                if (!outcome) return;
+
+                busyRef.current = true;
+                setUndoSnapshot({ tiles: tilesRef.current.map(tile=>({...tile})), score, won, continuedAfterWin, gameOver });
+                const withNewTile = spawnRandomTile(outcome.tiles);
+                setTiles(withNewTile);
+                setScore(s => s + outcome.scoreGained);
+                setMergedIds(new Set(outcome.mergedIds));
+                setMoveTotal(total=>total+1);
+                const highTile = Math.max(0,...withNewTile.filter(t=>!t.obstacle).map(t=>t.value));
+                setRecords(previous => {
+                    const next={...previous,moves:(previous.moves||0)+1,highest:Math.max(previous.highest||0,highTile),variants:[...new Set([...(previous.variants||[]),variant])]};
+                    localStorage.setItem('familyPortal2048Records',JSON.stringify(next)); return next;
+                });
+
+                if (!won && withNewTile.some(t => t.value >= WIN_VALUE)) {
+                    setWon(true);
+                }
+                if (!hasAnyMoves(withNewTile)) {
+                    setGameOver(true);
+                }
+
+                if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+                if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
+                mergeTimeoutRef.current = setTimeout(() => {
+                    setMergedIds(new Set());
+                }, 160);
+                busyTimeoutRef.current = setTimeout(() => {
+                    busyRef.current = false;
+                }, 100);
+            }, [showHowToPlay, gameOver, won, continuedAfterWin, score, variant]);
+
+            React.useEffect(() => {
+                const KEY_DIRECTIONS = {
+                    ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down',
+                    a: 'left', d: 'right', w: 'up', s: 'down',
+                    A: 'left', D: 'right', W: 'up', S: 'down',
+                };
+                const handleKeyDown = (e) => {
+                    const direction = KEY_DIRECTIONS[e.key];
+                    if (!direction) return;
+                    e.preventDefault();
+                    performMove(direction);
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [performMove]);
+
+            const handleTouchStart = React.useCallback((e) => {
+                const t = e.touches[0];
+                touchStartRef.current = { x: t.clientX, y: t.clientY };
+            }, []);
+
+            const handleTouchEnd = React.useCallback((e) => {
+                if (!touchStartRef.current) return;
+                const t = e.changedTouches[0];
+                const dx = t.clientX - touchStartRef.current.x;
+                const dy = t.clientY - touchStartRef.current.y;
+                touchStartRef.current = null;
+
+                const SWIPE_THRESHOLD = 24;
+                if (Math.max(Math.abs(dx), Math.abs(dy)) < SWIPE_THRESHOLD) return;
+
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    performMove(dx > 0 ? 'right' : 'left');
+                } else {
+                    performMove(dy > 0 ? 'down' : 'up');
+                }
+            }, [performMove]);
+
+            const startNewGame = React.useCallback(() => {
+                if (mergeTimeoutRef.current) clearTimeout(mergeTimeoutRef.current);
+                if (busyTimeoutRef.current) clearTimeout(busyTimeoutRef.current);
+                busyRef.current = false;
+                setTiles(createInitialTiles());
+                setScore(0);
+                setMergedIds(new Set());
+                setWon(false);
+                setContinuedAfterWin(false);
+                setGameOver(false);
+                setUndoSnapshot(null); setUndosLeft(3); setMoveTotal(0);
+                setRecords(previous=>{const next={...previous,games:(previous.games||0)+1};localStorage.setItem('familyPortal2048Records',JSON.stringify(next));return next;});
+            }, []);
+
+            const chooseVariant = React.useCallback((mode) => {
+                GRID_SIZE=mode.size; ACTIVE_VARIANT=mode.id;
+                setVariant(mode.id); setGridSize(mode.size);
+                busyRef.current=false; setTiles(createInitialTiles()); setScore(0); setWon(false); setContinuedAfterWin(false); setGameOver(false); setUndoSnapshot(null); setUndosLeft(3); setMoveTotal(0);
+            }, []);
+
+            const undoMove = () => {
+                if(!undoSnapshot||undosLeft<=0)return;
+                setTiles(undoSnapshot.tiles); setScore(undoSnapshot.score); setWon(undoSnapshot.won); setContinuedAfterWin(undoSnapshot.continuedAfterWin);setGameOver(undoSnapshot.gameOver);
+                setUndoSnapshot(null);setUndosLeft(n=>n-1);busyRef.current=false;
+            };
+
+            const themeBackground = {neon:'from-black via-amber-950/30 to-black',candy:'from-pink-950 via-purple-950 to-cyan-950',classic:'from-stone-900 via-stone-700 to-stone-950'}[theme];
+            const achievements = [
+                [records.moves>=1,'First Merge'],[records.highest>=128,'128 Builder'],[records.highest>=512,'Tile Titan'],
+                [records.highest>=2048,'2048 Legend'],[(records.variants||[]).length>=6,'Variant Voyager'],[best>=10000,'10K Club']
+            ];
+
+            const keepPlaying = React.useCallback(() => {
+                setContinuedAfterWin(true);
+            }, []);
+
+            const openHowToPlay = React.useCallback(() => setShowHowToPlay(true), []);
+            const closeHowToPlay = React.useCallback(() => setShowHowToPlay(false), []);
+
+            const showWinOverlay = won && !continuedAfterWin;
+
+            return (
+                <div className="mini-shell min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${themeBackground}`} aria-hidden="true" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none" aria-hidden="true" />
+                    <div className="mini-layout relative z-10 w-full max-w-md mx-auto text-center">
+                        <aside className="mini-controls">
+                        <header className="py-6">
+                            <div className="flex items-center justify-center gap-3">
+                                <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent tracking-wider text-shadow-neon">
+                                    2048
+                                </h1>
+                                <button
+                                    ref={howToPlayTriggerRef}
+                                    onClick={openHowToPlay}
+                                    className="min-w-[44px] min-h-[44px] rounded-full border border-amber-500/50 bg-amber-500/10 text-amber-300 hover:bg-amber-500/30 hover:text-white transition-all flex items-center justify-center text-lg flex-shrink-0"
+                                    aria-label="How to Play"
+                                    title="How to Play"
+                                >
+                                    &#10067;
+                                </button>
+                            </div>
+                            <p className="text-amber-300/80 mt-2">Slide and merge to reach 2048!</p>
+                        </header>
+
+                        <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
+
+                        <div className="mini-2048-actions">
+                            <details className="mini-settings mini-2048-options" open={window.matchMedia('(min-width: 701px) and (orientation: landscape)').matches}>
+                                <summary>Board &amp; theme</summary>
+                                <div className="mini-2048-modes flex gap-1 pb-2 mb-2">{MODES_2048.map(mode=><button key={mode.id} onClick={()=>chooseVariant(mode)} className={`shrink-0 px-2 py-1 rounded-lg border text-xs font-bold ${variant===mode.id?'bg-amber-400 text-black border-yellow-200':'bg-black/50 border-amber-700 text-amber-200'}`}>{mode.label}</button>)}</div>
+                                <div className="flex justify-center gap-2 mb-3"><select value={theme} onChange={event=>{setTheme(event.target.value);localStorage.setItem('familyPortal2048Theme',event.target.value);}} className="bg-gray-900 border border-amber-600 rounded px-2 py-1 text-sm"><option value="neon">Neon Tiles</option><option value="candy">Candy Tiles</option><option value="classic">Classic Wood</option></select></div>
+                            </details>
+                            <button onClick={undoMove} disabled={!undoSnapshot||undosLeft<=0} className="px-3 py-1 rounded bg-indigo-700 font-bold disabled:opacity-40">↶ Undo ({undosLeft})</button>
+                        </div>
+
+                        <div className="flex items-center justify-center gap-3 mb-4">
+                            <div className="bg-black/40 border border-amber-500/30 rounded-xl px-5 py-2 min-w-[100px]">
+                                <div className="text-xs uppercase tracking-widest text-amber-300/70">Score</div>
+                                <div className="text-2xl font-bold text-amber-200" aria-live="polite" aria-atomic="true">{score}</div>
+                            </div>
+                            <div className="bg-black/40 border border-amber-500/30 rounded-xl px-5 py-2 min-w-[100px]">
+                                <div className="text-xs uppercase tracking-widest text-amber-300/70">Best</div>
+                                <div className="text-2xl font-bold text-amber-200">{best}</div>
+                            </div>
+                        </div>
+
+                        </aside>
+                        <main
+                            data-tile-theme={theme}
+                            className="mini-board relative bg-black/30 backdrop-blur-sm rounded-2xl p-3 md:p-4 border border-amber-500/30 shadow-2xl shadow-amber-500/20 select-none"
+                            style={{ touchAction: 'none' }}
+                            onTouchStart={handleTouchStart}
+                            onTouchEnd={handleTouchEnd}
+                            role="application"
+                            aria-label={`2048 board, current score ${score}`}
+                        >
+                            <div className="relative w-full aspect-square grid gap-1.5 md:gap-2" style={{gridTemplateColumns:`repeat(${gridSize}, minmax(0,1fr))`,gridTemplateRows:`repeat(${gridSize}, minmax(0,1fr))`}}>
+                                {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => (
+                                    <div key={i} className="rounded-lg bg-white/5" aria-hidden="true" />
+                                ))}
+                                <div className="absolute inset-0">
+                                    {tiles.map(tile => (
+                                        <Tile key={tile.id} tile={tile} justMerged={mergedIds.has(tile.id)} theme={theme} />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {(showWinOverlay || gameOver) && (
+                                <div
+                                    className="absolute inset-0 rounded-2xl bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 animate-fade-in"
+                                    role="alert"
+                                >
+                                    <h2 className={`text-3xl font-black text-shadow-neon ${showWinOverlay ? 'text-yellow-300' : 'text-red-300'}`}>
+                                        {showWinOverlay ? 'YOU WIN!' : 'GAME OVER'}
+                                    </h2>
+                                    <p className="text-amber-100">
+                                        {showWinOverlay ? `You reached ${WIN_VALUE}!` : `Final score: ${score}`}
+                                    </p>
+                                    <div className="flex gap-3">
+                                        {showWinOverlay && (
+                                            <button
+                                                onClick={keepPlaying}
+                                                className="py-2 px-5 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-amber-400 to-orange-500 hover:scale-105 transition-all"
+                                            >
+                                                Keep Going
+                                            </button>
+                                        )}
+                                        <button
+                                            ref={newGameButtonRef}
+                                            onClick={startNewGame}
+                                            className="py-2 px-5 min-h-[44px] rounded-xl font-bold text-black bg-gradient-to-r from-yellow-300 to-amber-400 hover:scale-105 transition-all"
+                                        >
+                                            New Game
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </main>
+                        <div className="mini-bottom">
+
+                        <details className="mini-2048-records mt-3 bg-black/40 border border-amber-700/40 rounded-xl p-3 text-xs text-amber-100" open={window.matchMedia('(min-width: 701px) and (orientation: landscape)').matches}><summary>Family records</summary>
+                            <div className="flex justify-around mb-2"><span>Highest tile: <b>{records.highest||0}</b></span><span>Moves: <b>{records.moves||0}</b></span><span>Variants: <b>{(records.variants||[]).length}/6</b></span></div>
+                            <div className="flex flex-wrap justify-center gap-1">{achievements.map(([open,label])=><span key={label} className={`px-2 py-1 rounded-full border ${open?'bg-yellow-500/20 border-yellow-400 text-yellow-200':'bg-gray-900 border-gray-700 text-gray-600'}`}>{open?'★':'🔒'} {label}</span>)}</div>
+                        </details>
+
+                        <footer className="py-6">
+                            <button
+                                onClick={startNewGame}
+                                className="mt-2 py-3 px-10 min-h-[44px] rounded-xl font-bold text-lg text-black transition-all duration-200 bg-gradient-to-r from-amber-400 to-orange-500 hover:scale-105 shadow-lg shadow-amber-500/50"
+                            >
+                                New Game
+                            </button>
+                        </footer>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<Game2048 />, document.getElementById('root'));

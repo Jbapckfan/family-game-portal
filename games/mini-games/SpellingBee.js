@@ -1,0 +1,1623 @@
+// Generated from SpellingBee.jsx by tools/build-react-games.mjs; do not edit.
+"use strict";
+const { useState, useEffect, useCallback, useRef, useMemo } = React;
+const RANKS = [
+  { name: "Beginner", pct: 0, emoji: "" },
+  { name: "Good Start", pct: 0.02, emoji: "&#x2B50;" },
+  { name: "Moving Up", pct: 0.05, emoji: "&#x1F31F;" },
+  { name: "Good", pct: 0.08, emoji: "&#x1F44D;" },
+  { name: "Solid", pct: 0.15, emoji: "&#x1F4AA;" },
+  { name: "Nice", pct: 0.25, emoji: "&#x1F525;" },
+  { name: "Great", pct: 0.4, emoji: "&#x1F389;" },
+  { name: "Amazing", pct: 0.5, emoji: "&#x1F680;" },
+  { name: "Genius", pct: 0.7, emoji: "&#x1F9E0;" },
+  { name: "Queen Bee", pct: 1, emoji: "&#x1F41D;" }
+];
+const RANK_EMOJIS = ["", "⭐", "🌟", "👍", "💪", "🔥", "🎉", "🚀", "🧠", "🐝"];
+function getRank(score, max) {
+  if (!max) return { idx: 0, ...RANKS[0] };
+  const pct = score / max;
+  let idx = 0;
+  for (let i = 0; i < RANKS.length; i++) {
+    if (pct >= RANKS[i].pct) idx = i;
+  }
+  return { idx, ...RANKS[idx] };
+}
+function getNextRank(score, max) {
+  if (!max) return null;
+  const pct = score / max;
+  for (const r of RANKS) {
+    if (pct < r.pct) return r;
+  }
+  return null;
+}
+function scoreWord(word, allLetters) {
+  const all = new Set(allLetters);
+  const wl = new Set(word);
+  const isPangram = allLetters.length >= 7 && [...all].every((l) => wl.has(l));
+  let pts = word.length === 4 ? 1 : word.length;
+  if (isPangram) pts += 7;
+  return { pts, isPangram };
+}
+function getDailyIdx() {
+  const d = Math.floor((Date.now() - new Date(2025, 0, 1)) / 864e5);
+  return (d % PUZZLES.length + PUZZLES.length) % PUZZLES.length;
+}
+function loadSave(idx, mode) {
+  try {
+    return JSON.parse(localStorage.getItem(`sb-${mode}-${idx}`)) || [];
+  } catch {
+    return [];
+  }
+}
+function writeSave(idx, mode, words) {
+  try {
+    localStorage.setItem(`sb-${mode}-${idx}`, JSON.stringify(words));
+  } catch {
+  }
+}
+const definitionCache = {};
+async function fetchDefinition(word) {
+  if (definitionCache[word]) return definitionCache[word];
+  try {
+    const resp = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+    if (!resp.ok) throw new Error("Not found");
+    const data = await resp.json();
+    if (data && data[0] && data[0].meanings && data[0].meanings[0]) {
+      const meaning = data[0].meanings[0];
+      const result = {
+        word: data[0].word,
+        partOfSpeech: meaning.partOfSpeech || "",
+        definition: meaning.definitions[0]?.definition || "No definition available."
+      };
+      definitionCache[word] = result;
+      return result;
+    }
+    throw new Error("No meanings");
+  } catch (e) {
+    const result = { word, partOfSpeech: "", definition: "Definition not available." };
+    definitionCache[word] = result;
+    return result;
+  }
+}
+function numWord(n) {
+  const words = [
+    "zero",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen"
+  ];
+  return n <= 15 ? words[n] : String(n);
+}
+function loadStats() {
+  try {
+    return JSON.parse(localStorage.getItem("sb-personal-stats")) || getDefaultStats();
+  } catch {
+    return getDefaultStats();
+  }
+}
+function getDefaultStats() {
+  return { totalWords: 0, totalPangrams: 0, puzzlesPlayed: 0, rankSum: 0, longestWord: "", sessions: [] };
+}
+function saveStats(stats) {
+  try {
+    localStorage.setItem("sb-personal-stats", JSON.stringify(stats));
+  } catch {
+  }
+}
+function loadTheme() {
+  try {
+    return localStorage.getItem("sb-theme") || "dark";
+  } catch {
+    return "dark";
+  }
+}
+function saveTheme(theme) {
+  try {
+    localStorage.setItem("sb-theme", theme);
+  } catch {
+  }
+}
+function loadMuted() {
+  try {
+    return localStorage.getItem("sb-muted") === "true";
+  } catch {
+    return false;
+  }
+}
+function saveMuted(m) {
+  try {
+    localStorage.setItem("sb-muted", String(m));
+  } catch {
+  }
+}
+function getDefaultStreak() {
+  return { currentStreak: 0, bestStreak: 0, lastGeniusDate: null };
+}
+function loadStreak() {
+  try {
+    return JSON.parse(localStorage.getItem("sb-genius-streak")) || getDefaultStreak();
+  } catch {
+    return getDefaultStreak();
+  }
+}
+function saveStreak(streak) {
+  try {
+    localStorage.setItem("sb-genius-streak", JSON.stringify(streak));
+  } catch {
+  }
+}
+function getTodayDateStr() {
+  const d = /* @__PURE__ */ new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function getYesterdayDateStr() {
+  const d = /* @__PURE__ */ new Date();
+  d.setDate(d.getDate() - 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function updateStreakForGenius(streakData) {
+  const today = getTodayDateStr();
+  const yesterday = getYesterdayDateStr();
+  if (streakData.lastGeniusDate === today) {
+    return streakData;
+  }
+  const updated = { ...streakData };
+  if (streakData.lastGeniusDate === yesterday) {
+    updated.currentStreak = streakData.currentStreak + 1;
+  } else {
+    updated.currentStreak = 1;
+  }
+  updated.lastGeniusDate = today;
+  if (updated.currentStreak > updated.bestStreak) {
+    updated.bestStreak = updated.currentStreak;
+  }
+  saveStreak(updated);
+  return updated;
+}
+const COMMON_3_LETTER_WORDS = /* @__PURE__ */ new Set([
+  "ace",
+  "act",
+  "add",
+  "age",
+  "ago",
+  "aid",
+  "aim",
+  "air",
+  "all",
+  "and",
+  "ant",
+  "any",
+  "ape",
+  "apt",
+  "arc",
+  "are",
+  "ark",
+  "arm",
+  "art",
+  "ash",
+  "ask",
+  "ate",
+  "awe",
+  "axe",
+  "bad",
+  "bag",
+  "ban",
+  "bar",
+  "bat",
+  "bay",
+  "bed",
+  "bee",
+  "bet",
+  "bid",
+  "big",
+  "bin",
+  "bit",
+  "bog",
+  "bow",
+  "box",
+  "boy",
+  "bud",
+  "bug",
+  "bun",
+  "bus",
+  "but",
+  "buy",
+  "cab",
+  "cam",
+  "can",
+  "cap",
+  "car",
+  "cat",
+  "cob",
+  "cod",
+  "cog",
+  "cop",
+  "cot",
+  "cow",
+  "cry",
+  "cub",
+  "cud",
+  "cup",
+  "cur",
+  "cut",
+  "dab",
+  "dad",
+  "dam",
+  "day",
+  "den",
+  "dew",
+  "did",
+  "dig",
+  "dim",
+  "din",
+  "dip",
+  "doe",
+  "dog",
+  "don",
+  "dot",
+  "dry",
+  "dub",
+  "dud",
+  "due",
+  "dug",
+  "dun",
+  "duo",
+  "dye",
+  "ear",
+  "eat",
+  "eel",
+  "egg",
+  "ego",
+  "elf",
+  "elk",
+  "elm",
+  "emu",
+  "end",
+  "era",
+  "eve",
+  "ewe",
+  "eye",
+  "fab",
+  "fad",
+  "fan",
+  "far",
+  "fat",
+  "fax",
+  "fed",
+  "fee",
+  "fen",
+  "few",
+  "fig",
+  "fin",
+  "fir",
+  "fit",
+  "fix",
+  "fly",
+  "fob",
+  "foe",
+  "fog",
+  "fop",
+  "for",
+  "fox",
+  "fry",
+  "fun",
+  "fur",
+  "gab",
+  "gag",
+  "gal",
+  "gap",
+  "gas",
+  "gel",
+  "gem",
+  "get",
+  "gig",
+  "gin",
+  "gnu",
+  "gob",
+  "god",
+  "got",
+  "gum",
+  "gun",
+  "gust",
+  "gut",
+  "guy",
+  "gym",
+  "had",
+  "hag",
+  "ham",
+  "has",
+  "hat",
+  "hay",
+  "hen",
+  "her",
+  "hew",
+  "hex",
+  "hid",
+  "him",
+  "hip",
+  "his",
+  "hit",
+  "hob",
+  "hod",
+  "hog",
+  "hop",
+  "hot",
+  "how",
+  "hub",
+  "hue",
+  "hug",
+  "hum",
+  "hut",
+  "ice",
+  "icy",
+  "ill",
+  "imp",
+  "ink",
+  "inn",
+  "ion",
+  "ire",
+  "irk",
+  "its",
+  "ivy",
+  "jab",
+  "jag",
+  "jam",
+  "jar",
+  "jaw",
+  "jay",
+  "jet",
+  "jig",
+  "job",
+  "jog",
+  "jot",
+  "joy",
+  "jug",
+  "jut",
+  "keg",
+  "ken",
+  "key",
+  "kid",
+  "kin",
+  "kit",
+  "lab",
+  "lad",
+  "lag",
+  "lap",
+  "law",
+  "lay",
+  "lea",
+  "led",
+  "leg",
+  "let",
+  "lid",
+  "lie",
+  "lip",
+  "lit",
+  "log",
+  "lot",
+  "low",
+  "lug",
+  "mad",
+  "man",
+  "map",
+  "mar",
+  "mat",
+  "maw",
+  "may",
+  "men",
+  "met",
+  "mid",
+  "mix",
+  "mob",
+  "mod",
+  "mop",
+  "mow",
+  "mud",
+  "mug",
+  "mum",
+  "nab",
+  "nag",
+  "nap",
+  "nay",
+  "net",
+  "new",
+  "nil",
+  "nip",
+  "nit",
+  "nod",
+  "nor",
+  "not",
+  "now",
+  "nub",
+  "nun",
+  "nut",
+  "oak",
+  "oar",
+  "oat",
+  "odd",
+  "ode",
+  "off",
+  "oft",
+  "ohm",
+  "oil",
+  "old",
+  "one",
+  "opt",
+  "orb",
+  "ore",
+  "our",
+  "out",
+  "owe",
+  "owl",
+  "own",
+  "pad",
+  "pal",
+  "pan",
+  "pap",
+  "par",
+  "pat",
+  "paw",
+  "pay",
+  "pea",
+  "peg",
+  "pen",
+  "pep",
+  "per",
+  "pet",
+  "pew",
+  "pie",
+  "pig",
+  "pin",
+  "pit",
+  "ply",
+  "pod",
+  "pop",
+  "pot",
+  "pow",
+  "pro",
+  "pry",
+  "pub",
+  "pug",
+  "pun",
+  "pup",
+  "pus",
+  "put",
+  "rag",
+  "ram",
+  "ran",
+  "rap",
+  "rat",
+  "raw",
+  "ray",
+  "red",
+  "ref",
+  "rib",
+  "rid",
+  "rig",
+  "rim",
+  "rip",
+  "rob",
+  "rod",
+  "roe",
+  "rot",
+  "row",
+  "rub",
+  "rug",
+  "rum",
+  "run",
+  "rut",
+  "rye",
+  "sac",
+  "sad",
+  "sag",
+  "sap",
+  "sat",
+  "saw",
+  "say",
+  "sea",
+  "set",
+  "sew",
+  "she",
+  "shy",
+  "sin",
+  "sip",
+  "sir",
+  "sis",
+  "sit",
+  "six",
+  "ski",
+  "sky",
+  "sly",
+  "sob",
+  "sod",
+  "son",
+  "sop",
+  "sot",
+  "sow",
+  "soy",
+  "spa",
+  "spy",
+  "sty",
+  "sub",
+  "sue",
+  "sum",
+  "sun",
+  "sup",
+  "tab",
+  "tad",
+  "tag",
+  "tan",
+  "tap",
+  "tar",
+  "tat",
+  "tax",
+  "tea",
+  "ten",
+  "the",
+  "thy",
+  "tic",
+  "tie",
+  "tin",
+  "tip",
+  "toe",
+  "ton",
+  "too",
+  "top",
+  "tot",
+  "tow",
+  "toy",
+  "try",
+  "tub",
+  "tug",
+  "tun",
+  "two",
+  "ugh",
+  "undo",
+  "urn",
+  "use",
+  "van",
+  "vat",
+  "vet",
+  "vex",
+  "via",
+  "vie",
+  "vim",
+  "vow",
+  "wad",
+  "wag",
+  "war",
+  "was",
+  "wax",
+  "way",
+  "web",
+  "wed",
+  "wet",
+  "who",
+  "why",
+  "wig",
+  "win",
+  "wit",
+  "woe",
+  "wok",
+  "won",
+  "woo",
+  "wop",
+  "wow",
+  "yak",
+  "yam",
+  "yap",
+  "yaw",
+  "yea",
+  "yes",
+  "yet",
+  "yew",
+  "yin",
+  "you",
+  "yow",
+  "zap",
+  "zed",
+  "zen",
+  "zig",
+  "zip",
+  "zoo"
+]);
+function getPracticeWords(puzzle) {
+  const allLetters = /* @__PURE__ */ new Set([...puzzle.letters, puzzle.center]);
+  const practiceList = [];
+  for (const w of puzzle.words) {
+    practiceList.push(w);
+  }
+  for (const w of COMMON_3_LETTER_WORDS) {
+    if ([...w].every((l) => allLetters.has(l))) {
+      practiceList.push(w);
+    }
+  }
+  return [...new Set(practiceList)];
+}
+function scorePracticeWord(word, allLetters) {
+  const all = new Set(allLetters);
+  const wl = new Set(word);
+  const isPangram = allLetters.length >= 7 && [...all].every((l) => wl.has(l));
+  let pts = word.length <= 4 ? 1 : word.length;
+  if (isPangram) pts += 7;
+  return { pts, isPangram };
+}
+const HEX_POSITIONS = [
+  { x: -117, y: -137 },
+  // pos 0
+  { x: 17, y: -137 },
+  // pos 1
+  { x: 82, y: -50 },
+  // pos 2
+  { x: 17, y: 37 },
+  // pos 3
+  { x: -117, y: 37 },
+  // pos 4
+  { x: -182, y: -50 }
+  // pos 5
+];
+function Confetti({ active }) {
+  if (!active) return null;
+  const colors = ["#fbbf24", "#ec4899", "#8b5cf6", "#06b6d4", "#34d399", "#f43f5e", "#3b82f6"];
+  const pieces = Array.from({ length: 40 }, (_, i) => {
+    const style = {
+      left: `${Math.random() * 100}%`,
+      background: colors[i % colors.length],
+      "--dur": `${1.5 + Math.random() * 1.5}s`,
+      "--delay": `${Math.random() * 0.5}s`,
+      width: `${6 + Math.random() * 6}px`,
+      height: `${4 + Math.random() * 10}px`,
+      opacity: 0.9,
+      transform: `rotate(${Math.random() * 360}deg)`
+    };
+    return /* @__PURE__ */ React.createElement("div", { key: i, className: "confetti-piece", style });
+  });
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, pieces);
+}
+function SparkleBurst({ active }) {
+  if (!active) return null;
+  const colors = ["#fbbf24", "#ec4899", "#8b5cf6", "#06b6d4", "#34d399"];
+  const particles = Array.from({ length: 16 }, (_, i) => {
+    const angle = i / 16 * Math.PI * 2;
+    const dist = 30 + Math.random() * 50;
+    return /* @__PURE__ */ React.createElement("div", { key: i, className: "sparkle-particle", style: {
+      left: "50%",
+      top: "50%",
+      background: colors[i % colors.length],
+      boxShadow: `0 0 6px ${colors[i % colors.length]}`,
+      "--tx": `${Math.cos(angle) * dist}px`,
+      "--ty": `${Math.sin(angle) * dist}px`,
+      animationDelay: `${Math.random() * 0.15}s`
+    } });
+  });
+  return /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, pointerEvents: "none" } }, particles);
+}
+function Toast({ data, onDone }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, data.type === "pangram" ? 2800 : data.type === "rankup" ? 2500 : 1400);
+    return () => clearTimeout(t);
+  }, []);
+  return /* @__PURE__ */ React.createElement("div", { className: `toast toast-${data.type}`, dangerouslySetInnerHTML: { __html: data.message } });
+}
+function RankBanner({ rank, onDone }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 2500);
+    return () => clearTimeout(t);
+  }, []);
+  return /* @__PURE__ */ React.createElement("div", { className: "rank-banner" }, /* @__PURE__ */ React.createElement("div", { className: "rank-banner-text" }, RANK_EMOJIS[rank.idx], " ", rank.name, "! ", RANK_EMOJIS[rank.idx]));
+}
+function RankBar({ score, maxScore, justReachedIdx }) {
+  const pct = maxScore > 0 ? Math.min(score / maxScore, 1) : 0;
+  const rank = getRank(score, maxScore);
+  const next = getNextRank(score, maxScore);
+  const [shimmering, setShimmering] = useState(false);
+  const firstScoreRef = useRef(true);
+  useEffect(() => {
+    if (firstScoreRef.current) {
+      firstScoreRef.current = false;
+      return;
+    }
+    if (score <= 0) return;
+    setShimmering(true);
+    const t = setTimeout(() => setShimmering(false), 2500);
+    return () => clearTimeout(t);
+  }, [score]);
+  return /* @__PURE__ */ React.createElement("div", { style: { padding: "0 4px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 } }, /* @__PURE__ */ React.createElement("span", { style: {
+    fontSize: 20,
+    fontWeight: 800,
+    color: "var(--accent-gold)",
+    textShadow: "0 0 12px rgba(251,191,36,0.35)"
+  } }, RANK_EMOJIS[rank.idx], " ", rank.name), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 14, color: "var(--text-secondary)" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)", fontWeight: 700 } }, score), next && /* @__PURE__ */ React.createElement("span", null, " / ", Math.ceil(maxScore * next.pct), " for ", next.name))), /* @__PURE__ */ React.createElement("div", { className: "rank-bar-wrap" }, /* @__PURE__ */ React.createElement("div", { className: `rank-fill ${shimmering ? "shimmering" : ""}`, style: { width: `${Math.max(pct * 100, 1)}%` } }), RANKS.slice(1).map((r, i) => /* @__PURE__ */ React.createElement(
+    "div",
+    {
+      key: i,
+      className: `rank-dot ${pct >= r.pct ? "active" : ""} ${justReachedIdx === i + 1 ? "just-reached" : ""}`,
+      style: { left: `${r.pct * 100}%` },
+      title: `${r.name} (${Math.round(r.pct * 100)}%)`
+    }
+  ))));
+}
+function DefinitionTooltip({ defData, position, onClose }) {
+  if (!defData || !position) return null;
+  return /* @__PURE__ */ React.createElement(
+    "div",
+    {
+      className: "def-tooltip",
+      style: { left: position.x, top: position.y },
+      onClick: (e) => e.stopPropagation()
+    },
+    /* @__PURE__ */ React.createElement("span", { className: "def-close", onClick: onClose }, "×"),
+    /* @__PURE__ */ React.createElement("div", { className: "def-word" }, defData.word),
+    defData.partOfSpeech && /* @__PURE__ */ React.createElement("div", { className: "def-pos" }, defData.partOfSpeech),
+    /* @__PURE__ */ React.createElement("div", { className: "def-text" }, defData.definition)
+  );
+}
+function WordsPanel({ found, pangrams, isOpen, onToggle, total, latestWord, revealedWords, onWordClick }) {
+  const [filterLetter, setFilterLetter] = useState(null);
+  const firstLetters = useMemo(() => {
+    const s = new Set(found.map((w) => w[0]));
+    return [...s].sort();
+  }, [found]);
+  const filteredFound = filterLetter ? found.filter((w) => w[0] === filterLetter) : found;
+  const filteredRevealed = filterLetter ? (revealedWords || []).filter((w) => w[0] === filterLetter) : revealedWords || [];
+  return /* @__PURE__ */ React.createElement("div", { style: { marginTop: 14 } }, /* @__PURE__ */ React.createElement(
+    "div",
+    {
+      onClick: onToggle,
+      style: {
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "10px 14px",
+        borderRadius: 14,
+        background: "var(--panel-bg)",
+        border: "1px solid var(--panel-border)",
+        transition: "all 0.2s"
+      }
+    },
+    /* @__PURE__ */ React.createElement("span", { style: { fontWeight: 700, fontSize: 16 } }, found.length > 0 ? `${found.length} of ${total} words` : "No words found yet"),
+    /* @__PURE__ */ React.createElement("span", { style: {
+      fontSize: 16,
+      transition: "transform 0.3s cubic-bezier(0.34,1.56,0.64,1)",
+      transform: isOpen ? "rotate(180deg)" : "rotate(0)",
+      color: "var(--word-filter-color)"
+    } }, "▼")
+  ), /* @__PURE__ */ React.createElement(
+    "div",
+    {
+      className: `words-panel ${isOpen ? "open" : ""}`,
+      style: { padding: isOpen ? "10px 4px" : "0 4px" }
+    },
+    found.length === 0 && (!revealedWords || revealedWords.length === 0) ? /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", color: "var(--text-dimmer)", fontSize: 14, padding: 16 } }, "Type or click letters to make words!") : /* @__PURE__ */ React.createElement(React.Fragment, null, firstLetters.length > 1 && /* @__PURE__ */ React.createElement("div", { className: "word-filter-tabs" }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: `word-filter-tab ${filterLetter === null ? "active" : ""}`,
+        onClick: () => setFilterLetter(null)
+      },
+      "All"
+    ), firstLetters.map((l) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: l,
+        className: `word-filter-tab ${filterLetter === l ? "active" : ""}`,
+        onClick: () => setFilterLetter(filterLetter === l ? null : l)
+      },
+      l.toUpperCase()
+    ))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexWrap: "wrap" } }, filteredFound.map((w, i) => /* @__PURE__ */ React.createElement(
+      "span",
+      {
+        key: w,
+        className: `word-chip ${pangrams.includes(w) ? "pangram" : ""} ${w === latestWord ? "latest" : ""}`,
+        onClick: (e) => onWordClick && onWordClick(w, e)
+      },
+      w
+    )), filteredRevealed.map((w) => /* @__PURE__ */ React.createElement(
+      "span",
+      {
+        key: "rev-" + w,
+        className: `word-chip revealed ${pangrams.includes(w) ? "pangram" : ""}`
+      },
+      w
+    ))))
+  ));
+}
+function HintModal({ onClose, puzzle, found }) {
+  const [hintTab, setHintTab] = useState("letter");
+  const unfound = puzzle.words.filter((w) => !found.includes(w));
+  const groups = {};
+  for (const w of unfound) {
+    const letter = w[0];
+    if (!groups[letter]) groups[letter] = {};
+    const len = w.length;
+    if (!groups[letter][len]) groups[letter][len] = 0;
+    groups[letter][len]++;
+  }
+  const sortedLetters = Object.keys(groups).sort();
+  const twoLetterGroups = {};
+  for (const w of unfound) {
+    const pair = w.slice(0, 2).toUpperCase();
+    if (!twoLetterGroups[pair]) twoLetterGroups[pair] = 0;
+    twoLetterGroups[pair]++;
+  }
+  const sortedPairs = Object.keys(twoLetterGroups).sort();
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-overlay", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal-box", onClick: (e) => e.stopPropagation(), style: { maxWidth: 420 } }, /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 24, color: "var(--accent-gold)", marginBottom: 6, textAlign: "center" } }, "Hints"), /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", color: "var(--text-secondary)", fontSize: 14, marginBottom: 12 } }, unfound.length, " word", unfound.length !== 1 ? "s" : "", " remaining"), unfound.length === 0 ? /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", color: "var(--accent-green)", fontSize: 16, fontWeight: 700, padding: 20 } }, "You found every word! Amazing!") : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "hint-tab-bar" }, /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: `hint-tab ${hintTab === "letter" ? "active" : ""}`,
+      onClick: () => setHintTab("letter")
+    },
+    "By Letter"
+  ), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: `hint-tab ${hintTab === "pair" ? "active" : ""}`,
+      onClick: () => setHintTab("pair")
+    },
+    "Two-Letter Pairs"
+  )), hintTab === "letter" ? /* @__PURE__ */ React.createElement("div", { className: "hint-grid" }, sortedLetters.map((letter) => {
+    const lengths = Object.keys(groups[letter]).map(Number).sort((a, b) => a - b);
+    const parts = lengths.map((len) => {
+      const count = groups[letter][len];
+      return `${numWord(count)} ${len}-letter`;
+    });
+    return /* @__PURE__ */ React.createElement(React.Fragment, { key: letter }, /* @__PURE__ */ React.createElement("span", { className: "hint-letter" }, letter, ":"), /* @__PURE__ */ React.createElement("span", { className: "hint-detail" }, parts.join(", ")));
+  })) : /* @__PURE__ */ React.createElement("div", { className: "two-letter-grid" }, sortedPairs.map((pair) => /* @__PURE__ */ React.createElement("div", { key: pair, className: "two-letter-cell" }, /* @__PURE__ */ React.createElement("div", { className: "two-letter-pair" }, pair), /* @__PURE__ */ React.createElement("div", { className: "two-letter-count" }, twoLetterGroups[pair]))))), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: "game-btn game-btn-enter",
+      onClick: onClose,
+      style: { display: "block", margin: "18px auto 0", width: "100%", fontSize: 16 }
+    },
+    "Got It"
+  )));
+}
+function RulesModal({ onClose, puzzle, practiceMode }) {
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-overlay", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal-box", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 26, color: practiceMode ? "#34d399" : "var(--accent-gold)", marginBottom: 18, textAlign: "center" } }, practiceMode ? "Practice Mode" : "How to Play"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, lineHeight: 1.8, color: "var(--text-secondary)" } }, practiceMode ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { style: { marginBottom: 12 } }, "Practice making words with relaxed rules! Build your skills before tackling the standard game."), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Words must be ", /* @__PURE__ */ React.createElement("b", null, "3+ letters")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Letters ", /* @__PURE__ */ React.createElement("b", null, "can be reused")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Center letter is ", /* @__PURE__ */ React.createElement("b", null, "NOT required")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Scored ", /* @__PURE__ */ React.createElement("b", null, "separately"), " from standard mode")), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0", fontWeight: 700, color: "#34d399" } }, "Scoring"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "3 or 4-letter words = ", /* @__PURE__ */ React.createElement("b", null, "1 point")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Longer words = ", /* @__PURE__ */ React.createElement("b", null, "1 point per letter")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Pangram (all 7 letters) = ", /* @__PURE__ */ React.createElement("b", null, "+7 bonus!")))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { style: { marginBottom: 12 } }, "Make words using the 7 letters. Every word ", /* @__PURE__ */ React.createElement("b", null, "must"), " contain the", /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-gold)", fontWeight: 700 } }, " center letter"), "."), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " Words must be ", /* @__PURE__ */ React.createElement("b", null, "4+ letters")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " Letters ", /* @__PURE__ */ React.createElement("b", null, "can be reused")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " ", /* @__PURE__ */ React.createElement("b", null, "Center letter"), " is required")), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0", fontWeight: 700, color: "var(--accent-gold)" } }, "Scoring"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "4-letter words = ", /* @__PURE__ */ React.createElement("b", null, "1 point")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Longer words = ", /* @__PURE__ */ React.createElement("b", null, "1 point per letter")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Pangram (all 7 letters) = ", /* @__PURE__ */ React.createElement("b", null, "+7 bonus!"))), /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", fontSize: 14, color: "var(--text-muted)" } }, "This puzzle: ", /* @__PURE__ */ React.createElement("b", null, puzzle.wordCount), " words • ", /* @__PURE__ */ React.createElement("b", null, puzzle.pangrams.length), " pangram", puzzle.pangrams.length !== 1 ? "s" : "", " • max ", /* @__PURE__ */ React.createElement("b", null, puzzle.maxScore), " pts"))), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: "game-btn game-btn-enter",
+      onClick: onClose,
+      style: { display: "block", margin: "18px auto 0", width: "100%", fontSize: 16 }
+    },
+    "Let's Go!"
+  )));
+}
+function StatsModal({ onClose, stats, streakData }) {
+  const avgRank = stats.puzzlesPlayed > 0 ? RANKS[Math.min(Math.round(stats.rankSum / stats.puzzlesPlayed), RANKS.length - 1)].name : "N/A";
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-overlay", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal-box", onClick: (e) => e.stopPropagation(), style: { maxWidth: 380 } }, /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 24, color: "var(--accent-gold)", marginBottom: 16, textAlign: "center" } }, "Your Stats"), /* @__PURE__ */ React.createElement("div", { className: "stat-card" }, /* @__PURE__ */ React.createElement("span", { className: "stat-card-label" }, "Puzzles Played"), /* @__PURE__ */ React.createElement("span", { className: "stat-card-value" }, stats.puzzlesPlayed)), /* @__PURE__ */ React.createElement("div", { className: "stat-card" }, /* @__PURE__ */ React.createElement("span", { className: "stat-card-label" }, "Total Words Found"), /* @__PURE__ */ React.createElement("span", { className: "stat-card-value" }, stats.totalWords)), /* @__PURE__ */ React.createElement("div", { className: "stat-card" }, /* @__PURE__ */ React.createElement("span", { className: "stat-card-label" }, "Total Pangrams"), /* @__PURE__ */ React.createElement("span", { className: "stat-card-value" }, stats.totalPangrams)), /* @__PURE__ */ React.createElement("div", { className: "stat-card" }, /* @__PURE__ */ React.createElement("span", { className: "stat-card-label" }, "Average Rank"), /* @__PURE__ */ React.createElement("span", { className: "stat-card-value" }, avgRank)), /* @__PURE__ */ React.createElement("div", { className: "stat-card" }, /* @__PURE__ */ React.createElement("span", { className: "stat-card-label" }, "Longest Word"), /* @__PURE__ */ React.createElement("span", { className: "stat-card-value", style: { textTransform: "uppercase", fontSize: 15, letterSpacing: 1 } }, stats.longestWord || "--")), streakData && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { style: {
+    marginTop: 12,
+    marginBottom: 4,
+    fontSize: 14,
+    fontWeight: 700,
+    color: "var(--accent-gold)",
+    textAlign: "center",
+    textTransform: "uppercase",
+    letterSpacing: 1
+  } }, "🔥", " Genius Streak"), /* @__PURE__ */ React.createElement("div", { className: "stat-card" }, /* @__PURE__ */ React.createElement("span", { className: "stat-card-label" }, "Current Streak"), /* @__PURE__ */ React.createElement("span", { className: "stat-card-value" }, streakData.currentStreak, " day", streakData.currentStreak !== 1 ? "s" : "")), /* @__PURE__ */ React.createElement("div", { className: "stat-card" }, /* @__PURE__ */ React.createElement("span", { className: "stat-card-label" }, "Best Streak"), /* @__PURE__ */ React.createElement("span", { className: "stat-card-value" }, streakData.bestStreak, " day", streakData.bestStreak !== 1 ? "s" : ""))), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: "game-btn game-btn-enter",
+      onClick: onClose,
+      style: { display: "block", margin: "18px auto 0", width: "100%", fontSize: 16 }
+    },
+    "Close"
+  )));
+}
+function WordLengthDistribution({ puzzle, found }) {
+  const allByLen = {};
+  const foundByLen = {};
+  for (const w of puzzle.words) {
+    const len = w.length;
+    allByLen[len] = (allByLen[len] || 0) + 1;
+  }
+  for (const w of found) {
+    const len = w.length;
+    foundByLen[len] = (foundByLen[len] || 0) + 1;
+  }
+  const lengths = Object.keys(allByLen).map(Number).sort((a, b) => a - b);
+  const maxCount = Math.max(...Object.values(allByLen), 1);
+  return /* @__PURE__ */ React.createElement("div", { style: {
+    marginTop: 12,
+    padding: "10px 14px",
+    borderRadius: 14,
+    background: "var(--panel-bg)",
+    border: "1px solid var(--panel-border)"
+  } }, /* @__PURE__ */ React.createElement("div", { style: {
+    fontSize: 14,
+    fontWeight: 700,
+    color: "var(--text-secondary)",
+    marginBottom: 8,
+    textTransform: "uppercase",
+    letterSpacing: 1
+  } }, "Word Lengths"), lengths.map((len) => {
+    const total = allByLen[len];
+    const foundCount = foundByLen[len] || 0;
+    const totalPct = total / maxCount * 100;
+    const foundPct = foundCount / maxCount * 100;
+    return /* @__PURE__ */ React.createElement("div", { key: len, className: "dist-row" }, /* @__PURE__ */ React.createElement("span", { className: "dist-label" }, len), /* @__PURE__ */ React.createElement("div", { className: "dist-bar-outer" }, /* @__PURE__ */ React.createElement("div", { className: "dist-bar-inner dist-bar-total", style: { width: `${totalPct}%` } }), /* @__PURE__ */ React.createElement("div", { className: "dist-bar-inner dist-bar-found", style: { width: `${foundPct}%` } })), /* @__PURE__ */ React.createElement("span", { className: "dist-count" }, foundCount, "/", total));
+  }));
+}
+function SprintFinalScreen({ score, wordsFound, maxScore, totalWords, pangrams, onPlayAgain, onExit }) {
+  const rank = getRank(score, maxScore);
+  return /* @__PURE__ */ React.createElement("div", { className: "sprint-final-overlay", onClick: onExit }, /* @__PURE__ */ React.createElement("div", { className: "sprint-final-box", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 42, marginBottom: 4 } }, "⏱️"), /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 28, color: "#06b6d4", marginBottom: 4 } }, "Time's Up!"), /* @__PURE__ */ React.createElement("p", { style: { color: "#94a3b8", fontSize: 14, marginBottom: 20 } }, "Sprint Complete"), /* @__PURE__ */ React.createElement("div", { style: {
+    fontSize: 48,
+    fontWeight: 800,
+    color: "#fbbf24",
+    textShadow: "0 0 30px rgba(251,191,36,0.4)",
+    marginBottom: 4
+  } }, score), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: "#94a3b8", marginBottom: 20 } }, "points"), /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(0,0,0,0.2)", borderRadius: 14, padding: "12px 18px", marginBottom: 20 } }, /* @__PURE__ */ React.createElement("div", { className: "sprint-stat" }, /* @__PURE__ */ React.createElement("span", { className: "sprint-stat-label" }, "Words Found"), /* @__PURE__ */ React.createElement("span", { className: "sprint-stat-value" }, wordsFound, " / ", totalWords)), /* @__PURE__ */ React.createElement("div", { className: "sprint-stat" }, /* @__PURE__ */ React.createElement("span", { className: "sprint-stat-label" }, "Pangrams"), /* @__PURE__ */ React.createElement("span", { className: "sprint-stat-value" }, pangrams)), /* @__PURE__ */ React.createElement("div", { className: "sprint-stat" }, /* @__PURE__ */ React.createElement("span", { className: "sprint-stat-label" }, "Rank Achieved"), /* @__PURE__ */ React.createElement("span", { className: "sprint-stat-value" }, RANK_EMOJIS[rank.idx], " ", rank.name)), /* @__PURE__ */ React.createElement("div", { className: "sprint-stat", style: { borderBottom: "none" } }, /* @__PURE__ */ React.createElement("span", { className: "sprint-stat-label" }, "Score %"), /* @__PURE__ */ React.createElement("span", { className: "sprint-stat-value" }, maxScore > 0 ? Math.round(score / maxScore * 100) : 0, "%"))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10 } }, /* @__PURE__ */ React.createElement("button", { className: "game-btn", onClick: onExit, style: { flex: 1 } }, "Back"), /* @__PURE__ */ React.createElement("button", { className: "game-btn game-btn-enter", onClick: onPlayAgain, style: { flex: 1 } }, "Sprint Again"))));
+}
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [mode, setMode] = useState("daily");
+  const [gradeBand, setGradeBand] = useState(() => {
+    try {
+      return localStorage.getItem("sb-grade-band") || "family";
+    } catch {
+      return "family";
+    }
+  });
+  const [adaptiveSkill, setAdaptiveSkill] = useState(() => {
+    try {
+      return Number(localStorage.getItem("sb-adaptive-skill") || 2);
+    } catch {
+      return 2;
+    }
+  });
+  const [randomIdx, setRandomIdx] = useState(() => Math.floor(Math.random() * PUZZLES.length));
+  const [sprintIdx, setSprintIdx] = useState(() => Math.floor(Math.random() * PUZZLES.length));
+  const [sprintActive, setSprintActive] = useState(false);
+  const [sprintTimeLeft, setSprintTimeLeft] = useState(180);
+  const [sprintFinished, setSprintFinished] = useState(false);
+  const [sprintFinalStats, setSprintFinalStats] = useState(null);
+  const sprintTimerRef = useRef(null);
+  const pidx = mode === "daily" ? getDailyIdx() : mode === "sprint" ? sprintIdx : randomIdx;
+  const basePuzzle = PUZZLES[pidx];
+  const puzzle = useMemo(() => {
+    if (!basePuzzle || gradeBand === "family" || mode === "sprint") return basePuzzle;
+    const baseMax = { k2: 5, g34: 7, g56: 9 }[gradeBand] || 7;
+    const maxLength = baseMax + Math.floor(adaptiveSkill / 4);
+    let words = basePuzzle.words.filter((word2) => word2.length <= maxLength);
+    if (words.length < 8) words = [...basePuzzle.words].sort((a, b) => a.length - b.length).slice(0, Math.min(12, basePuzzle.words.length));
+    const pangrams = basePuzzle.pangrams.filter((word2) => words.includes(word2));
+    const maxScore = words.reduce((total, word2) => total + scoreWord(word2, [...basePuzzle.letters, basePuzzle.center]).pts, 0);
+    return { ...basePuzzle, words, pangrams, wordCount: words.length, maxScore, adaptiveMaxLength: maxLength };
+  }, [basePuzzle, gradeBand, adaptiveSkill, mode]);
+  const progressMode = gradeBand === "family" || mode === "sprint" ? mode : `${mode}-kids-${gradeBand}`;
+  const allLetters = useMemo(() => puzzle ? [...puzzle.letters, puzzle.center] : [], [pidx]);
+  const letterSet = useMemo(() => new Set(allLetters), [allLetters]);
+  const [word, setWord] = useState("");
+  const [found, setFound] = useState(() => loadSave(pidx, progressMode));
+  const loadedKeyRef = useRef(null);
+  const practiceLoadedKeyRef = useRef(null);
+  const [shuffleOrder, setShuffleOrder] = useState([0, 1, 2, 3, 4, 5]);
+  const [toast, setToast] = useState(null);
+  const [floats, setFloats] = useState([]);
+  const [sparkles, setSparkles] = useState(false);
+  const [confetti, setConfetti] = useState(false);
+  const [wordsOpen, setWordsOpen] = useState(false);
+  const [showRules, setShowRules] = useState(false);
+  const [showHints, setShowHints] = useState(false);
+  const [shaking, setShaking] = useState(false);
+  const [shuffleSpin, setShuffleSpin] = useState(false);
+  const [rankBanner, setRankBanner] = useState(null);
+  const [latestWord, setLatestWord] = useState("");
+  const [justReachedIdx, setJustReachedIdx] = useState(-1);
+  const [pressedHex, setPressedHex] = useState(null);
+  const [revealedWords, setRevealedWords] = useState([]);
+  const [answersRevealed, setAnswersRevealed] = useState(false);
+  const [defData, setDefData] = useState(null);
+  const [defPos, setDefPos] = useState(null);
+  const [defLoading, setDefLoading] = useState(false);
+  const [theme, setTheme] = useState(() => loadTheme());
+  const [muted, setMuted] = useState(() => {
+    const m = loadMuted();
+    SoundManager.setMuted(m);
+    return m;
+  });
+  const [personalStats, setPersonalStats] = useState(() => loadStats());
+  const [showStats, setShowStats] = useState(false);
+  const statsTrackedRef = useRef(/* @__PURE__ */ new Set());
+  const [hexAnimating, setHexAnimating] = useState(false);
+  const prevShuffleRef = useRef([0, 1, 2, 3, 4, 5]);
+  const [streakData, setStreakData] = useState(() => loadStreak());
+  const streakRecordedRef = useRef(false);
+  const [practiceMode, setPracticeMode] = useState(false);
+  const [practiceFound, setPracticeFound] = useState([]);
+  const practiceWordsRef = useRef([]);
+  useEffect(() => {
+    if (theme === "light") {
+      document.documentElement.classList.add("light-theme");
+    } else {
+      document.documentElement.classList.remove("light-theme");
+    }
+  }, [theme]);
+  function toggleTheme() {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    saveTheme(newTheme);
+  }
+  function toggleMute() {
+    const newMuted = !muted;
+    setMuted(newMuted);
+    SoundManager.setMuted(newMuted);
+    saveMuted(newMuted);
+    if (!newMuted) SoundManager.init();
+  }
+  useEffect(() => {
+    loadPuzzles().then(() => {
+      setLoading(false);
+      setRandomIdx(Math.floor(Math.random() * PUZZLES.length));
+      setSprintIdx(Math.floor(Math.random() * PUZZLES.length));
+    });
+  }, []);
+  useEffect(() => {
+    if (puzzle) {
+      practiceWordsRef.current = getPracticeWords(puzzle);
+    }
+  }, [pidx, gradeBand, adaptiveSkill]);
+  useEffect(() => {
+    if (practiceMode) {
+      setPracticeFound(loadSave(pidx, "practice"));
+      practiceLoadedKeyRef.current = "practice-" + pidx;
+    }
+  }, [pidx, practiceMode]);
+  useEffect(() => {
+    if (practiceMode && practiceLoadedKeyRef.current === "practice-" + pidx) {
+      writeSave(pidx, "practice", practiceFound);
+    }
+  }, [practiceFound, pidx, practiceMode]);
+  const score = useMemo(() => {
+    let s = 0;
+    for (const w of found) {
+      s += scoreWord(w, allLetters).pts;
+    }
+    return s;
+  }, [found, allLetters]);
+  const practiceScore = useMemo(() => {
+    let s = 0;
+    for (const w of practiceFound) {
+      s += scorePracticeWord(w, allLetters).pts;
+    }
+    return s;
+  }, [practiceFound, allLetters]);
+  useEffect(() => {
+    if (mode !== "sprint" && loadedKeyRef.current === progressMode + "-" + pidx) {
+      writeSave(pidx, progressMode, found);
+    }
+  }, [found, pidx, mode, progressMode]);
+  useEffect(() => {
+    if (mode === "sprint") {
+      setFound([]);
+    } else {
+      setFound(loadSave(pidx, progressMode));
+    }
+    loadedKeyRef.current = progressMode + "-" + pidx;
+    setWord("");
+    setToast(null);
+    setLatestWord("");
+    setJustReachedIdx(-1);
+    setRevealedWords([]);
+    setAnswersRevealed(false);
+    setDefData(null);
+    setPracticeFound(loadSave(pidx, "practice"));
+    practiceLoadedKeyRef.current = "practice-" + pidx;
+    streakRecordedRef.current = false;
+  }, [pidx, mode, progressMode]);
+  useEffect(() => {
+    if (mode === "daily" && gradeBand === "family" && !streakRecordedRef.current && puzzle) {
+      const loadedFound = loadSave(pidx, "daily");
+      let loadedScore = 0;
+      for (const w of loadedFound) {
+        loadedScore += scoreWord(w, allLetters).pts;
+      }
+      const loadedRank = getRank(loadedScore, puzzle.maxScore);
+      if (loadedRank.name === "Genius" || loadedRank.name === "Queen Bee") {
+        streakRecordedRef.current = true;
+        const newStreakData = updateStreakForGenius(streakData);
+        setStreakData(newStreakData);
+      }
+    }
+  }, [mode, pidx, loading, gradeBand]);
+  useEffect(() => {
+    if (mode === "sprint" && sprintActive && !sprintFinished) {
+      sprintTimerRef.current = setInterval(() => {
+        setSprintTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(sprintTimerRef.current);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1e3);
+      return () => clearInterval(sprintTimerRef.current);
+    }
+  }, [mode, sprintActive, sprintFinished]);
+  useEffect(() => {
+    if (mode === "sprint" && sprintActive && sprintTimeLeft <= 0 && !sprintFinished) {
+      setSprintFinished(true);
+      setSprintActive(false);
+      clearInterval(sprintTimerRef.current);
+      const pangramCount = found.filter((w) => puzzle.pangrams.includes(w)).length;
+      setSprintFinalStats({
+        score,
+        wordsFound: found.length,
+        maxScore: puzzle.maxScore,
+        totalWords: puzzle.wordCount,
+        pangrams: pangramCount
+      });
+    }
+  }, [sprintTimeLeft, sprintActive, sprintFinished, mode]);
+  useEffect(() => {
+    const handler = () => {
+      setDefData(null);
+      setDefPos(null);
+    };
+    if (defData) {
+      window.addEventListener("click", handler);
+      return () => window.removeEventListener("click", handler);
+    }
+  }, [defData]);
+  const keyHandlerRef = useRef(null);
+  keyHandlerRef.current = (e) => {
+    if (showRules || showHints || showStats || sprintFinished) return;
+    if (mode === "sprint" && !sprintActive) return;
+    const k = e.key.toLowerCase();
+    if (k === "enter") {
+      e.preventDefault();
+      submitWord();
+    } else if (k === "backspace") {
+      e.preventDefault();
+      setWord((p) => p.slice(0, -1));
+    } else if (k === " ") {
+      e.preventDefault();
+      doShuffle();
+    } else if (k.length === 1 && /[a-z]/.test(k)) {
+      if (letterSet.has(k)) {
+        setWord((p) => p + k);
+        SoundManager.play("letter");
+      } else {
+        triggerShake();
+      }
+    }
+  };
+  useEffect(() => {
+    const h = (e) => keyHandlerRef.current(e);
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, []);
+  function addLetter(l) {
+    if (mode === "sprint" && !sprintActive) return;
+    setWord((p) => p + l);
+    setPressedHex(l);
+    setTimeout(() => setPressedHex(null), 200);
+    SoundManager.play("letter");
+  }
+  function triggerShake() {
+    setShaking(true);
+    setTimeout(() => setShaking(false), 500);
+    SoundManager.play("reject");
+  }
+  function updateAdaptiveSkill(delta) {
+    if (gradeBand === "family" || mode === "sprint") return;
+    setAdaptiveSkill((previous) => {
+      const next = Math.max(0, Math.min(11, previous + delta));
+      try {
+        localStorage.setItem("sb-adaptive-skill", String(next));
+      } catch {
+      }
+      return next;
+    });
+  }
+  function chooseGradeBand(nextBand) {
+    setGradeBand(nextBand);
+    try {
+      localStorage.setItem("sb-grade-band", nextBand);
+    } catch {
+    }
+    setWord("");
+    setToast(null);
+    setPracticeMode(false);
+  }
+  function showMsg(message, type) {
+    setToast({ message, type, id: Date.now() });
+  }
+  function submitWord() {
+    if (mode === "sprint" && !sprintActive) return;
+    const w = word.toLowerCase().trim();
+    if (!w) return;
+    setWord("");
+    if (practiceMode) {
+      if (w.length < 3) {
+        showMsg("Too short! (3+ letters)", "error");
+        triggerShake();
+        return;
+      }
+      if ([...w].some((l) => !letterSet.has(l))) {
+        showMsg("Invalid letter!", "error");
+        triggerShake();
+        return;
+      }
+      if (practiceFound.includes(w)) {
+        showMsg("Already found!", "error");
+        triggerShake();
+        return;
+      }
+      if (!practiceWordsRef.current.includes(w)) {
+        showMsg("Not in word list", "error");
+        triggerShake();
+        return;
+      }
+      const { pts: pts2, isPangram: isPangram2 } = scorePracticeWord(w, allLetters);
+      if (isPangram2) {
+        showMsg(`&#x1F31F; PANGRAM! +${pts2} &#x1F31F;`, "pangram");
+        setSparkles(true);
+        setTimeout(() => setSparkles(false), 800);
+        setConfetti(true);
+        setTimeout(() => setConfetti(false), 3e3);
+        SoundManager.play("pangram");
+      } else {
+        const msgs = pts2 === 1 ? ["Nice!", "Good!", "Yes!", "Got it!", "Yep!"] : pts2 <= 5 ? ["Great! +" + pts2, "Sweet! +" + pts2, "Solid! +" + pts2] : ["Amazing! +" + pts2, "Brilliant! +" + pts2, "Superb! +" + pts2];
+        showMsg(msgs[Math.floor(Math.random() * msgs.length)], "success");
+        SoundManager.play("accept");
+      }
+      setFloats((p) => [...p, { id: Date.now(), pts: pts2 }]);
+      setTimeout(() => setFloats((p) => p.slice(1)), 1100);
+      const newPracticeFound = [...practiceFound, w].sort();
+      setPracticeFound(newPracticeFound);
+      setLatestWord(w);
+      setTimeout(() => setLatestWord(""), 2e3);
+      return;
+    }
+    if (w.length < 4) {
+      showMsg("Too short!", "error");
+      triggerShake();
+      return;
+    }
+    if (!w.includes(puzzle.center)) {
+      showMsg(`Missing center letter <b>${puzzle.center.toUpperCase()}</b>`, "error");
+      triggerShake();
+      return;
+    }
+    if ([...w].some((l) => !letterSet.has(l))) {
+      showMsg("Invalid letter!", "error");
+      triggerShake();
+      return;
+    }
+    if (found.includes(w)) {
+      showMsg("Already found!", "error");
+      triggerShake();
+      return;
+    }
+    if (!puzzle.words.includes(w)) {
+      showMsg(gradeBand === "family" ? "Not in word list" : `Not in this grade-level list yet (adaptive max: ${puzzle.adaptiveMaxLength} letters)`, "error");
+      updateAdaptiveSkill(-0.35);
+      triggerShake();
+      return;
+    }
+    const { pts, isPangram } = scoreWord(w, allLetters);
+    const oldRank = getRank(score, puzzle.maxScore);
+    if (isPangram) {
+      showMsg(`&#x1F31F; PANGRAM! +${pts} &#x1F31F;`, "pangram");
+      setSparkles(true);
+      setTimeout(() => setSparkles(false), 800);
+      setConfetti(true);
+      setTimeout(() => setConfetti(false), 3e3);
+      SoundManager.play("pangram");
+    } else {
+      const msgs = pts === 1 ? ["Nice!", "Good!", "Yes!", "Got it!", "Yep!"] : pts <= 5 ? ["Great! +" + pts, "Sweet! +" + pts, "Solid! +" + pts] : ["Amazing! +" + pts, "Brilliant! +" + pts, "Superb! +" + pts];
+      showMsg(msgs[Math.floor(Math.random() * msgs.length)], "success");
+      SoundManager.play("accept");
+    }
+    setFloats((p) => [...p, { id: Date.now(), pts }]);
+    setTimeout(() => setFloats((p) => p.slice(1)), 1100);
+    const newFound = [...found, w].sort();
+    setFound(newFound);
+    updateAdaptiveSkill(w.length >= (puzzle.adaptiveMaxLength || 99) - 1 ? 0.7 : 0.2);
+    setLatestWord(w);
+    setTimeout(() => setLatestWord(""), 2e3);
+    if (revealedWords.includes(w)) {
+      setRevealedWords((prev) => prev.filter((rw) => rw !== w));
+    }
+    const updatedStats = { ...personalStats };
+    updatedStats.totalWords++;
+    if (isPangram) updatedStats.totalPangrams++;
+    if (!updatedStats.longestWord || w.length > updatedStats.longestWord.length) {
+      updatedStats.longestWord = w;
+    }
+    const sessionKey = `${mode}-${pidx}`;
+    if (!statsTrackedRef.current.has(sessionKey)) {
+      statsTrackedRef.current.add(sessionKey);
+      updatedStats.puzzlesPlayed++;
+    }
+    setPersonalStats(updatedStats);
+    saveStats(updatedStats);
+    const newScore = score + pts;
+    const newRank = getRank(newScore, puzzle.maxScore);
+    if (newRank.idx > oldRank.idx) {
+      setJustReachedIdx(newRank.idx);
+      SoundManager.play("rankup");
+      setTimeout(() => {
+        setRankBanner(newRank);
+        if (newRank.name === "Genius" || newRank.name === "Queen Bee") {
+          setConfetti(true);
+          setTimeout(() => setConfetti(false), 4e3);
+        }
+      }, 500);
+      setTimeout(() => setJustReachedIdx(-1), 4e3);
+      const rankStats = { ...updatedStats };
+      rankStats.rankSum = (rankStats.rankSum || 0) + newRank.idx;
+      setPersonalStats(rankStats);
+      saveStats(rankStats);
+      if (mode === "daily" && (newRank.name === "Genius" || newRank.name === "Queen Bee") && !streakRecordedRef.current) {
+        streakRecordedRef.current = true;
+        const newStreakData = updateStreakForGenius(streakData);
+        setStreakData(newStreakData);
+      }
+    }
+  }
+  function doShuffle() {
+    setShuffleSpin(true);
+    setTimeout(() => setShuffleSpin(false), 500);
+    prevShuffleRef.current = [...shuffleOrder];
+    setHexAnimating(true);
+    setShuffleOrder((prev) => {
+      const a = [...prev];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    });
+    setTimeout(() => setHexAnimating(false), 500);
+  }
+  function newRandom() {
+    let i;
+    do {
+      i = Math.floor(Math.random() * PUZZLES.length);
+    } while (i === randomIdx);
+    setRandomIdx(i);
+  }
+  function startSprint() {
+    const idx = Math.floor(Math.random() * PUZZLES.length);
+    setSprintIdx(idx);
+    setSprintTimeLeft(180);
+    setSprintActive(true);
+    setSprintFinished(false);
+    setSprintFinalStats(null);
+    setFound([]);
+    setWord("");
+    setRevealedWords([]);
+    setAnswersRevealed(false);
+  }
+  function sprintAgain() {
+    startSprint();
+  }
+  function exitSprint() {
+    setSprintFinished(false);
+    setSprintFinalStats(null);
+    setMode("daily");
+  }
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  }
+  function getTimerClass() {
+    if (sprintTimeLeft <= 30) return "sprint-timer danger";
+    if (sprintTimeLeft <= 60) return "sprint-timer warning";
+    return "sprint-timer";
+  }
+  function handleWordClick(w, e) {
+    e.stopPropagation();
+    const rect = e.target.getBoundingClientRect();
+    let x = rect.left;
+    let y = rect.bottom + 8;
+    if (x + 300 > window.innerWidth) x = window.innerWidth - 310;
+    if (x < 10) x = 10;
+    if (y + 100 > window.innerHeight) y = rect.top - 80;
+    setDefPos({ x, y });
+    setDefData({ word: w, partOfSpeech: "", definition: "Loading..." });
+    setDefLoading(true);
+    fetchDefinition(w).then((result) => {
+      setDefData(result);
+      setDefLoading(false);
+    });
+  }
+  const rank = getRank(score, puzzle ? puzzle.maxScore : 0);
+  const foundPct = puzzle ? found.length / puzzle.wordCount : 0;
+  const canRevealAnswers = !answersRevealed && (foundPct >= 0.5 || rank.name === "Queen Bee");
+  function handleRevealAnswers() {
+    if (window.confirm("Are you sure you want to reveal all remaining words? This cannot be undone.")) {
+      const unfound = puzzle.words.filter((w) => !found.includes(w)).sort();
+      setRevealedWords(unfound);
+      setAnswersRevealed(true);
+      setWordsOpen(true);
+    }
+  }
+  if (loading || !puzzle) {
+    return /* @__PURE__ */ React.createElement("div", { className: "loading-screen" }, /* @__PURE__ */ React.createElement("div", { className: "loading-spinner" }), /* @__PURE__ */ React.createElement("div", { style: { color: "var(--accent-purple)", fontSize: 18, fontWeight: 600 } }, "Loading puzzles..."));
+  }
+  return /* @__PURE__ */ React.createElement("div", { className: "bee-layout", style: { maxWidth: 440, margin: "0 auto", padding: "56px 16px 30px", position: "relative" } }, /* @__PURE__ */ React.createElement("aside", { className: "bee-settings" }, /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: 6 } }, /* @__PURE__ */ React.createElement("h1", { className: "font-title", style: {
+    fontSize: 34,
+    color: "var(--accent-gold)",
+    textShadow: "0 0 25px rgba(251,191,36,0.35), 0 0 50px rgba(251,191,36,0.15)",
+    marginBottom: 2,
+    lineHeight: 1.2
+  } }, "🐝 Spelling Bee"), /* @__PURE__ */ React.createElement("p", { style: { fontSize: 14, color: "var(--text-muted)", margin: 0 } }, "How many words can you spell?")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "center", alignItems: "center", gap: 8, marginBottom: 14, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("div", { className: "mode-toggle" }, /* @__PURE__ */ React.createElement("button", { className: `mode-btn ${mode === "daily" ? "active" : ""}`, onClick: () => {
+    setMode("daily");
+    setWord("");
+    setDefData(null);
+  } }, "Daily"), /* @__PURE__ */ React.createElement("button", { className: `mode-btn ${mode === "random" ? "active" : ""}`, onClick: () => {
+    setMode("random");
+    setWord("");
+    setDefData(null);
+  } }, "Free Play"), /* @__PURE__ */ React.createElement("button", { className: `mode-btn ${mode === "sprint" ? "active" : ""}`, onClick: () => {
+    setMode("sprint");
+    setWord("");
+    setDefData(null);
+    setPracticeMode(false);
+    if (!sprintActive) {
+      startSprint();
+    }
+  } }, "Sprint")), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      onClick: () => setShowRules(true),
+      "aria-label": "How to play",
+      style: {
+        width: 44,
+        height: 44,
+        borderRadius: "50%",
+        border: "1px solid var(--accent-purple-border)",
+        background: "var(--accent-purple-bg)",
+        color: "var(--word-filter-color)",
+        cursor: "pointer",
+        fontSize: 17,
+        fontWeight: 700,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "serif",
+        transition: "all 0.2s"
+      }
+    },
+    "?"
+  ), /* @__PURE__ */ React.createElement("button", { className: "theme-toggle-btn", onClick: toggleTheme, title: theme === "dark" ? "Switch to light theme" : "Switch to dark theme" }, theme === "dark" ? "☀️" : "🌙"), /* @__PURE__ */ React.createElement("button", { className: "mute-toggle-btn", onClick: toggleMute, title: muted ? "Unmute" : "Mute" }, muted ? "🔇" : "🔊"), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: "mute-toggle-btn",
+      onClick: () => setShowStats(true),
+      title: "Your Stats",
+      style: { fontSize: 14 }
+    },
+    "📊"
+  )), mode !== "sprint" && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "center", alignItems: "center", gap: 8, marginBottom: 12, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("label", { htmlFor: "grade-band", style: { fontSize: 14, color: "var(--text-muted)", fontWeight: 700 } }, "Vocabulary:"), /* @__PURE__ */ React.createElement("select", { id: "grade-band", value: gradeBand, onChange: (event) => chooseGradeBand(event.target.value), style: { background: "var(--panel-bg)", color: "var(--text-primary)", border: "1px solid var(--accent-purple-border)", borderRadius: 8, padding: "7px 9px", fontWeight: 700 } }, /* @__PURE__ */ React.createElement("option", { value: "family" }, "Family / All Words"), /* @__PURE__ */ React.createElement("option", { value: "k2" }, "Grades K–2"), /* @__PURE__ */ React.createElement("option", { value: "g34" }, "Grades 3–4"), /* @__PURE__ */ React.createElement("option", { value: "g56" }, "Grades 5–6")), gradeBand !== "family" && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 14, color: "#34d399", background: "rgba(16,185,129,.12)", border: "1px solid rgba(52,211,153,.3)", borderRadius: 999, padding: "5px 9px" } }, "Adaptive level ", Math.floor(adaptiveSkill) + 1, " · words up to ", puzzle.adaptiveMaxLength, " letters")), mode !== "sprint" && /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "center", alignItems: "center", gap: 10, marginBottom: 12, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement("div", { className: "practice-toggle" }, /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: `practice-toggle-btn ${!practiceMode ? "standard-active" : ""}`,
+      onClick: () => {
+        setPracticeMode(false);
+        setWord("");
+      }
+    },
+    "Standard"
+  ), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: `practice-toggle-btn ${practiceMode ? "active" : ""}`,
+      onClick: () => {
+        setPracticeMode(true);
+        setWord("");
+      }
+    },
+    "Practice"
+  )), practiceMode && /* @__PURE__ */ React.createElement("span", { className: "practice-indicator" }, "3+ letters • no center required"), !practiceMode && mode === "daily" && streakData.currentStreak > 0 && /* @__PURE__ */ React.createElement("div", { className: "streak-badge", title: `Best streak: ${streakData.bestStreak} day${streakData.bestStreak !== 1 ? "s" : ""}` }, /* @__PURE__ */ React.createElement("span", { className: "streak-fire" }, "🔥"), /* @__PURE__ */ React.createElement("span", { className: "streak-num" }, streakData.currentStreak), /* @__PURE__ */ React.createElement("span", null, "day", streakData.currentStreak !== 1 ? "s" : ""), streakData.bestStreak > streakData.currentStreak && /* @__PURE__ */ React.createElement("span", { className: "streak-badge-best" }, "(best: ", streakData.bestStreak, ")"))), mode === "sprint" && sprintActive && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { className: getTimerClass() }, "⏱️ ", formatTime(sprintTimeLeft))), mode === "sprint" && !sprintActive && !sprintFinished && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", padding: "30px 0" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 48, marginBottom: 12 } }, "⏱️"), /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 24, color: "#06b6d4", marginBottom: 8 } }, "Sprint Mode"), /* @__PURE__ */ React.createElement("p", { style: { color: "#94a3b8", fontSize: 15, marginBottom: 20, lineHeight: 1.6 } }, "Score as many points as you can in ", /* @__PURE__ */ React.createElement("b", { style: { color: "#06b6d4" } }, "3 minutes"), "!"), /* @__PURE__ */ React.createElement("button", { className: "game-btn game-btn-enter", onClick: startSprint, style: { fontSize: 18, padding: "14px 40px" } }, "Start Sprint"))), (mode !== "sprint" || sprintActive) && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "bee-play" }, practiceMode ? /* @__PURE__ */ React.createElement("div", { style: { padding: "0 4px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 } }, /* @__PURE__ */ React.createElement("span", { style: {
+    fontSize: 18,
+    fontWeight: 800,
+    color: "#34d399",
+    textShadow: "0 0 12px rgba(52,211,153,0.35)"
+  } }, "🌱", " Practice Mode"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: 14, color: "var(--text-secondary)" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399", fontWeight: 700 } }, practiceScore), " pts", " • ", /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399", fontWeight: 700 } }, practiceFound.length), " words")), /* @__PURE__ */ React.createElement("div", { style: {
+    height: 6,
+    borderRadius: 999,
+    background: "var(--bar-bg)",
+    border: "1px solid var(--bar-border)"
+  } }, /* @__PURE__ */ React.createElement("div", { style: {
+    height: "100%",
+    borderRadius: 999,
+    width: `${Math.min(practiceFound.length / Math.max(practiceWordsRef.current.length, 1) * 100, 100)}%`,
+    background: "linear-gradient(90deg, #34d399, #06b6d4)",
+    transition: "width 0.5s"
+  } }))) : /* @__PURE__ */ React.createElement(RankBar, { score, maxScore: puzzle.maxScore, justReachedIdx }), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", margin: "20px 0 6px", position: "relative", minHeight: 52 } }, /* @__PURE__ */ React.createElement("div", { className: `current-word ${shaking ? "shake-anim" : ""}` }, word.length === 0 ? /* @__PURE__ */ React.createElement("span", { style: { color: "var(--text-dim)", fontSize: 20, fontWeight: 400, letterSpacing: 1 } }, "Type or click letters...") : [...word].map((l, i) => /* @__PURE__ */ React.createElement(
+    "span",
+    {
+      key: i,
+      className: `current-letter ${!practiceMode && l === puzzle.center ? "center-highlight" : ""}`
+    },
+    l.toUpperCase()
+  ))), /* @__PURE__ */ React.createElement("div", { style: {
+    height: 2,
+    margin: "6px auto 0",
+    width: "65%",
+    maxWidth: 260,
+    background: "linear-gradient(90deg, transparent, var(--divider-color), transparent)"
+  } }), floats.map((f) => /* @__PURE__ */ React.createElement("div", { key: f.id, className: "score-float", style: { left: "50%", top: "30%", transform: "translateX(-50%)" } }, "+", f.pts)), /* @__PURE__ */ React.createElement(SparkleBurst, { active: sparkles })), /* @__PURE__ */ React.createElement("div", { className: "hex-grid", style: { margin: "14px auto 18px" } }, /* @__PURE__ */ React.createElement(
+    "div",
+    {
+      className: `hex-btn ${practiceMode ? "hex-outer" : "hex-center"} hex-pos-c ${pressedHex === puzzle.center ? "pressed" : ""}`,
+      draggable: "false",
+      onDragStart: (e) => e.preventDefault(),
+      onClick: () => addLetter(puzzle.center)
+    },
+    puzzle.center.toUpperCase()
+  ), puzzle.letters.map((letter, letterIdx) => {
+    const visualPos = shuffleOrder.indexOf(letterIdx);
+    const pos = HEX_POSITIONS[visualPos];
+    return /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        key: letter,
+        className: `hex-btn hex-outer ${hexAnimating ? "hex-animated" : ""} ${pressedHex === letter ? "pressed" : ""}`,
+        style: {
+          left: "50%",
+          top: "50%",
+          transform: `translate(${pos.x}%, ${pos.y}%)`,
+          transition: hexAnimating ? "transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)" : "filter 0.15s"
+        },
+        draggable: "false",
+        onDragStart: (e) => e.preventDefault(),
+        onClick: () => addLetter(letter)
+      },
+      letter.toUpperCase()
+    );
+  })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 10, marginTop: 4 } }, /* @__PURE__ */ React.createElement("button", { className: "game-btn", onClick: () => setWord((p) => p.slice(0, -1)) }, "Delete"), /* @__PURE__ */ React.createElement("button", { className: "game-btn", onClick: doShuffle, title: "Shuffle (Space)" }, /* @__PURE__ */ React.createElement("span", { className: `shuffle-icon ${shuffleSpin ? "spinning" : ""}` }, "↻"), " Shuffle"), /* @__PURE__ */ React.createElement("button", { className: "game-btn game-btn-enter", onClick: submitWord }, "Enter")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 10, marginTop: 10, flexWrap: "wrap" } }, mode !== "sprint" && !practiceMode && /* @__PURE__ */ React.createElement("button", { className: "game-btn", onClick: () => setShowHints(true), style: { fontSize: 14 } }, "💡 Hint"), mode === "random" && /* @__PURE__ */ React.createElement("button", { className: "game-btn", onClick: newRandom, style: { fontSize: 14 } }, "🔄 New Puzzle"), mode !== "sprint" && !practiceMode && canRevealAnswers && /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: "game-btn",
+      onClick: handleRevealAnswers,
+      style: { fontSize: 14, borderColor: "rgba(100,116,139,0.4)", color: "#94a3b8" }
+    },
+    "👁 Show Answers"
+  ))), /* @__PURE__ */ React.createElement("section", { className: "bee-words" }, /* @__PURE__ */ React.createElement(
+    WordsPanel,
+    {
+      found: practiceMode ? practiceFound : found,
+      pangrams: puzzle.pangrams,
+      isOpen: wordsOpen,
+      onToggle: () => setWordsOpen((p) => !p),
+      total: practiceMode ? practiceWordsRef.current.length : puzzle.wordCount,
+      latestWord,
+      revealedWords: !practiceMode && answersRevealed ? revealedWords : [],
+      onWordClick: handleWordClick
+    }
+  ), !practiceMode && found.length > 0 && /* @__PURE__ */ React.createElement(WordLengthDistribution, { puzzle, found }), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginTop: 16, fontSize: 14, color: "var(--text-dim)" } }, "Puzzle #", pidx + 1, " •", " ", practiceMode ? /* @__PURE__ */ React.createElement(React.Fragment, null, practiceWordsRef.current.length, " practice words") : /* @__PURE__ */ React.createElement(React.Fragment, null, puzzle.wordCount, " words •", " ", puzzle.pangrams.length, " pangram", puzzle.pangrams.length !== 1 ? "s" : "", " •", " ", "Max ", puzzle.maxScore, " pts"), puzzlesLoadError && /* @__PURE__ */ React.createElement("span", { style: { color: "#f59e0b" } }, " (offline mode)")))), toast && /* @__PURE__ */ React.createElement(Toast, { key: toast.id, data: toast, onDone: () => setToast(null) }), rankBanner && /* @__PURE__ */ React.createElement(RankBanner, { rank: rankBanner, onDone: () => setRankBanner(null) }), /* @__PURE__ */ React.createElement(Confetti, { active: confetti }), showRules && /* @__PURE__ */ React.createElement(RulesModal, { onClose: () => setShowRules(false), puzzle, practiceMode }), showHints && /* @__PURE__ */ React.createElement(HintModal, { onClose: () => setShowHints(false), puzzle, found }), showStats && /* @__PURE__ */ React.createElement(StatsModal, { onClose: () => setShowStats(false), stats: personalStats, streakData }), defData && /* @__PURE__ */ React.createElement(DefinitionTooltip, { defData, position: defPos, onClose: () => {
+    setDefData(null);
+    setDefPos(null);
+  } }), sprintFinished && sprintFinalStats && /* @__PURE__ */ React.createElement(
+    SprintFinalScreen,
+    {
+      score: sprintFinalStats.score,
+      wordsFound: sprintFinalStats.wordsFound,
+      maxScore: sprintFinalStats.maxScore,
+      totalWords: sprintFinalStats.totalWords,
+      pangrams: sprintFinalStats.pangrams,
+      onPlayAgain: sprintAgain,
+      onExit: exitSprint
+    }
+  ));
+}
+ReactDOM.render(/* @__PURE__ */ React.createElement(App, null), document.getElementById("root"));

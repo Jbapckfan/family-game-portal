@@ -1,0 +1,528 @@
+{
+  "capture_context": "Claude's final2 capture after commits through 6a9f7c7 (from the task brief)",
+  "processing": "See individual records: captured frames are cropped/reframed, resized and lightly sharpened; restored repository images retain their exact earlier bytes.",
+  "cards": [
+    {
+      "game": "reflex-riot",
+      "source_frame": "output/screen-fit/final2/reflex-riot/laptop-start.png",
+      "crop_box": {
+        "x": 16,
+        "y": 108,
+        "width": 1408,
+        "height": 792
+      },
+      "output": "games/reflex-riot-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Reflex Riot start menu with the colorful REFLEX RIOT! logo and Solo Riot, Pass & Clash and One-Tap Reaction buttons.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "c4921c66d7e805858c598c8f573b2f44ed6db50dc3b60ae5f4edc92f602f20d7",
+      "bytes": 57476,
+      "sha256": "009a1022fa9b111ed90321ca198e92bdf4d6c2cffdff4859ce8a2a87604dd87c",
+      "jpeg_q": 4,
+      "filter": "crop=w=1408:h=792:x=16:y=108:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0",
+      "source_type": "capture_crop",
+      "selection_note": "The approved start-menu view shows the game identity and its modes together."
+    },
+    {
+      "game": "zoo-conquest",
+      "source_frame": "output/screen-fit/final2/zoo-conquest/laptop-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 80,
+        "width": 1440,
+        "height": 810
+      },
+      "output": "games/zoo-conquest-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Animal territory nodes and colored regional connections on the Zoo Conquest map.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "7e03c254e6047c40f1b952e4ca4e0187de203cdbeae960fb4505a5a6adfc306f",
+      "bytes": 117007,
+      "sha256": "2a464b211ce0ceb15dbc5fe9848fc090d98d88854ce6a2deb08caf5d7da57335",
+      "jpeg_q": 4,
+      "filter": "crop=w=1440:h=810:x=0:y=80:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "particle-conquest",
+      "source_frame": "output/screen-fit/final2/particle-conquest/phone-play.png",
+      "crop_box": {
+        "x": 4,
+        "y": 344,
+        "width": 384,
+        "height": 288
+      },
+      "output": "games/particle-conquest-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Large rocky planets, the cyan YOU planet and its fleet, and the red AI planet in Particle Conquest.",
+      "source_dimensions": {
+        "width": 393,
+        "height": 852
+      },
+      "source_sha256": "4fb7909a31c2bf6cc8495724f227b8c57290e2dd280b357ff7ec64f7423a5904",
+      "bytes": 33920,
+      "sha256": "42cad0e2e126ba78b6be8da1e6e456be3a1fffa8f2cd2c81d93aa6d20e0ad37c",
+      "jpeg_q": 4,
+      "filter": "crop=w=384:h=288:x=4:y=344:exact=1,pad=512:288:64:0:color=0x02060b,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0",
+      "source_type": "capture_reframe",
+      "reframe": {
+        "width": 512,
+        "height": 288,
+        "left": 64,
+        "top": 0,
+        "background": "#02060b"
+      },
+      "selection_note": "Plain dark side margins retain both full player planets and labels without distorting them; HUD and button rows are excluded."
+    },
+    {
+      "game": "tower-defense",
+      "source_frame": "output/screen-fit/final2/tower-defense/laptop-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 90,
+        "width": 1440,
+        "height": 810
+      },
+      "output": "games/tower-defense-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Three futuristic towers guard a winding road across a grassy battlefield beside a purple nexus.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "7e1862b83f7a8cee764b2053086d80a96a0b162583be962e9e0b521add70d186",
+      "bytes": 103036,
+      "sha256": "0d2f751841a2acc35e51974afe5450b7247f1197443cb534f506db9dcccd8e4c",
+      "jpeg_q": 4,
+      "filter": "crop=w=1440:h=810:x=0:y=90:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "dots-and-boxes-3d",
+      "source_frame": "output/screen-fit/final2/dots-and-boxes-3d/laptop-play.png",
+      "crop_box": {
+        "x": 238,
+        "y": 200,
+        "width": 1024,
+        "height": 576
+      },
+      "output": "games/dots-and-boxes-3d-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Glossy cyan dots form a three-dimensional lattice with red and blue claimed edges.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "352c9a2826941c0edaa1b9bce7377b5647be233489643526356af84382eb5d94",
+      "bytes": 33704,
+      "sha256": "e7157a00b81f3583db360e881900f0097af45f27d532375847dbe73ced743ffb",
+      "jpeg_q": 4,
+      "filter": "crop=w=1024:h=576:x=238:y=200:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "snowman-siege",
+      "source_frame": "output/screen-fit/final2/snowman-siege/laptop-play.png",
+      "crop_box": {
+        "x": 380,
+        "y": 104,
+        "width": 1040,
+        "height": 585
+      },
+      "output": "games/snowman-siege-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "A snowman target and red aiming reticle over a moonlit snowy mountain forest.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "ddb2673590c33446df1879f14d3422e0de52b76f92cf84196759b5ecab06cc58",
+      "bytes": 45940,
+      "sha256": "5b0573dc51d8d8a08f94f2a9e07091a6f2d4c249efb76a32a9a192c158457ffc",
+      "jpeg_q": 4,
+      "filter": "crop=w=1040:h=585:x=380:y=104:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "shut-the-box",
+      "source_frame": "output/screen-fit/final2/shut-the-box/laptop-landing.png",
+      "crop_box": {
+        "x": 64,
+        "y": 88,
+        "width": 1312,
+        "height": 738
+      },
+      "output": "games/shut-the-box-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "A walnut Shut the Box tray with green felt, folded numbered tiles and two ivory dice.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "34f71313113fef2e8970a9ac4a87d2f684bac218cebc83949c09551d6abd6bb4",
+      "bytes": 46150,
+      "sha256": "c3fe91a938132a7453ccfd4a6126e8fd0e88cb7aeda517940de94b3132eba1a6",
+      "jpeg_q": 4,
+      "filter": "crop=w=1312:h=738:x=64:y=88:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "cube-jumper",
+      "source_frame": "output/screen-fit/final2/cube-jumper/tabletPortrait-play.png",
+      "crop_box": {
+        "x": 10,
+        "y": 620,
+        "width": 800,
+        "height": 450
+      },
+      "output": "games/cube-jumper-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "A glowing purple cube jumps beside a cyan spike and gold orb in a neon city.",
+      "source_dimensions": {
+        "width": 820,
+        "height": 1180
+      },
+      "source_sha256": "df476bd1a989629937517226e10aa0673650317c8f91b5e4aa1b00d8dec9866b",
+      "bytes": 48221,
+      "sha256": "d01c480a00a0245c5e8c67abb2028bfd9ef1d22f7705439c0c1d916e29e2db4b",
+      "jpeg_q": 4,
+      "filter": "crop=w=800:h=450:x=10:y=620:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "2DTicTacToe",
+      "source_frame": "output/screen-fit/final2/2DTicTacToe/laptop-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 74,
+        "width": 1440,
+        "height": 810
+      },
+      "output": "games/2DTicTacToe-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "A glossy pink X and cyan O on a wood-framed slate tic-tac-toe board.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "f020f84b934f3c58d637da96fabab703caffe3c90f9571613c4a399498e2ff86",
+      "bytes": 46753,
+      "sha256": "4818efcc8a5fec82cdd014fc81e827f6b30f91417514c8fc54bf8b12e2c430f8",
+      "jpeg_q": 4,
+      "filter": "crop=w=1440:h=810:x=0:y=74:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "CodeBreakerV4",
+      "source_frame": "output/screen-fit/final2/CodeBreakerV4/tabletPortrait-play.png",
+      "crop_box": {
+        "x": 10,
+        "y": 365,
+        "width": 800,
+        "height": 450
+      },
+      "output": "games/CodeBreakerV4-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Glossy colored code pegs, an empty four-slot guess row and feedback pins on a wooden board.",
+      "source_dimensions": {
+        "width": 820,
+        "height": 1180
+      },
+      "source_sha256": "ac20b636ed2a5b10a90a78acea4e1f416c6df877476d3501bbcefa1facf9e786",
+      "bytes": 54931,
+      "sha256": "fc1e0a5cdb226c58adb888b0cc5c676995037b9b4b7927f51185482b83d77304",
+      "jpeg_q": 4,
+      "filter": "crop=w=800:h=450:x=10:y=365:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "lasers-3d",
+      "source_frame": null,
+      "crop_box": null,
+      "output": "games/lasers-3d-thumb.jpg",
+      "output_dimensions": {
+        "width": 640,
+        "height": 397
+      },
+      "alt": "Lasers 3D",
+      "bytes": 83682,
+      "sha256": "7edb6b61884a685027412a002a3c6e9048bde2530721af6040cd885eba20e9cf",
+      "source_type": "restored_earlier_image",
+      "restored_from": {
+        "commit": "6a9f7c72071c718fc1f15c83405c4f646a034d0c",
+        "path": "games/lasers-3d-thumb.jpg",
+        "git_source": "HEAD:games/lasers-3d-thumb.jpg",
+        "sha256": "7edb6b61884a685027412a002a3c6e9048bde2530721af6040cd885eba20e9cf"
+      },
+      "processing": "None: exact earlier repository image bytes restored."
+    },
+    {
+      "game": "lasers_mirrors_game",
+      "source_frame": "output/screen-fit/final2/lasers_mirrors_game/tablet-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 92,
+        "width": 1120,
+        "height": 630
+      },
+      "output": "games/lasers_mirrors-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "A pink laser reflects from a metallic mirror toward a green target on a slate grid.",
+      "source_dimensions": {
+        "width": 1180,
+        "height": 820
+      },
+      "source_sha256": "1b87f9635c1d674797a11dff47dc6a4fa8bcd88b61eb6a8fcb22c80374608f3f",
+      "bytes": 33199,
+      "sha256": "0a1c77abefaab173cc3dd4fbe05be922d571d8847e63a34a121aefd8c2005a00",
+      "jpeg_q": 4,
+      "filter": "crop=w=1120:h=630:x=0:y=92:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "LightsOut",
+      "source_frame": "output/screen-fit/final2/LightsOut/laptop-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 74,
+        "width": 1440,
+        "height": 810
+      },
+      "output": "games/LightsOut-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "A framed five-by-five grid of glowing cyan and dark raised Lights Out buttons.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "4b1f47572284342df01514b40be32b8c5ad582402ec3b65951f149843134dc8b",
+      "bytes": 48452,
+      "sha256": "47c8a0c850246e3c4e7d72eb999f1ac68fad115b17c2dac33168e5093cb2263f",
+      "jpeg_q": 4,
+      "filter": "crop=w=1440:h=810:x=0:y=74:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "PegJumper",
+      "source_frame": "output/screen-fit/final2/PegJumper/laptop-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 74,
+        "width": 1440,
+        "height": 810
+      },
+      "output": "games/PegJumper-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Glossy cyan pegs and empty sockets form a triangular pattern on a dark wooden board.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "8681b811c4a2f9e79b950eb7b738a19502811a19ebe3dc8b5b2d4f4aab9cc7ed",
+      "bytes": 44412,
+      "sha256": "e8068ee25fe6a5be4cd8da0985ad3ef79221185753392cc70468704f5e0257e6",
+      "jpeg_q": 4,
+      "filter": "crop=w=1440:h=810:x=0:y=74:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "SpellingBee",
+      "source_frame": "output/screen-fit/final2/SpellingBee/laptop-play.png",
+      "crop_box": {
+        "x": 560,
+        "y": 272,
+        "width": 800,
+        "height": 450
+      },
+      "output": "games/SpellingBee-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Cream hexagonal letter tiles surround a gold L tile on a wooden honeycomb board.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "ad4b3e7fc520c25d6d21949888f3b8138a659b60b5da2d5170942a43d42e1ab6",
+      "bytes": 32048,
+      "sha256": "963858080d030eea3c92d6546702e5f1c112d6366194b92a69cbede54fbcd411",
+      "jpeg_q": 4,
+      "filter": "crop=w=800:h=450:x=560:y=272:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "2048",
+      "source_frame": "output/screen-fit/final2/2048/laptop-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 74,
+        "width": 1440,
+        "height": 810
+      },
+      "output": "games/2048-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Cyan, green and blue numbered tiles sit in a dark four-by-four 2048 board.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "24c9a089e9648765ab9cbe510cb9a9d8df8d594df0e204383a50cbb9a6f0f330",
+      "bytes": 46190,
+      "sha256": "55c1175cb8eb4247e08f8845eabff7109de04d1b9bb8b6eceb5154617b4117a0",
+      "jpeg_q": 4,
+      "filter": "crop=w=1440:h=810:x=0:y=74:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "ConnectFour",
+      "source_frame": "output/screen-fit/final2/ConnectFour/tablet-play.png",
+      "crop_box": {
+        "x": 400,
+        "y": 342,
+        "width": 768,
+        "height": 432
+      },
+      "output": "games/ConnectFour-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Close-up of a blue Connect Four rack with yellow and red discs in the bottom row.",
+      "source_dimensions": {
+        "width": 1180,
+        "height": 820
+      },
+      "source_sha256": "ae4c01b11e3891464399c1a4901b7af8932f25530afdc82daf52eb3eb95f9035",
+      "bytes": 47743,
+      "sha256": "33656d7ef01dcf8004d7494eed3f4cfa37b191b0659ef59fd84271c9afb191ab",
+      "jpeg_q": 4,
+      "filter": "crop=w=768:h=432:x=400:y=342:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "Snake",
+      "source_frame": "output/screen-fit/final2/Snake/tablet-play.png",
+      "crop_box": {
+        "x": 560,
+        "y": 240,
+        "width": 576,
+        "height": 324
+      },
+      "output": "games/Snake-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "A glossy green snake and a red apple on a stone checkerboard field.",
+      "source_dimensions": {
+        "width": 1180,
+        "height": 820
+      },
+      "source_sha256": "b629eae1c980efb70acfc4edcb43c50693d5b6e679435717c09c9808bbe940df",
+      "bytes": 35290,
+      "sha256": "53a8567643541fb06e9f564e5d1e3e8705819ba8c2d49036499146f53f4e1577",
+      "jpeg_q": 4,
+      "filter": "crop=w=576:h=324:x=560:y=240:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "Minesweeper",
+      "source_frame": "output/screen-fit/final2/Minesweeper/laptop-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 74,
+        "width": 1440,
+        "height": 810
+      },
+      "output": "games/Minesweeper-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "Metal Minesweeper tiles, a red flag and revealed blue, green and red numbers.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "8e083d7ba6e3fa8d366d2ed77129946f7793f36a4aa653638759a38d13492314",
+      "bytes": 57169,
+      "sha256": "2d6dd23d031d9845873a2bb65426819b75db3103c13f5b62d6cffec9edba13e9",
+      "jpeg_q": 4,
+      "filter": "crop=w=1440:h=810:x=0:y=74:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    },
+    {
+      "game": "MemoryMatch",
+      "source_frame": "output/screen-fit/final2/MemoryMatch/laptop-play.png",
+      "crop_box": {
+        "x": 0,
+        "y": 74,
+        "width": 1440,
+        "height": 810
+      },
+      "output": "games/MemoryMatch-thumb.jpg",
+      "output_dimensions": {
+        "width": 800,
+        "height": 450
+      },
+      "alt": "A four-by-four arrangement of burgundy memory cards with paw-print backs.",
+      "source_dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "source_sha256": "0003599e2ee5e81c1ef0c57cbacffbbd671b4df3ef3f9ea4721ae8305d9a618a",
+      "bytes": 49649,
+      "sha256": "e1dc581527823481410ed21b168195038f204f1441d5ec87a3f3798f3eba9871",
+      "jpeg_q": 4,
+      "filter": "crop=w=1440:h=810:x=0:y=74:exact=1,scale=800:450:flags=lanczos,unsharp=3:3:0.25:3:3:0"
+    }
+  ],
+  "excluded": [
+    {
+      "output": "games/velocity-marble-run-thumb.jpg",
+      "reason": "No captured frame supplied; card left unchanged.",
+      "unchanged": true,
+      "source_frame": null,
+      "crop_box": null,
+      "dimensions": {
+        "width": 640,
+        "height": 397
+      },
+      "bytes": 33504,
+      "sha256": "8878422b3e244907ab62c436e73961f9388b740e7110c1846b39631c1abf6630"
+    }
+  ]
+}

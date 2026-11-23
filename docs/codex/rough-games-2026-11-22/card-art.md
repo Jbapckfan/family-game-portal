@@ -9,8 +9,11 @@ still apply. Report to `card-art-report.md` in this folder.
 
 ## Source
 
-Claude's final all-games capture: `output/screen-fit/FINAL_DIR/<game>/` (start and play frames at
-phone, iPad landscape, iPad portrait and laptop; `report.json` lists them). Every card image must be
+Claude's final all-games capture: `output/screen-fit/final2/<game>/` (start and play frames at
+phone, iPad landscape, iPad portrait and laptop; `report.json` lists them). It was taken after every
+commit on this branch through `6a9f7c7`; 32 games, 320 frames, no page errors. 2048's extra shots are
+named `candy` and `wood`. Image tools on this Mac: `sips` (crop, resize, JPEG quality) and `ffmpeg`;
+there is no ImageMagick or `cwebp`, and Python has no PIL. JPG output is fine. Every card image must be
 made from a real frame of that game (crop, reframe, light grading, sharpening are fine). Do not
 invent gameplay that is not in the frames, and do not add text, logos or UI that the game does not
 show: the portal card already prints the title and description.
@@ -32,8 +35,9 @@ practical (the SVGs for Shut the Box and Cube Jumper become JPG or WebP; update 
 ## Checks
 
 - Every `game-thumb` `src` in `index.html` exists; dimensions and bytes per file (table).
-- If `tools/offline/build-precache.mjs` exists, rerun it so the offline list includes the new
-  images, then `--check`.
+- Rerun `node tools/offline/build-precache.mjs` (it now follows `<img src>`, so new card images are
+  picked up and replaced ones drop out), then `--check`; report the new file count and bytes (limit
+  25,000,000), and `node --test tools/offline/test/*.test.mjs`.
 - Scoped `git diff --check`.
 
 I will capture the portal page at four sizes and review the cards. Do not try the browser.

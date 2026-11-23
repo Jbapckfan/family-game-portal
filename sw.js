@@ -1,6 +1,6 @@
 /* Portal offline support. Generated assets are updated by tools/offline/build-precache.mjs. */
 // BEGIN GENERATED PRECACHE
-const PRECACHE_VERSION = '5eb6bd6d6963362872ca6635';
+const PRECACHE_VERSION = 'b6a920ef26f1fe64f39f6ed8';
 const PRECACHE_FILES = [
   "games/2048-thumb.jpg",
   "games/2DTicTacToe-thumb.jpg",
@@ -61,7 +61,7 @@ const PRECACHE_FILES = [
   "games/counterpart/puzzles.mjs",
   "games/counterpart/shell.mjs",
   "games/counterpart/styles.css",
-  "games/cube-jumper-thumb.svg",
+  "games/cube-jumper-thumb.jpg",
   "games/cube-jumper.html",
   "games/cube-jumper/art/engine-distance.webp",
   "games/cube-jumper/art/foundry-distance.webp",
@@ -344,7 +344,7 @@ const PRECACHE_FILES = [
   "games/shut-the-box-assets/table.js",
   "games/shut-the-box-assets/vendor/three.min.js",
   "games/shut-the-box-assets/wood.jpg",
-  "games/shut-the-box-thumb.svg",
+  "games/shut-the-box-thumb.jpg",
   "games/shut-the-box.html",
   "games/sideways/app.mjs",
   "games/sideways/engine.mjs",

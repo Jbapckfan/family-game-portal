@@ -90,3 +90,33 @@ Data-only render stand-ins and asset inspection do not establish browser renderi
 - `tools/screen-fit/shots/tower-defense.json`
 - `tools/screen-fit/shots/particle-conquest.json`
 - `docs/codex/rough-games-2026-11-22/arcade-report.md`
+
+## Round 2 — Nexus callout placement and contrast
+
+Reviewed Claude's `output/screen-fit/rough-r1/tower-defense/` contact sheet and all four per-size play PNGs. The phone/portrait combo sits over the HUD, and the unbacked yellow synergy names cross towers/road or disappear into grass. The tundra material was also inspected directly. The supplied report's zero-error, muted, zero-scroll results are pre-change evidence; no new browser capture was attempted.
+
+### Changes
+
+- Combo and damage notices now live in a non-interactive layer fitted to the existing canvas rectangle during resize. It is clipped to the field and stacked below the unchanged HUD, so it cannot paint over HUD numbers or buttons. Canvas size, path geometry and input coordinates are unchanged. The resize code reuses its existing cached rectangle; no per-frame DOM bounds reads were added.
+- The combo gets a dark, gold-edged backing and chooses a clear field location rather than using the old fixed `top:80px`. Placement avoids the tower/caption footprints and road. A fixed left anchor was also checked and rejected because it could touch a tower on phone tundra. Existing opacity/scale transition timing is retained; relocation itself does not animate through actors.
+- The “★ Cryo Boost” text was a persistent canvas synergy caption, not a damage float. It now uses the existing backed-caption renderer and a cached clear-space layout, avoiding towers, road and other callouts. The same first active synergy name is shown at the same times; no grouping or new values were introduced. Very dense late-game fields retain an in-field backed fallback if no clear location exists; the HUD stays protected.
+- Damage/reward/upgrade floats now use field-local coordinates rather than accidentally treating them as page coordinates. They have dark backings and bounds that account for their complete upward travel and peak critical scale. Long multi-word notices wrap without truncating their values. Normal text remains at least 14px. The 100ms normal throttle, crit bypass, 1000ms lifetime, easing and original float/crit keyframes are unchanged.
+- The Nexus shot now checks the actual field/visible combo/damage bounds, HUD-number/button separation and buff-caption placement. These new page assertions are prepared for Claude and have not run here.
+
+### Checks run
+
+- JavaScript parser, `node --check` via stdin, CSS parsing and shot/eval syntax passed.
+- Data-only geometry checks passed for 24 map/field cases: all six map shapes at the four target widths with representative field heights. All 72 combo/buff boxes were in bounds, mutually separate, and clear of tower footprints and road. This includes Frozen Wastes/tundra geometry.
+- 240 floating-label envelope cases passed, covering normal/crit notices, short and multi-word values, center/corner origins, and all four field sizes. These are mathematical layout checks, not browser/font screenshots.
+- Fully visible contrast calculations passed: combo 15.03:1; backed buff text 14.26:1 even composited over pure white (more demanding than the tundra image); red damage text 4.63:1. Fade-out opacity is unchanged.
+- Data-only callback tests preserved text/color values, the 100ms throttle, crit bypass and 1000ms removal.
+- Source comparison preserved 90 existing protected functions, 15 class methods and 71 original initializers. Combo threshold/value code matches the committed version apart from the presentation refresh. Combat, buffs, map/path data, scoring, clocks, assets, sound and saved-data logic are unchanged. Both floating-animation keyframe blocks match exactly.
+- Scoped `git diff --check` passed.
+
+No app, window, browser, server or capture was launched; no git writes were made. The terrain, road, tower/enemy art and all other games were left alone. Claude should inspect the next four-size capture and a real tundra run for final rendered acceptance. No new visual or performance certification is claimed.
+
+### Round-2 files changed
+
+- `games/tower-defense/index.html`
+- `tools/screen-fit/shots/tower-defense.json`
+- `docs/codex/rough-games-2026-11-22/arcade-report.md`

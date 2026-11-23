@@ -1257,6 +1257,12 @@
           .map-info h3 { font-size:16px; line-height:1.25; }
           .map-info p,.map-info .difficulty,.map-info .campaign-stars { line-height:1.3; }
         }
+
+        /* Round 2: all transient notices are clipped to the measured game field. */
+        #fieldCallouts { position:fixed; z-index:90; pointer-events:none; overflow:hidden; }
+        #fieldCallouts #comboDisplay { position:absolute; top:12px; left:12px; right:auto; max-width:calc(100% - 24px); padding:8px 12px; border:1px solid #ffe69a66; border-radius:12px; color:#ffe69a; background:#081422; font-size:clamp(18px,3vw,24px); font-weight:700; font-family:'Orbitron',system-ui,sans-serif; line-height:1.2; text-align:center; white-space:nowrap; text-shadow:none; transform-origin:top left; transition:opacity .2s ease,transform .2s ease; }
+        #fieldCallouts #damageNumbers { position:absolute; inset:0; width:100%; height:100%; z-index:100; }
+        #fieldCallouts .dmg-num { box-sizing:border-box; font-family:system-ui,sans-serif; line-height:1.25; padding:4px 6px; border:1px solid #c4d4e633; border-radius:6px; background:#081422; white-space:normal; overflow-wrap:normal; word-break:normal; text-shadow:0 1px 2px #000; transform-origin:50% 50%; }
     </style>
 </head>
 <body>
@@ -1307,13 +1313,14 @@
 
         <canvas id="gameCanvas"></canvas>
 
-        <div id="comboDisplay">
-            <span id="comboCount">5</span>x COMBO!
+        <div id="fieldCallouts">
+            <div id="comboDisplay">
+                <span id="comboCount">5</span>x COMBO!
+            </div>
+            <div id="damageNumbers"></div>
         </div>
 
         <div id="waveAnnounce"></div>
-
-        <div id="damageNumbers"></div>
 
         <button class="btn" id="cancelPlaceBtn">✕ CANCEL</button>
 
@@ -2408,6 +2415,7 @@ function resize() {
     bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     canvasRect = canvas.getBoundingClientRect();
+    syncNexusCalloutBounds();
 
     // Rescale an active map + towers after rotation / viewport change
     const m = 50;
@@ -2793,12 +2801,7 @@ class Tower {
 
         // Synergy indicator
         if (this.synergyNames && this.synergyNames.length > 0) {
-            ctx.save();
-            ctx.fillStyle = '#ffd700';
-            ctx.font = '14px Orbitron';
-            ctx.textAlign = 'center';
-            ctx.fillText('★ ' + this.synergyNames[0], x, y + CFG.TOWER_RADIUS + 24);
-            ctx.restore();
+            drawNexusBuffLabel(this);
         }
     }
 
@@ -3336,9 +3339,98 @@ function drawNexusDrone(context,x,y,size,color,type,boss,pulse) {
 }
 function nexusCaption(context,text,x,y,color='#edf7ff') {
     context.save();context.font='bold 14px system-ui';
-    let width=nexusCaptionWidths.get(text);if(width===undefined){width=context.measureText(text).width+12;nexusCaptionWidths.set(text,width);}
+    const width=nexusCaptionWidth(context,text);
     context.fillStyle='rgba(6,16,30,.96)';context.beginPath();context.roundRect(x-width/2,y-11,width,22,5);context.fill();context.fillStyle=color;context.textAlign='center';context.textBaseline='middle';context.fillText(text,x,y);context.restore();
 }
+// FIELD CALLOUT LAYOUT START — presentation coordinates only; no new timers or game state.
+const nexusFloatMeasure=document.createElement('canvas').getContext('2d'),nexusCalloutAxes=['x','y'];
+let nexusBuffLayout={width:0,height:0,comboCount:'',entries:[],positions:new Map()};
+function syncNexusCalloutBounds() {
+    const layer=document.getElementById('fieldCallouts');
+    layer.style.left=canvasRect.left+'px';layer.style.top=canvasRect.top+'px';
+    layer.style.width=canvasRect.width+'px';layer.style.height=canvasRect.height+'px';
+}
+function nexusCaptionWidth(context,text) {
+    let width=nexusCaptionWidths.get(text);
+    if(width===undefined){context.save();context.font='bold 14px system-ui';width=context.measureText(text).width+12;context.restore();nexusCaptionWidths.set(text,width);}
+    return width;
+}
+function nexusRoadCrossesLabel(a,b,box,padding) {
+    let lo=0,hi=1;
+    for(const axis of nexusCalloutAxes) {
+        const start=a[axis],delta=b[axis]-start,min=box[axis]-padding,max=box[axis]+(axis==='x'?box.width:box.height)+padding;
+        if(Math.abs(delta)<1e-9){if(start<min||start>max)return false;continue;}
+        const t0=(min-start)/delta,t1=(max-start)/delta;
+        lo=Math.max(lo,Math.min(t0,t1));hi=Math.min(hi,Math.max(t0,t1));if(lo>hi)return false;
+    }
+    return true;
+}
+function layoutNexusComboBox(items,road,width,height,boxWidth,boxHeight) {
+    const valid=box=>!items.some(t=>Math.hypot(t.x-Math.max(box.x,Math.min(t.x,box.x+box.width)),t.y-Math.max(box.y,Math.min(t.y,box.y+box.height)))<52)&&!road.some((point,i)=>i<road.length-1&&nexusRoadCrossesLabel(point,road[i+1],box,CFG.PATH_WIDTH/2+6));
+    for(let y=12;y+boxHeight<=height-12;y+=boxHeight+12) {
+        for(const x of [12,width-boxWidth-12,(width-boxWidth)/2]) {
+            const box={x,y,width:boxWidth,height:boxHeight};if(valid(box))return box;
+        }
+    }
+    return {x:12,y:12,width:boxWidth,height:boxHeight};
+}
+function layoutNexusBuffLabels(items,road,width,height,measure,reserved=[]) {
+    const positions=new Map(),placed=[...reserved],top=68,gap=4;
+    const overlaps=(a,b)=>a.x<b.x+b.width+gap&&a.x+a.width+gap>b.x&&a.y<b.y+b.height+gap&&a.y+a.height+gap>b.y;
+    const hitsTower=(box,t)=>Math.hypot(t.x-Math.max(box.x,Math.min(t.x,box.x+box.width)),t.y-Math.max(box.y,Math.min(t.y,box.y+box.height)))<52;
+    for(const item of items) {
+        if(!item.name)continue;
+        const text='★ '+item.name,w=measure(text),h=22,candidates=[];
+        const add=(x,y)=>candidates.push({x:x-w/2,y:y-h/2,width:w,height:h});
+        add(item.x,item.y+CFG.TOWER_RADIUS+64);
+        for(const radius of [90,120,155,195])for(let i=0;i<16;i++){const angle=i*Math.PI/8;add(item.x+Math.cos(angle)*radius,item.y+Math.sin(angle)*radius);}
+        const valid=box=>box.x>=8&&box.y>=top&&box.x+w<=width-8&&box.y+h<=height-8&&!items.some(t=>hitsTower(box,t))&&!placed.some(b=>overlaps(box,b))&&!road.some((point,i)=>i<road.length-1&&nexusRoadCrossesLabel(point,road[i+1],box,CFG.PATH_WIDTH/2+6));
+        let choices=candidates.filter(valid);
+        if(!choices.length)for(let y=top;y+h<=height-8;y+=12)for(let x=8;x+w<=width-8;x+=12){const box={x,y,width:w,height:h};if(valid(box))choices.push(box);}
+        if(!choices.length) {
+            // Very crowded late-game fields retain the label in bounds with its backing.
+            const x=Math.max(8,Math.min(width-w-8,item.x-w/2)),y=Math.max(top,Math.min(height-h-8,item.y+CFG.TOWER_RADIUS+36));
+            choices=[{x,y,width:w,height:h}];
+        }
+        choices.sort((a,b)=>Math.hypot(a.x+w/2-item.x,a.y+h/2-item.y)-Math.hypot(b.x+w/2-item.x,b.y+h/2-item.y));
+        const box=choices[0];placed.push(box);positions.set(item.tower,{...box,text});
+    }
+    return positions;
+}
+function prepareNexusBuffLabels() {
+    if(viewW<=0||viewH<=0)return;
+    const comboCount=document.getElementById('comboCount').textContent,countChanged=nexusBuffLayout.comboCount!==comboCount;
+    let changed=nexusBuffLayout.width!==viewW||nexusBuffLayout.height!==viewH||nexusBuffLayout.entries.length!==towers.length;
+    if(!changed)for(let i=0;i<towers.length;i++){const a=nexusBuffLayout.entries[i],t=towers[i],name=t.synergyNames&&t.synergyNames[0]||'';if(a.tower!==t||a.x!==t.x||a.y!==t.y||a.name!==name){changed=true;break;}}
+    if(!changed&&!countChanged)return;
+    const comboFont=Math.min(24,Math.max(18,window.innerWidth*.03));
+    nexusFloatMeasure.font='700 '+comboFont+'px Orbitron,system-ui,sans-serif';
+    const comboWidth=Math.min(viewW-24,Math.ceil(nexusFloatMeasure.measureText(comboCount+'x COMBO!').width)+26),comboHeight=Math.ceil(comboFont*1.2+18);
+    if(!changed&&nexusBuffLayout.combo&&nexusBuffLayout.combo.width===comboWidth&&nexusBuffLayout.combo.height===comboHeight){nexusBuffLayout.comboCount=comboCount;return;}
+    const entries=towers.map(t=>({tower:t,x:t.x,y:t.y,name:t.synergyNames&&t.synergyNames[0]||''}));
+    const combo=layoutNexusComboBox(entries,path,viewW,viewH,comboWidth,comboHeight),element=document.getElementById('comboDisplay');
+    element.style.left=combo.x+'px';element.style.top=combo.y+'px';element.style.width=combo.width+'px';
+    nexusBuffLayout={width:viewW,height:viewH,comboCount,combo,entries,positions:layoutNexusBuffLabels(entries,path,viewW,viewH,text=>nexusCaptionWidth(ctx,text),[combo])};
+}
+
+function drawNexusBuffLabel(tower) {
+    const label=nexusBuffLayout.positions.get(tower);if(!label)return;
+    nexusCaption(ctx,label.text,label.x+label.width/2,label.y+label.height/2,'#ffe69a');
+}
+function layoutNexusFloatLabel(x,y,text,isCrit,width,height,measure) {
+    const peak=isCrit?1.8:1,travel=isCrit?80:60,padding=14,maxContent=Math.max(1,(width-16)/peak-padding);
+    const words=String(text).split(/\s+/);let font=isCrit?24:14;
+    const longest=Math.max(...words.map(word=>measure(word,font)));
+    if(longest>maxContent)font=Math.max(14,font*maxContent/longest);
+    const lines=[];let line='';
+    for(const word of words){const next=line?line+' '+word:word;if(line&&measure(next,font)>maxContent){lines.push(line);line=word;}else line=next;}
+    if(line)lines.push(line);
+    const boxWidth=Math.min((width-16)/peak,Math.max(...lines.map(value=>measure(value,font)))+padding),boxHeight=lines.length*font*1.25+10;
+    const side=8+boxWidth*(peak-1)/2,minTop=68+8+travel+boxHeight*(peak-1)/2,maxTop=height-8-boxHeight*(peak+1)/2;
+    return {left:Math.max(side,Math.min(width-side-boxWidth,x-boxWidth/2)),top:Math.max(Math.min(minTop,maxTop),Math.min(maxTop,y)),width:boxWidth,height:boxHeight,font};
+}
+// FIELD CALLOUT LAYOUT END
+
 // NEXUS MATERIAL ART END
 
 // ═══════════════════════════════════════════════════════════════
@@ -3352,6 +3444,7 @@ function draw() {
     drawPath(map);
     drawBase();
 
+    prepareNexusBuffLabels();
     towers.forEach(t => t.draw());
     enemies.forEach(e => e.draw());
 
@@ -4204,6 +4297,7 @@ function updateCombo() {
     } else {
         el.classList.remove('visible');
     }
+    prepareNexusBuffLabels();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -4234,10 +4328,14 @@ function showDamageNumber(x, y, text, color, isCrit = false) {
     const el = document.createElement('div');
     el.className = 'dmg-num' + (isCrit ? ' crit' : '');
     el.textContent = text;
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
+    const layout=layoutNexusFloatLabel(x,y,text,isCrit,viewW,viewH,(value,size)=>{
+        nexusFloatMeasure.font='700 '+size+'px system-ui,sans-serif';return nexusFloatMeasure.measureText(value).width;
+    });
+    el.style.left = layout.left + 'px';
+    el.style.top = layout.top + 'px';
+    el.style.width = layout.width + 'px';
     el.style.color = color;
-    el.style.fontSize = isCrit ? '24px' : '14px';
+    el.style.fontSize = layout.font + 'px';
     document.getElementById('damageNumbers').appendChild(el);
     setTimeout(() => el.remove(), 1000);
 }

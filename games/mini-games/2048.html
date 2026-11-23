@@ -388,7 +388,9 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
 .mini-shell .text-xs,.mini-shell .text-sm,.mini-shell [class~="text-[10px]"],.mini-shell [class~="text-[11px]"],.mini-shell [class~="text-[12px]"],.mini-shell small,[role=dialog] :is(p,li,label,small,.text-xs),.modal-content :is(p,li,label,small,.text-xs){font-size:14px!important;line-height:1.4}
 .mini-shell>div.max-w-md :is(button,input,label,p,.theme-btn){font-size:14px!important;min-height:44px}.mini-shell>div.max-w-md :is(button.bg-blue-700,button.bg-green-700){font-size:16px!important}
 .mini-controls button:disabled,.mini-bottom button:disabled,.breaker-layout .action-btn:disabled{opacity:1;color:#aebfd8!important;background:#0b1424!important;border-color:#35475e!important;box-shadow:none!important}.mini-controls select:disabled,.breaker-layout select:disabled{opacity:1;color:#aebfd8;background:#0b1424}
-</style></head>
+</style>
+<link rel="stylesheet" href="./2048-assets/materials.css">
+</head>
 <body>
   <noscript>
     <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#fbbf24;font-family:sans-serif;text-align:center;padding:2rem;">
@@ -726,6 +728,7 @@ button:focus-visible,[role=button]:focus-visible,select:focus-visible,input:focu
                 >
                     <div
                         className={`tile-face w-full h-full rounded-lg flex items-center justify-center font-bold shadow-lg ${getTileFontSizeClass(tile.value)} ${justMerged ? 'tile-merged' : ''}`}
+                        data-value={tile.value}
                         style={{
                             backgroundColor: style.bg,
                             color: readableTileText(style.bg, style.text),

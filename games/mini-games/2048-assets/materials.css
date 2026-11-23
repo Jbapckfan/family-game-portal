@@ -1,0 +1,107 @@
+/* Physical bevels shared by the three skins; neon adds its own lit-acrylic finish. */
+.mini-board[data-tile-theme="neon"] {
+  background-image: linear-gradient(145deg, #06152580, #02070cba), url('../LightsOut-assets/brushed-metal.jpg') !important;
+  background-size: cover !important;
+  border-color: #6599af !important;
+  box-shadow: inset 0 1px 1px #d2f5ff66, inset 0 0 0 4px #030a1380, 0 5px 0 #02060c, 0 18px 36px #0008 !important;
+}
+.mini-board .tile-face {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid #f7ebcc66;
+  background-image: linear-gradient(175deg, #ffffff24, transparent 18%, transparent 88%, #00000018);
+  box-shadow: inset 0 2px 1px #ffffff8c, inset 1px 0 1px #ffffff38, inset 0 -4px 2px #0004, 0 3px 0 #080b0cd9, 0 6px 8px #0008 !important;
+  text-shadow: none;
+}
+.mini-board .tile-face::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border-radius: inherit;
+  border-top: 1px solid #fff8;
+  border-left: 1px solid #fff3;
+  background: linear-gradient(174deg, #ffffff26, transparent 13%, transparent 88%, #00000012);
+  pointer-events: none;
+}
+/* neon-material: ice — brightest fallback for all values above the named ladder. */
+.mini-board[data-tile-theme="neon"] .tile-face {
+  --counter-high: #f5ffff;
+  --counter-body: #e4faff;
+  --counter-low: #c7edff;
+  --counter-ink: #07121f;
+  --counter-bloom: #c2f4ff;
+  --counter-radius: 18px;
+  background-color: var(--counter-body) !important;
+  background-image: radial-gradient(ellipse at 50% 115%, color-mix(in srgb, var(--counter-high) 75%, transparent), transparent 70%), linear-gradient(165deg, var(--counter-high), var(--counter-body) 32%, var(--counter-body) 70%, var(--counter-low));
+  color: var(--counter-ink) !important;
+  border-color: color-mix(in srgb, var(--counter-high) 80%, transparent);
+  box-shadow: inset 0 2px 1px #ffffffa6, inset 1px 0 2px #ffffff66, inset 0 -3px 2px #00162422, inset 0 0 12px color-mix(in srgb, var(--counter-high) 45%, transparent), 0 3px 0 #02060d, 0 0 var(--counter-radius) color-mix(in srgb, var(--counter-bloom) 40%, transparent), 0 5px 10px #0008 !important;
+}
+/* neon-material: cyan */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="1"], [data-value="2"]) {
+  --counter-high: #a7f8ff; --counter-body: #57e4ff; --counter-low: #36c9eb;
+  --counter-bloom: #36ddff; --counter-radius: 6px;
+}
+/* neon-material: teal */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="3"], [data-value="4"], [data-value="5"], [data-value="6"]) {
+  --counter-high: #9ffff0; --counter-body: #50ebd2; --counter-low: #26cfb2;
+  --counter-bloom: #20efd2; --counter-radius: 7px;
+}
+/* neon-material: turquoise */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="8"], [data-value="12"]) {
+  --counter-high: #a3ffe4; --counter-body: #5bf0be; --counter-low: #39d89e;
+  --counter-bloom: #35f3bb; --counter-radius: 8px;
+}
+/* neon-material: blue */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="13"], [data-value="16"], [data-value="24"]) {
+  --counter-high: #c1e6ff; --counter-body: #8dcdff; --counter-low: #63adef;
+  --counter-bloom: #59baff; --counter-radius: 9px;
+}
+/* neon-material: violet */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="21"], [data-value="32"], [data-value="48"]) {
+  --counter-high: #ded1ff; --counter-body: #b9adff; --counter-low: #aa9bf2;
+  --counter-bloom: #9d83ff; --counter-radius: 10px;
+}
+/* neon-material: purple */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="34"], [data-value="55"], [data-value="64"], [data-value="96"]) {
+  --counter-high: #f0c8ff; --counter-body: #d7a5ff; --counter-low: #c38de8;
+  --counter-bloom: #d18aff; --counter-radius: 11px;
+}
+/* neon-material: magenta */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="89"], [data-value="128"], [data-value="192"]) {
+  --counter-high: #ffd0fc; --counter-body: #f5a5f4; --counter-low: #e58cde;
+  --counter-bloom: #fa7ef5; --counter-radius: 12px;
+}
+/* neon-material: pink */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="144"], [data-value="233"], [data-value="256"], [data-value="384"]) {
+  --counter-high: #ffd1e8; --counter-body: #ffaad5; --counter-low: #ef90bf;
+  --counter-bloom: #ff79ba; --counter-radius: 13px;
+}
+/* neon-material: coral */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="377"], [data-value="512"], [data-value="768"]) {
+  --counter-high: #ffe0cf; --counter-body: #ffb6a2; --counter-low: #ef9e8d;
+  --counter-bloom: #ff9e89; --counter-radius: 14px;
+}
+/* neon-material: amber */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="610"], [data-value="987"], [data-value="1024"], [data-value="1536"]) {
+  --counter-high: #ffedb1; --counter-body: #ffda7b; --counter-low: #edbe51;
+  --counter-bloom: #ffc650; --counter-radius: 15px;
+}
+/* neon-material: hot-gold */
+.mini-board[data-tile-theme="neon"] .tile-face:is([data-value="1597"], [data-value="2048"], [data-value="3072"]) {
+  --counter-high: #fffbdc; --counter-body: #fff09f; --counter-low: #f6d976;
+  --counter-bloom: #fff18b; --counter-radius: 16px;
+}
+/* neon-material: obstacle — dark unlit metal, distinct from playable acrylic. */
+.mini-board[data-tile-theme="neon"] .tile-face[data-value="-1"] {
+  --counter-high: #3b4650; --counter-body: #29333c; --counter-low: #18212a; --counter-ink: #e4e9ed;
+  background-image: linear-gradient(165deg, var(--counter-high), var(--counter-body) 45%, var(--counter-low));
+  border-color: #7b8a94;
+  box-shadow: inset 0 2px 1px #ffffff38, inset 0 -3px 2px #0004, 0 3px 0 #02060d, 0 5px 8px #0008 !important;
+}
+.mini-board[data-tile-theme="neon"] .tile-face[data-value="-1"]::before { background: none; }
+/* Cool ambient light only while Neon Tiles is selected. Other skins are untouched. */
+.mini-shell:has(.mini-board[data-tile-theme="neon"]) {
+  background: radial-gradient(ellipse at 85% 5%, #13495855, transparent 60%), radial-gradient(ellipse at 5% 100%, #36276544, transparent 55%), #050b13;
+}

@@ -78,3 +78,58 @@ No after capture was attempted, as instructed. **Rendered polish, no-overflow be
 - `tools/screen-fit/shots/2048.json`
 - `tools/screen-fit/shots/SpellingBee.json`
 - `docs/codex/rough-games-2026-11-22/looks-2048-lights-bee-report.md`
+
+
+## Round 2 — Neon Tiles restored, 2026-11-22
+Reviewed Claude's `looks-r1/2048/laptop-play.png`, `laptop-wood.png` and `phone-play.png`, plus `final/2048/laptop-play.png`. The warm default palette and ebony well made Neon Tiles too similar to Classic Wood. The older navy default had the opposite problem: its low tiles were too dark. This round supersedes the Round 1 neon material/color description above. Lights Out and Spelling Bee were left untouched.
+
+### Changes
+
+- Neon Tiles now uses **lit acrylic/glass in cool electric colors**: luminous cyan low values, teal/turquoise, blue, violet, purple, magenta, pink, then hot coral/amber/gold. Higher values use brighter edge bloom; the highest/unlisted values use the brightest near-white ice palette. Dark numerals stay legible against the illuminated faces.
+- Added an inner-light gradient, translucent-looking bevel reflections and static color spill. Kept the existing physical edge treatment. No animation, transition duration, input handler or game timing changed.
+- Replaced the neon ebony well with a cool dark-metal well using the **original** `../LightsOut-assets/brushed-metal.jpg` URL. That file is unchanged and was not duplicated. A cool ambient backdrop applies only while the board has `data-tile-theme="neon"`. No image generated.
+- **Classic Wood and Candy remain exactly as they were at the beginning of Round 2.** Their inline styling code and shared material/bevel CSS rules are byte-for-byte unchanged. The new overrides all require a neon board. Classic Wood retains its existing ebony image.
+- The 2048 HTML is unchanged this round, including the existing `data-value` attribute, theme labels/storage and all scripts. The **24-move shot file is byte-for-byte unchanged**.
+
+### Contrast results
+
+`2048-assets/contrast-checks.json` now contains the actual CSS foreground and all three background colors for every palette, per-stop ratios and a **2,064-row value table**. It enumerates Standard/Mini/Giant/Obstacles powers through the finite JavaScript range and overflow, Threes spawn/merge values, the engine's Fibonacci lookup plus every adjacent-pair sum, and the obstacle. Every other possible numeric value inherits the same tested ice fallback, whose contrast does not depend on the number.
+
+The minimum is **4.966:1** with both shade alphas conservatively treated as black over the entire face. The minimum against the opaque gradients alone is **7.438:1**. The shade calculation combines the actual `#00162422` inset-shade alpha and the shared `#00000012` glaze-shade alpha. For dark-ink tiles, all inner-light channels are at least as bright as the backing; the check asserts this, so inner illumination cannot reduce the contrast. The white-ink obstacle has a separate dark, unlit gradient and its face-glaze background is disabled.
+
+| Material | Explicit values (other values use ice) | Conservative minimum |
+| --- | --- | ---: |
+| ice | All other values, including larger tiles | 9.710:1 |
+| cyan | 1, 2 | 6.279:1 |
+| teal | 3, 4, 5, 6 | 6.244:1 |
+| turquoise | 8, 12 | 6.704:1 |
+| blue | 13, 16, 24 | 5.216:1 |
+| violet | 21, 32, 48 | 5.179:1 |
+| purple | 34, 55, 64, 96 | 4.966:1 |
+| magenta | 89, 128, 192 | 5.425:1 |
+| pink | 144, 233, 256, 384 | 5.575:1 |
+| coral | 377, 512, 768 | 5.868:1 |
+| amber | 610, 987, 1024, 1536 | 7.037:1 |
+| hot-gold | 1597, 2048, 3072 | 8.685:1 |
+| obstacle | -1 | 7.887:1 |
+
+These are calculations from the CSS colors and shade bounds, **not rendered-pixel certification**. Border and edge-only white bevel highlights are outside the numeral-backing calculation. The JSON preserves full-precision ratios and the palette assigned to each explicit value.
+
+### Checks
+
+- All **13** palettes pass the 4.5:1 threshold, including conservative shading; explicit values and the exhaustive fallback are covered. The fallback's body luminance is checked to be at least that of every named palette.
+- SHA-256 checks confirm the 2048 HTML, the shot file and the shared non-neon material rules are unchanged from the start of this round. The original metal image also matches its prior hash.
+- No scripts were edited. As an additional check, all **three** existing 2048 inline script blocks passed `node --check`; the JSX block was first transpiled in memory using the existing local TypeScript 5.9.3 compiler. No installation or runtime dependency added.
+- CSS delimiters and the reused image path checked; scoped `git diff --check` passed. Current audit data is appended as `round2` in `2048-assets/verification.json`; the current CSS hash and default contrast field were refreshed.
+- No app, window, browser, capture, server or git write. No background process left running.
+
+### Claude's next capture
+
+Use the unchanged 24-move/default/Candy/Wood shots at phone, landscape iPad, portrait iPad and laptop sizes. Check that Neon reads as luminous cool acrylic immediately, remains clearly distinct from the warm wood and saturated Candy skins on phone, and still exposes the smoked-metal wells between tiles. Inspect low 2/4 tiles, the hue ladder, the inner light/edge bloom and bright high values. Check that reflections do not wash out numerals, that obstacles read as unlit blockers, and that no glow obscures neighboring values. Recheck Menu, controls, slide/merge motion and page fit. **New rendered appearance is pending those captures.**
+
+### Round 2 files changed
+
+- `games/mini-games/2048-assets/materials.css`
+- `games/mini-games/2048-assets/contrast-checks.json`
+- `games/mini-games/2048-assets/verification.json`
+- `docs/codex/rough-games-2026-11-22/looks-2048-lights-bee-report.md` (appended section)

@@ -1,0 +1,171 @@
+{
+  "compiler": {
+    "name": "TypeScript",
+    "version": "5.9.3",
+    "purpose": "Offline JSX syntax/transpile check only; no shipped runtime dependency"
+  },
+  "games": {
+    "2048": {
+      "sourceGuard": "pass",
+      "googleFontLinks": "unchanged",
+      "scriptTags": "unchanged",
+      "nodeChecks": [
+        {
+          "index": 3,
+          "jsx": true,
+          "nodeCheck": "pass"
+        },
+        {
+          "index": 4,
+          "jsx": false,
+          "nodeCheck": "pass"
+        },
+        {
+          "index": 5,
+          "jsx": false,
+          "nodeCheck": "pass"
+        }
+      ],
+      "materialCSSDelimiters": "balanced",
+      "materialURLs": "exist"
+    },
+    "LightsOut": {
+      "sourceGuard": "pass",
+      "googleFontLinks": "unchanged",
+      "scriptTags": "unchanged",
+      "nodeChecks": [
+        {
+          "index": 3,
+          "jsx": true,
+          "nodeCheck": "pass"
+        },
+        {
+          "index": 4,
+          "jsx": false,
+          "nodeCheck": "pass"
+        },
+        {
+          "index": 5,
+          "jsx": false,
+          "nodeCheck": "pass"
+        }
+      ],
+      "materialCSSDelimiters": "balanced",
+      "materialURLs": "exist"
+    },
+    "SpellingBee": {
+      "sourceGuard": "pass",
+      "googleFontLinks": "unchanged",
+      "scriptTags": "unchanged",
+      "nodeChecks": [
+        {
+          "index": 3,
+          "jsx": false,
+          "nodeCheck": "pass"
+        },
+        {
+          "index": 4,
+          "jsx": false,
+          "nodeCheck": "pass"
+        },
+        {
+          "index": 5,
+          "jsx": true,
+          "nodeCheck": "pass"
+        },
+        {
+          "index": 6,
+          "jsx": false,
+          "nodeCheck": "pass"
+        },
+        {
+          "index": 7,
+          "jsx": false,
+          "nodeCheck": "pass"
+        }
+      ],
+      "materialCSSDelimiters": "balanced",
+      "materialURLs": "exist"
+    }
+  },
+  "captureAttempted": false,
+  "ebonyAsset": "unchanged",
+  "inlineScriptChecks": 11,
+  "shotJSONAndEvalSyntax": "pass",
+  "finalSourceGuard": "pass",
+  "assets": [
+    {
+      "path": "games/mini-games/2048-assets/materials.css",
+      "bytes": 5993,
+      "sha256": "e3b98899f11ff1b9e4bfb3a4ab7271697e99ef8975c6f8eaa6e4662e349200e0"
+    },
+    {
+      "path": "games/mini-games/LightsOut-assets/brushed-metal.jpg",
+      "bytes": 88751,
+      "sha256": "c008386a50c69f55daa66e02563f8620e3de52719746c933d1cd4fb39f4d764c"
+    },
+    {
+      "path": "games/mini-games/LightsOut-assets/brushed-metal.prompt.txt",
+      "bytes": 911,
+      "sha256": "68cbc1b3557f31edd20cf546260858cac1061612161d5201c5968ac56f096469"
+    },
+    {
+      "path": "games/mini-games/LightsOut-assets/materials.css",
+      "bytes": 2593,
+      "sha256": "91c3a12ffac3118f2e07b0c58315db294e847855cd4c110442754111f8eaa66f"
+    },
+    {
+      "path": "games/mini-games/SpellingBee-assets/beeswax.jpg",
+      "bytes": 103356,
+      "sha256": "2270d586e71f448a5ba98ebe19639d3321c632ad9f4e58558ffffaedf6a20bc8"
+    },
+    {
+      "path": "games/mini-games/SpellingBee-assets/beeswax.prompt.txt",
+      "bytes": 970,
+      "sha256": "c7fecfea323e8268b6a9a9497090e785aa89caed078f2f2011147508454b5815"
+    },
+    {
+      "path": "games/mini-games/SpellingBee-assets/materials.css",
+      "bytes": 3023,
+      "sha256": "854bf23c1132c705fe25906bf6948956600a33bd08366aff45852bc7b2fe1955"
+    }
+  ],
+  "finalColorChecks": {
+    "default2048": 4.966442272585374,
+    "bee": {
+      "outer": {
+        "minimumTexturedFloorContrast": 10.373953782085248,
+        "foreground": "#2c1b08",
+        "gradientStops": [
+          "#fff4db",
+          "#ead7b3"
+        ],
+        "blend": "normal-60-percent"
+      },
+      "center": {
+        "minimumTexturedFloorContrast": 4.84551376651804,
+        "foreground": "#201104",
+        "gradientStops": [
+          "#f7c653",
+          "#dba12d"
+        ],
+        "blend": "multiply"
+      }
+    }
+  },
+  "round2": {
+    "scope": "Neon-only CSS, contrast table and report; no HTML or script edits.",
+    "htmlUnchanged": true,
+    "shotFileUnchanged": true,
+    "sharedCandyWoodCSSUnchanged": true,
+    "inlineScriptSyntaxChecks": 3,
+    "compilerVersion": "5.9.3",
+    "neonValueRows": 2064,
+    "namedPalettes": 13,
+    "minimumContrast": 4.966442272585374,
+    "minimumOpaqueGradientContrast": 7.4377243724048645,
+    "materialCSSSha256": "e3b98899f11ff1b9e4bfb3a4ab7271697e99ef8975c6f8eaa6e4662e349200e0",
+    "newImages": 0,
+    "captureAttempted": false
+  }
+}

@@ -88,3 +88,69 @@ The worker's network fetches (`fresh()` and install-time `precacheFile()`) now u
 instead of `'no-store'`. Both always ask the server, so players still get the newest file online, but
 `no-store` downloaded every page, script, style and image in full on every visit, while `no-cache`
 lets an unchanged file come back as a small 304. The matching assertion in `sw.test.mjs` was updated.
+
+## Round 2 — precache the artwork games actually request
+
+Expanded discovery and regenerated only the worker's marked precache block. The worker's runtime code and Claude's `cache: 'no-cache'` change are preserved. No game page, game script, image or self-managed worker was edited. No app/browser/server was opened and no git writes were made.
+
+### Result
+
+**423 files, 23,259,305 bytes**, version `5eb6bd6d6963362872ca6635`. This adds **36 files / 2,983,040 bytes** to the incoming 387-file / 20,276,265-byte list. There are no missing local files. The total is **1,740,695 bytes below** the unchanged 25,000,000-byte cutoff; the over-limit refusal and no-write behavior remain tested.
+
+The additional files are 18 daily icons and 18 raster assets: Snake's two textures, Shut the Box's felt/ivory, seven Nexus materials, six Cube backdrops and Socktopus's portrait battlefield. The earlier list already contained the other daily icons; the regression now checks **all 32**. These additions replace the first-use art limitations described in the original report.
+
+### What discovery now follows
+
+- Existing markup handling covers `img src`, `srcset`, icon/apple-touch-icon links, video posters and SVG image hrefs. Inline styles now decode HTML entities before parsing `url()`, including quoted URLs written as `&quot;…&quot;`.
+- Stylesheet URLs and recursive imports remain relative to the **stylesheet**. Inline CSS is relative to its page.
+- JavaScript resource assignments, CSS URLs in script strings and existing local file literals are included. This covers React-created SVG image `href` values, texture-loader arguments and local data/model files beyond JSON. Ordinary file literals are resolved against the **executing page**, including when shared code lives in a different folder. Local ES imports keep their module-relative resolution.
+- Literal paths must resolve to existing files; incomplete prefixes such as `art/` and suffixes such as `.webp` do not become cache entries. The finite computed requests below are expanded separately from their actual source tables and loader expressions. A changed known loader shape produces a discovery error for review, rather than silently globbing its folder.
+- `ios/`, `games/lasers-3d/assets/review/` and all `*-source.png` files are excluded, as are both self-managed game folders. No artwork directory is swept. Fixtures include undeclared images beside real art and verify they stay out.
+
+### Runtime-built paths, resolved from the source
+
+| Builder | Resolution and resulting files |
+| --- | --- |
+| Cube Jumper: `'cube-jumper/art/' + RUN_ART_FILES[worldId] + '.webp'` | Read the six values in `RUN_ART_FILES`, plus the prefix/suffix from the loader. Relative to `games/cube-jumper.html`, this yields `games/cube-jumper/art/{metro-distance,foundry-distance,glacier-distance,jungle-distance,rift-distance,engine-distance}.webp`. All six are included before visiting a world. |
+| Nexus: `'art/' + name + '.webp'` | Read `NEXUS_TERRAIN_FILES` and the loop's explicit `road-material` extra. Relative to `games/tower-defense/index.html`, this yields `games/tower-defense/art/{emerald-terrain,frozen-terrain,volcanic-terrain,crystal-terrain,grid-terrain,rift-terrain,road-material}.webp`. |
+| Shut the Box: `asset + name + '.jpg'` | Read `asset = 'shut-the-box-assets/'` and the actual `['wood','felt','ivory'].forEach` loader. Resolve against `games/shut-the-box.html`, not the `table.js` directory: `games/shut-the-box-assets/{wood,felt,ivory}.jpg`. Wood was already listed through CSS. |
+| Daily hub: `new URL('icon.svg', url)` | Read the hub document's `data-game-base="../"`, the source's icon leaf and all 32 slugs from `games/daily/catalog.mjs`. The result is `games/<slug>/icon.svg` for every slug below. No enumeration of unrelated game directories. |
+
+The daily slugs expanded are:
+
+```text
+ringcount, switchpath, counterpart, shortlist, second-sense, sideways,
+tradeoff, inbetween,
+kimi-cairn, kimi-morph, kimi-tangle, kimi-hunch, kimi-circuit, kimi-quartet,
+deepseek-twin-hive, deepseek-spare, deepseek-rung, deepseek-cipher,
+deepseek-trail, deepseek-split,
+qwen-quadra, qwen-logic-lattice, qwen-syntax-siege, qwen-memory-maze,
+qwen-pattern-prism, qwen-territory-tactics,
+claude-dovetail, claude-splice, claude-sprout, claude-tangle,
+claude-keystone, claude-tumbler
+```
+
+Snake's `./Snake-assets/scale-grain-r1.jpg` and `./Snake-assets/food-atlas-r1.webp` are literal SVG image hrefs in `Snake.js`; they now resolve against `games/mini-games/Snake.html`. Socktopus's conditional `./assets/battlefield-portrait.jpg` is also a literal and is saved without first entering portrait play. The shared daily runtime's literal `./icon.svg` resolves separately for each executing game page.
+
+`buildPrecache()` also returns the expanded source/page/path records as `runtimeBuilt`, making the finite expansions available for inspection without running game code.
+
+### Checks and remaining verification
+
+- `node tools/offline/build-precache.mjs`, then `--check`: **pass**, with the count, bytes and hash above.
+- `node tools/offline/check-no-cdn.mjs`: **expected exit 1**, exactly **3 optional cross-origin features** across 58 pages: Spelling Bee's dictionary fetch, Particle's PeerJS loader and Zoo's QR image. No missing local resources reported.
+- `node --test tools/offline/test/*.test.mjs`: **20 passed, 0 failed**. The new repository-level regression initially reproduced every reported missing asset family. It now checks all those files, all six Cube worlds, all Nexus maps/road, all daily icons, exclusion of review/source/native files, and continued exclusion of the unlinked `games/zoo-conquest/index.html`. Fixtures check page-relative script paths versus stylesheet-relative URLs, entities, srcset/poster/icon links, data/model files, finite expansions without folder sweeps, and hub-only icon discovery.
+- `node --check` on all changed scripts, including `sw.js`: **pass**.
+- Scoped `git diff --check`, including the new test file: **pass**.
+
+No known local image used by the audited precached pages remains intentionally first-use-only. Reflex Riot and Particle Conquest still need their own online visit/install and retain their own asset policies. The three optional foreign features remain network-dependent. Future computed loaders require discovery support; this is static source inspection, not proof from driving every game state.
+
+Real offline rendering remains for Claude's rerun. Under the unchanged image strategy, a cached image can still trigger a failed **background refresh** while offline; a failed network-request log alone does not establish that its cached image failed to display. Image responses/rendered results should distinguish that case from an actual cache miss.
+
+Round 2 files changed:
+
+- `tools/offline/resources.mjs`
+- `tools/offline/build-precache.mjs`
+- `tools/offline/test/resources.test.mjs`
+- `tools/offline/test/art-discovery.test.mjs` (new)
+- `sw.js` (generated block only; retained the incoming React dependency entries)
+- `docs/codex/rough-games-2026-11-22/offline-report.md`

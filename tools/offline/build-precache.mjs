@@ -37,7 +37,7 @@ export async function buildPrecache({ root = defaultRoot, check = false } = {}) 
   const current = source.match(marker)[0] === block;
   const oversized = bytes > LIMIT_BYTES;
   if (!check && !oversized && !current) await writeFile(join(root, 'sw.js'), source.replace(marker, block));
-  return { files, bytes, version, current, oversized, missing: [...graph.missing].sort(), pages };
+  return { files, bytes, version, current, oversized, missing: [...graph.missing].sort(), pages, runtimeBuilt: graph.runtimeBuilt };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

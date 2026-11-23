@@ -39,7 +39,7 @@ test('an embedded data-image gradient is not a local CSS dependency', () => {
   assert.equal(refs.length, 0);
 });
 
-test('generator discovers pages, recursive CSS/modules, fonts and vendor; excludes runtime art and folder workers', async () => {
+test('generator discovers pages, recursive CSS/modules, runtime art, fonts and vendor; excludes folder workers', async () => {
   const dir = await mkdtemp(fileURLToPath(new URL('./fixture-', import.meta.url)));
   try {
     const files = {
@@ -50,7 +50,7 @@ test('generator discovers pages, recursive CSS/modules, fonts and vendor; exclud
       'games/demo/nested.css': 'body{color:white}', 'games/demo/felt.webp': 'art',
       'games/demo/app.mjs': 'import {a} from "./engine.mjs"; const art=new Image();art.src="runtime.webp";',
       'games/demo/engine.mjs': 'export {a} from "./data.mjs";',
-      'games/demo/data.mjs': 'export const a=1;', 'games/demo/runtime.webp': 'not precached',
+      'games/demo/data.mjs': 'export const a=1;', 'games/demo/runtime.webp': 'runtime art',
       'games/reflex-riot/index.html': 'self managed',
       'games/fonts/fonts.css': '@font-face{src:url(font.woff2)}', 'games/fonts/font.woff2': 'font',
       'games/vendor/library.js': 'library',
@@ -65,9 +65,9 @@ test('generator discovers pages, recursive CSS/modules, fonts and vendor; exclud
     const graph = await collectFiles(dir, pages.filter(page => !page.startsWith('games/reflex-riot/')));
     assert(graph.files.has('games/demo/data.mjs'));
     assert(graph.files.has('games/demo/felt.webp'));
-    assert(!graph.files.has('games/demo/runtime.webp'));
+    assert(graph.files.has('games/demo/runtime.webp'));
     await writeFile(join(dir, 'games/demo/index.html'), files['games/demo/index.html'] + '<script>const img=\'<img src="runtime.webp">\';</script>');
-    assert(!(await collectFiles(dir, pages)).files.has('games/demo/runtime.webp'), 'HTML built in code remains runtime art');
+    assert((await collectFiles(dir, pages)).files.has('games/demo/runtime.webp'), 'HTML built in code is also saved');
     const first = await buildPrecache({ root: dir });
     assert.equal(first.current, false);
     assert(!first.files.some(file => file.path.startsWith('games/reflex-riot/')));

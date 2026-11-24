@@ -172,6 +172,7 @@ const MemoryMatchGame = () => {
   const [justMatchedIds, setJustMatchedIds] = React.useState(() => /* @__PURE__ */ new Set());
   const [moves, setMoves] = React.useState(0);
   const [bestMoves, setBestMoves] = React.useState(null);
+  const [newBest, setNewBest] = React.useState(false);
   const [showHowToPlay, setShowHowToPlay] = React.useState(false);
   const [currentPlayer, setCurrentPlayer] = React.useState(0);
   const [playerScores, setPlayerScores] = React.useState([0, 0]);
@@ -200,6 +201,7 @@ const MemoryMatchGame = () => {
     if (isWon && (bestMoves === null || moves < bestMoves)) {
       localStorage.setItem(`${BEST_MOVES_KEY}:${sizeId}:${playMode}`, String(moves));
       setBestMoves(moves);
+      setNewBest(true);
     }
   }, [isWon, moves, bestMoves, sizeId, playMode]);
   React.useEffect(() => {
@@ -289,6 +291,7 @@ const MemoryMatchGame = () => {
     setTimeLeft(sizeConfig.time);
     setStarted(false);
     setFailed(false);
+    setNewBest(false);
   }, [sizeConfig]);
   React.useEffect(() => {
     startNewGame();
@@ -335,7 +338,7 @@ const MemoryMatchGame = () => {
     /* @__PURE__ */ React.createElement("h2", { className: "text-3xl font-black text-pink-300 text-shadow-neon" }, isWon ? "YOU WIN!" : "ROUND OVER"),
     /* @__PURE__ */ React.createElement("p", { className: "text-rose-100" }, isWon ? `You matched all ${totalPairs} pairs in ${moves} moves.` : playMode === "timed" ? "Time ran out." : "You used all 8 mistakes."),
     twoPlayer && /* @__PURE__ */ React.createElement("p", { className: "text-cyan-200 font-bold" }, playerScores[0] === playerScores[1] ? "Tie game!" : `${playerScores[0] > playerScores[1] ? "Player 1" : "Player 2"} wins ${Math.max(...playerScores)}–${Math.min(...playerScores)}!`),
-    bestMoves === moves && /* @__PURE__ */ React.createElement("p", { className: "text-yellow-200 text-sm font-bold" }, "New best score!"),
+    newBest && /* @__PURE__ */ React.createElement("p", { className: "text-yellow-200 text-sm font-bold" }, "New best score!"),
     /* @__PURE__ */ React.createElement(
       "button",
       {

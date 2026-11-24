@@ -148,7 +148,7 @@ function chooseGap(row,gap) {
   announce(`${buildWord(puzzle.rows[row].seed,tileById(selectedTile).letters,gap)}. Preview for ${puzzle.rows[row].clue}. Confirm with Place pair.`);
 }
 function placePair() {
-  if(!preview)return;
+  if(!preview||rejected)return;
   const row=preview.row;
   const outcome=submitPlacement(puzzle,game,preview);
   if(!outcome.changed)return;

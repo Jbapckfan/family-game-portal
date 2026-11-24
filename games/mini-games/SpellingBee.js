@@ -57,6 +57,25 @@ function writeSave(idx, mode, words) {
   } catch {
   }
 }
+const frozenLengths = {};
+function frozenMaxLength(idx, mode, liveLength, keep) {
+  const key = `sb-${mode}-${idx}-maxlen`;
+  if (frozenLengths[key]) return frozenLengths[key];
+  let length = 0;
+  try {
+    length = Number(localStorage.getItem(key)) || 0;
+  } catch {
+  }
+  if (!length) length = Math.max(liveLength, ...loadSave(idx, mode).map((w) => w.length));
+  if (keep) {
+    frozenLengths[key] = length;
+    try {
+      localStorage.setItem(key, String(length));
+    } catch {
+    }
+  }
+  return length;
+}
 const definitionCache = {};
 async function fetchDefinition(word) {
   if (definitionCache[word]) return definitionCache[word];
@@ -148,11 +167,14 @@ function getDefaultStreak() {
   return { currentStreak: 0, bestStreak: 0, lastGeniusDate: null };
 }
 function loadStreak() {
+  let streak;
   try {
-    return JSON.parse(localStorage.getItem("sb-genius-streak")) || getDefaultStreak();
+    streak = JSON.parse(localStorage.getItem("sb-genius-streak")) || getDefaultStreak();
   } catch {
     return getDefaultStreak();
   }
+  if (streak.lastGeniusDate !== getTodayDateStr() && streak.lastGeniusDate !== getYesterdayDateStr()) streak = { ...streak, currentStreak: 0 };
+  return streak;
 }
 function saveStreak(streak) {
   try {
@@ -332,7 +354,6 @@ const COMMON_3_LETTER_WORDS = /* @__PURE__ */ new Set([
   "got",
   "gum",
   "gun",
-  "gust",
   "gut",
   "guy",
   "gym",
@@ -586,7 +607,6 @@ const COMMON_3_LETTER_WORDS = /* @__PURE__ */ new Set([
   "tun",
   "two",
   "ugh",
-  "undo",
   "urn",
   "use",
   "van",
@@ -887,7 +907,7 @@ function HintModal({ onClose, puzzle, found }) {
   )));
 }
 function RulesModal({ onClose, puzzle, practiceMode }) {
-  return /* @__PURE__ */ React.createElement("div", { className: "modal-overlay", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal-box", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 26, color: practiceMode ? "#34d399" : "var(--accent-gold)", marginBottom: 18, textAlign: "center" } }, practiceMode ? "Practice Mode" : "How to Play"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, lineHeight: 1.8, color: "var(--text-secondary)" } }, practiceMode ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { style: { marginBottom: 12 } }, "Practice making words with relaxed rules! Build your skills before tackling the standard game."), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Words must be ", /* @__PURE__ */ React.createElement("b", null, "3+ letters")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Letters ", /* @__PURE__ */ React.createElement("b", null, "can be reused")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Center letter is ", /* @__PURE__ */ React.createElement("b", null, "NOT required")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Scored ", /* @__PURE__ */ React.createElement("b", null, "separately"), " from standard mode")), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0", fontWeight: 700, color: "#34d399" } }, "Scoring"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "3 or 4-letter words = ", /* @__PURE__ */ React.createElement("b", null, "1 point")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Longer words = ", /* @__PURE__ */ React.createElement("b", null, "1 point per letter")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Pangram (all 7 letters) = ", /* @__PURE__ */ React.createElement("b", null, "+7 bonus!")))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { style: { marginBottom: 12 } }, "Make words using the 7 letters. Every word ", /* @__PURE__ */ React.createElement("b", null, "must"), " contain the", /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-gold)", fontWeight: 700 } }, " center letter"), "."), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " Words must be ", /* @__PURE__ */ React.createElement("b", null, "4+ letters")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " Letters ", /* @__PURE__ */ React.createElement("b", null, "can be reused")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " ", /* @__PURE__ */ React.createElement("b", null, "Center letter"), " is required")), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0", fontWeight: 700, color: "var(--accent-gold)" } }, "Scoring"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "4-letter words = ", /* @__PURE__ */ React.createElement("b", null, "1 point")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Longer words = ", /* @__PURE__ */ React.createElement("b", null, "1 point per letter")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Pangram (all 7 letters) = ", /* @__PURE__ */ React.createElement("b", null, "+7 bonus!"))), /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", fontSize: 14, color: "var(--text-muted)" } }, "This puzzle: ", /* @__PURE__ */ React.createElement("b", null, puzzle.wordCount), " words • ", /* @__PURE__ */ React.createElement("b", null, puzzle.pangrams.length), " pangram", puzzle.pangrams.length !== 1 ? "s" : "", " • max ", /* @__PURE__ */ React.createElement("b", null, puzzle.maxScore), " pts"))), /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement("div", { className: "modal-overlay", onClick: onClose }, /* @__PURE__ */ React.createElement("div", { className: "modal-box", onClick: (e) => e.stopPropagation() }, /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 26, color: practiceMode ? "#34d399" : "var(--accent-gold)", marginBottom: 18, textAlign: "center" } }, practiceMode ? "Practice Mode" : "How to Play"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, lineHeight: 1.8, color: "var(--text-secondary)" } }, practiceMode ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { style: { marginBottom: 12 } }, "Practice making words with relaxed rules! Build your skills before tackling the standard game."), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Words must be ", /* @__PURE__ */ React.createElement("b", null, "3+ letters")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Letters ", /* @__PURE__ */ React.createElement("b", null, "can be reused")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Center letter is ", /* @__PURE__ */ React.createElement("b", null, "optional only for 3-letter words"), "; longer words must use it"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "#34d399" } }, "•"), " Scored ", /* @__PURE__ */ React.createElement("b", null, "separately"), " from standard mode")), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0", fontWeight: 700, color: "#34d399" } }, "Scoring"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "3 or 4-letter words = ", /* @__PURE__ */ React.createElement("b", null, "1 point")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Longer words = ", /* @__PURE__ */ React.createElement("b", null, "1 point per letter")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Pangram (all 7 letters) = ", /* @__PURE__ */ React.createElement("b", null, "+7 bonus!")))) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("p", { style: { marginBottom: 12 } }, "Make words using the 7 letters. Every word ", /* @__PURE__ */ React.createElement("b", null, "must"), " contain the", /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-gold)", fontWeight: 700 } }, " center letter"), "."), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " Words must be ", /* @__PURE__ */ React.createElement("b", null, "4+ letters")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " Letters ", /* @__PURE__ */ React.createElement("b", null, "can be reused")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, /* @__PURE__ */ React.createElement("span", { style: { color: "var(--accent-purple)" } }, "•"), " ", /* @__PURE__ */ React.createElement("b", null, "Center letter"), " is required")), /* @__PURE__ */ React.createElement("div", { style: { background: "var(--stat-bg)", borderRadius: 12, padding: "12px 16px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0", fontWeight: 700, color: "var(--accent-gold)" } }, "Scoring"), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "4-letter words = ", /* @__PURE__ */ React.createElement("b", null, "1 point")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Longer words = ", /* @__PURE__ */ React.createElement("b", null, "1 point per letter")), /* @__PURE__ */ React.createElement("p", { style: { margin: "4px 0" } }, "Pangram (all 7 letters) = ", /* @__PURE__ */ React.createElement("b", null, "+7 bonus!"))), /* @__PURE__ */ React.createElement("p", { style: { textAlign: "center", fontSize: 14, color: "var(--text-muted)" } }, "This puzzle: ", /* @__PURE__ */ React.createElement("b", null, puzzle.wordCount), " words • ", /* @__PURE__ */ React.createElement("b", null, puzzle.pangrams.length), " pangram", puzzle.pangrams.length !== 1 ? "s" : "", " • max ", /* @__PURE__ */ React.createElement("b", null, puzzle.maxScore), " pts"))), /* @__PURE__ */ React.createElement(
     "button",
     {
       className: "game-btn game-btn-enter",
@@ -988,17 +1008,17 @@ function App() {
   const sprintTimerRef = useRef(null);
   const pidx = mode === "daily" ? getDailyIdx() : mode === "sprint" ? sprintIdx : randomIdx;
   const basePuzzle = PUZZLES[pidx];
+  const progressMode = gradeBand === "family" || mode === "sprint" ? mode : `${mode}-kids-${gradeBand}`;
   const puzzle = useMemo(() => {
     if (!basePuzzle || gradeBand === "family" || mode === "sprint") return basePuzzle;
     const baseMax = { k2: 5, g34: 7, g56: 9 }[gradeBand] || 7;
-    const maxLength = baseMax + Math.floor(adaptiveSkill / 4);
+    const maxLength = frozenMaxLength(pidx, progressMode, baseMax + Math.floor(adaptiveSkill / 4), !loading);
     let words = basePuzzle.words.filter((word2) => word2.length <= maxLength);
     if (words.length < 8) words = [...basePuzzle.words].sort((a, b) => a.length - b.length).slice(0, Math.min(12, basePuzzle.words.length));
     const pangrams = basePuzzle.pangrams.filter((word2) => words.includes(word2));
     const maxScore = words.reduce((total, word2) => total + scoreWord(word2, [...basePuzzle.letters, basePuzzle.center]).pts, 0);
     return { ...basePuzzle, words, pangrams, wordCount: words.length, maxScore, adaptiveMaxLength: maxLength };
-  }, [basePuzzle, gradeBand, adaptiveSkill, mode]);
-  const progressMode = gradeBand === "family" || mode === "sprint" ? mode : `${mode}-kids-${gradeBand}`;
+  }, [basePuzzle, gradeBand, adaptiveSkill, mode, pidx, loading]);
   const allLetters = useMemo(() => puzzle ? [...puzzle.letters, puzzle.center] : [], [pidx]);
   const letterSet = useMemo(() => new Set(allLetters), [allLetters]);
   const [word, setWord] = useState("");
@@ -1527,7 +1547,7 @@ function App() {
       }
     },
     "Practice"
-  )), practiceMode && /* @__PURE__ */ React.createElement("span", { className: "practice-indicator" }, "3+ letters • no center required"), !practiceMode && mode === "daily" && streakData.currentStreak > 0 && /* @__PURE__ */ React.createElement("div", { className: "streak-badge", title: `Best streak: ${streakData.bestStreak} day${streakData.bestStreak !== 1 ? "s" : ""}` }, /* @__PURE__ */ React.createElement("span", { className: "streak-fire" }, "🔥"), /* @__PURE__ */ React.createElement("span", { className: "streak-num" }, streakData.currentStreak), /* @__PURE__ */ React.createElement("span", null, "day", streakData.currentStreak !== 1 ? "s" : ""), streakData.bestStreak > streakData.currentStreak && /* @__PURE__ */ React.createElement("span", { className: "streak-badge-best" }, "(best: ", streakData.bestStreak, ")"))), mode === "sprint" && sprintActive && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { className: getTimerClass() }, "⏱️ ", formatTime(sprintTimeLeft))), mode === "sprint" && !sprintActive && !sprintFinished && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", padding: "30px 0" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 48, marginBottom: 12 } }, "⏱️"), /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 24, color: "#06b6d4", marginBottom: 8 } }, "Sprint Mode"), /* @__PURE__ */ React.createElement("p", { style: { color: "#94a3b8", fontSize: 15, marginBottom: 20, lineHeight: 1.6 } }, "Score as many points as you can in ", /* @__PURE__ */ React.createElement("b", { style: { color: "#06b6d4" } }, "3 minutes"), "!"), /* @__PURE__ */ React.createElement("button", { className: "game-btn game-btn-enter", onClick: startSprint, style: { fontSize: 18, padding: "14px 40px" } }, "Start Sprint"))), (mode !== "sprint" || sprintActive) && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "bee-play" }, practiceMode ? /* @__PURE__ */ React.createElement("div", { style: { padding: "0 4px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 } }, /* @__PURE__ */ React.createElement("span", { style: {
+  )), practiceMode && /* @__PURE__ */ React.createElement("span", { className: "practice-indicator" }, "3+ letters • center optional for 3-letter words"), !practiceMode && mode === "daily" && streakData.currentStreak > 0 && /* @__PURE__ */ React.createElement("div", { className: "streak-badge", title: `Best streak: ${streakData.bestStreak} day${streakData.bestStreak !== 1 ? "s" : ""}` }, /* @__PURE__ */ React.createElement("span", { className: "streak-fire" }, "🔥"), /* @__PURE__ */ React.createElement("span", { className: "streak-num" }, streakData.currentStreak), /* @__PURE__ */ React.createElement("span", null, "day", streakData.currentStreak !== 1 ? "s" : ""), streakData.bestStreak > streakData.currentStreak && /* @__PURE__ */ React.createElement("span", { className: "streak-badge-best" }, "(best: ", streakData.bestStreak, ")"))), mode === "sprint" && sprintActive && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { className: getTimerClass() }, "⏱️ ", formatTime(sprintTimeLeft))), mode === "sprint" && !sprintActive && !sprintFinished && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", padding: "30px 0" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 48, marginBottom: 12 } }, "⏱️"), /* @__PURE__ */ React.createElement("h2", { className: "font-title", style: { fontSize: 24, color: "#06b6d4", marginBottom: 8 } }, "Sprint Mode"), /* @__PURE__ */ React.createElement("p", { style: { color: "#94a3b8", fontSize: 15, marginBottom: 20, lineHeight: 1.6 } }, "Score as many points as you can in ", /* @__PURE__ */ React.createElement("b", { style: { color: "#06b6d4" } }, "3 minutes"), "!"), /* @__PURE__ */ React.createElement("button", { className: "game-btn game-btn-enter", onClick: startSprint, style: { fontSize: 18, padding: "14px 40px" } }, "Start Sprint"))), (mode !== "sprint" || sprintActive) && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("section", { className: "bee-play" }, practiceMode ? /* @__PURE__ */ React.createElement("div", { style: { padding: "0 4px" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 } }, /* @__PURE__ */ React.createElement("span", { style: {
     fontSize: 18,
     fontWeight: 800,
     color: "#34d399",

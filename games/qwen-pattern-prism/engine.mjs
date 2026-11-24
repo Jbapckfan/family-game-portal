@@ -34,4 +34,4 @@ export function reveal(p,s){return getStatus(p,s)==='playing'?{...s,answers:[0,1
 function names(key,values){return values.map(v=>key==='size'?(v?'large':'small'):key==='rotation'?DIRECTIONS[v]:v).join(' → ');}
 export const explanation=p=>Object.entries(p.cycles).map(([key,values])=>`${key[0].toUpperCase()+key.slice(1)} ${values.length===1?'stays '+names(key,values):'cycles '+names(key,values)}.`).join(' ');
 export function hintText(p,s){const step=s.answers.length;if(step>=3||!s.hints[step])return '';if(s.hints[step]===2)return 'The outlined choice continues all four attributes.';const [key,values]=Object.entries(p.cycles).find(([,cycle])=>cycle.length>1);return `${key[0].toUpperCase()+key.slice(1)} repeats ${names(key,values)}. Check the other attributes too.`;}
-export const summarize=(p,s)=>`${s.answers.length}/3 predictions · ${mistakes(s)} different misses · ${s.hints.reduce((a,b)=>a+b,0)} hints`;
+export const summarize=(p,s)=>`${s.answers.length}/3 predictions · ${mistakes(s)} different ${mistakes(s)===1?'miss':'misses'} · ${s.hints.reduce((a,b)=>a+b,0)} ${s.hints.reduce((a,b)=>a+b,0)===1?'hint':'hints'}`;

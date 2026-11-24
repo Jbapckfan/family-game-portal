@@ -2769,7 +2769,8 @@ function initDailyChallenges() {
     const today = getTodayKey();
     if (playerStats.lastDailyDate !== today) {
         playerStats.lastDailyDate = today;
-        playerStats.dailyChallenges[today] = { completed: [] };
+        // Never wipe a day that already has completions (older saves keyed days by UTC date)
+        if (!playerStats.dailyChallenges[today]) playerStats.dailyChallenges[today] = { completed: [] };
         saveStats();
     }
     dailyChallenges = generateDailyChallenges();
@@ -2948,6 +2949,8 @@ function updateAdaptiveIndicator() {
 
 function checkDailyChallenges() {
     const today = getTodayKey();
+    // Page left open past midnight: switch to the new day's challenge list before checking it
+    if (playerStats.lastDailyDate !== today) initDailyChallenges();
     if (!playerStats.dailyChallenges[today]) {
         playerStats.dailyChallenges[today] = { completed: [] };
     }
@@ -6142,6 +6145,9 @@ function generateLevel() {
     comets = [];
     lastCometShower = Date.now(); // Reset comet timer
     game.selectedPlanets = [];
+    // A nuke/shield/EMP armed in the last level must not carry into the new one
+    if (game.activeAbility) document.getElementById('gameStatus').textContent = 'Select your planet';
+    game.activeAbility = null;
     selectedHarvestParticle = null;
 
     for (const key in abilities) {
@@ -6178,7 +6184,11 @@ function generateLevel() {
     }
     
     const specialTypes = ['factory', 'fortress', 'wormhole', 'wormhole', 'blackhole'];
-    const numSpecials = Math.min(settings.specialPlanets, Math.max(0, positions.length - 2));
+    let numSpecials = Math.min(settings.specialPlanets, Math.max(0, positions.length - 2));
+    // Wormholes only come in pairs: if the last special would be a lone wormhole, add its partner (or drop it when there is no room)
+    if (numSpecials > 0 && specialTypes[(numSpecials - 1) % specialTypes.length] === 'wormhole' && specialTypes[numSpecials % specialTypes.length] === 'wormhole') {
+        numSpecials += numSpecials < positions.length - 2 ? 1 : -1;
+    }
     const specialIndices = [];
     
     const availableIndices = positions.length - 2;
@@ -6313,7 +6323,7 @@ function configureBossEncounter(settings) {
     mothership.shieldTime = Number.POSITIVE_INFINITY;
 
     const candidates = planets
-        .filter(p => p !== mothership && p.owner === NEUTRAL && p.type !== 'blackhole')
+        .filter(p => p !== mothership && p.owner === NEUTRAL && p.type !== 'blackhole' && p.type !== 'wormhole')
         .sort((a, b) => b.size - a.size)
         .slice(0, 2);
     for (const generator of candidates) {
@@ -6998,6 +7008,9 @@ function endGame(victory) {
         updateAdaptiveAI(victory);
     }
 
+    // Check daily challenges first, so daily-challenge achievements count this game's completions
+    checkDailyChallenges();
+
     // Check achievements
     achievements.check();
 
@@ -7005,8 +7018,6 @@ function endGame(victory) {
     playerStats.features = { ...game.features };
     saveStats();
 
-    // Check daily challenges
-    checkDailyChallenges();
     updateDailyChallengesUI();
 
     const screen = document.getElementById('resultScreen');
@@ -7895,8 +7906,7 @@ document.getElementById('playAgainBtn').addEventListener('click', () => {
     if (wasVictory) {
         showUpgradeScreen();
     } else {
-        // Defeat: restart from level 1 with no upgrades
-        resetUpgrades();
+        // Defeat: retry the same level, keeping the upgrades already earned
         proceedToNextLevel();
     }
 });

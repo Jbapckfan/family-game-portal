@@ -1,9 +1,14 @@
 // Concept: DeepSeek. Completed rules, validation and implementation: ChatGPT.
 // Narrow editorial correction from live play review. Keep prepared records and
 // stable IDs unchanged; supplements must obey the same rack and gold-letter rules.
+import {PUZZLES} from './puzzles.mjs';
 const REVIEWED_COMMON_WORDS=Object.freeze(['EARS']);
+// A real word from any Twin Hive puzzle's list also counts in every other puzzle
+// whose rack and both gold letters it fits. The puzzle's own words stay first,
+// so hints still come from its own list; the six-word goal is unchanged.
+const GAME_WORDS=Object.freeze([...new Set(PUZZLES.flatMap(p=>p.answers))].sort());
 export function acceptedWords(puzzle){
- return [...new Set([...puzzle.answers,...REVIEWED_COMMON_WORDS.filter(word=>
+ return [...new Set([...puzzle.answers,...[...REVIEWED_COMMON_WORDS,...GAME_WORDS].filter(word=>
   [...word].every(letter=>puzzle.letters.includes(letter))&&puzzle.gold.every(letter=>word.includes(letter))
  )])];
 }
@@ -16,7 +21,7 @@ export function submitWord(puzzle, state, input) {
  if(!/^[A-Z]{4,24}$/.test(word))return{state,message:'Use at least four letters.'};
  if(![...word].every(c=>puzzle.letters.includes(c)))return{state,message:'Use only the eight hive letters.'};
  if(!puzzle.gold.every(c=>word.includes(c)))return{state,message:'Every word needs both gold letters.'};
- if(!acceptedWords(puzzle).includes(word))return{state,message:'That is not in this puzzle’s word list. Try another word.'};
+ if(!acceptedWords(puzzle).includes(word))return{state,message:'That is not in this game’s word list. Try another word.'};
  if(state.found.includes(word))return{state,message:'You already found that word.'};
  return {state:{...state,found:[...state.found,word],hintWord:state.hintWord===word?null:state.hintWord},message:`${word} · +${word.length-3} ${word.length===4?'point':'points'}`};
 }

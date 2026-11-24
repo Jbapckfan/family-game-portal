@@ -58,6 +58,18 @@
     function writeSave(idx, mode, words) {
         try { localStorage.setItem(`sb-${mode}-${idx}`, JSON.stringify(words)); } catch {}
     }
+    // Kids' lists: the word-length limit is fixed for a puzzle when it is first opened, so a level change
+    // takes effect with the next puzzle (the current puzzle keeps its words, max score and ranks).
+    const frozenLengths = {};
+    function frozenMaxLength(idx, mode, liveLength, keep) {
+        const key = `sb-${mode}-${idx}-maxlen`;
+        if (frozenLengths[key]) return frozenLengths[key];
+        let length = 0;
+        try { length = Number(localStorage.getItem(key)) || 0; } catch {}
+        if (!length) length = Math.max(liveLength, ...loadSave(idx, mode).map(w => w.length));
+        if (keep) { frozenLengths[key] = length; try { localStorage.setItem(key, String(length)); } catch {} }
+        return length;
+    }
 
     // =================== DEFINITION CACHE ===================
     const definitionCache = {};
@@ -126,8 +138,12 @@
         return { currentStreak: 0, bestStreak: 0, lastGeniusDate: null };
     }
     function loadStreak() {
-        try { return JSON.parse(localStorage.getItem('sb-genius-streak')) || getDefaultStreak(); }
+        let streak;
+        try { streak = JSON.parse(localStorage.getItem('sb-genius-streak')) || getDefaultStreak(); }
         catch { return getDefaultStreak(); }
+        // A streak whose last Genius day is before yesterday is already broken
+        if (streak.lastGeniusDate !== getTodayDateStr() && streak.lastGeniusDate !== getYesterdayDateStr()) streak = { ...streak, currentStreak: 0 };
+        return streak;
     }
     function saveStreak(streak) {
         try { localStorage.setItem('sb-genius-streak', JSON.stringify(streak)); } catch {}
@@ -173,7 +189,7 @@
         'dig','dim','din','dip','doe','dog','don','dot','dry','dub','dud','due','dug','dun','duo','dye','ear','eat',
         'eel','egg','ego','elf','elk','elm','emu','end','era','eve','ewe','eye','fab','fad','fan','far','fat','fax',
         'fed','fee','fen','few','fig','fin','fir','fit','fix','fly','fob','foe','fog','fop','for','fox','fry','fun',
-        'fur','gab','gag','gal','gap','gas','gel','gem','get','gig','gin','gnu','gob','god','got','gum','gun','gust',
+        'fur','gab','gag','gal','gap','gas','gel','gem','get','gig','gin','gnu','gob','god','got','gum','gun',
         'gut','guy','gym','had','hag','ham','has','hat','hay','hen','her','hew','hex','hid','him','hip','his','hit',
         'hob','hod','hog','hop','hot','how','hub','hue','hug','hum','hut','ice','icy','ill','imp','ink','inn','ion',
         'ire','irk','its','ivy','jab','jag','jam','jar','jaw','jay','jet','jig','job','jog','jot','joy','jug','jut',
@@ -188,7 +204,7 @@
         'she','shy','sin','sip','sir','sis','sit','six','ski','sky','sly','sob','sod','son','sop','sot','sow','soy',
         'spa','spy','sty','sub','sue','sum','sun','sup','tab','tad','tag','tan','tap','tar','tat','tax','tea','ten',
         'the','thy','tic','tie','tin','tip','toe','ton','too','top','tot','tow','toy','try','tub','tug','tun','two',
-        'ugh','undo','urn','use','van','vat','vet','vex','via','vie','vim','vow','wad','wag','war','was','wax','way',
+        'ugh','urn','use','van','vat','vet','vex','via','vie','vim','vow','wad','wag','war','was','wax','way',
         'web','wed','wet','who','why','wig','win','wit','woe','wok','won','woo','wop','wow','yak','yam','yap','yaw',
         'yea','yes','yet','yew','yin','you','yow','zap','zed','zen','zig','zip','zoo'
     ]);
@@ -197,7 +213,7 @@
     function getPracticeWords(puzzle) {
         const allLetters = new Set([...puzzle.letters, puzzle.center]);
         const practiceList = [];
-        // Include all standard puzzle words (no center letter requirement in practice)
+        // Include all standard puzzle words (these all use the center letter; only the 3-letter words below may skip it)
         for (const w of puzzle.words) {
             practiceList.push(w);
         }
@@ -523,7 +539,7 @@
                                 <div style={{ background: 'var(--stat-bg)', borderRadius: 12, padding: '12px 16px', marginBottom: 12 }}>
                                     <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Words must be <b>3+ letters</b></p>
                                     <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Letters <b>can be reused</b></p>
-                                    <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Center letter is <b>NOT required</b></p>
+                                    <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Center letter is <b>optional only for 3-letter words</b>; longer words must use it</p>
                                     <p style={{ margin: '4px 0' }}><span style={{color:'#34d399'}}>&#x2022;</span> Scored <b>separately</b> from standard mode</p>
                                 </div>
                                 <div style={{ background: 'var(--stat-bg)', borderRadius: 12, padding: '12px 16px', marginBottom: 12 }}>
@@ -733,17 +749,17 @@
 
         const pidx = mode === 'daily' ? getDailyIdx() : mode === 'sprint' ? sprintIdx : randomIdx;
         const basePuzzle = PUZZLES[pidx];
+        const progressMode = gradeBand === 'family' || mode === 'sprint' ? mode : `${mode}-kids-${gradeBand}`;
         const puzzle = useMemo(() => {
             if (!basePuzzle || gradeBand === 'family' || mode === 'sprint') return basePuzzle;
             const baseMax = { k2: 5, g34: 7, g56: 9 }[gradeBand] || 7;
-            const maxLength = baseMax + Math.floor(adaptiveSkill / 4);
+            const maxLength = frozenMaxLength(pidx, progressMode, baseMax + Math.floor(adaptiveSkill / 4), !loading);
             let words = basePuzzle.words.filter(word => word.length <= maxLength);
             if (words.length < 8) words = [...basePuzzle.words].sort((a,b)=>a.length-b.length).slice(0, Math.min(12, basePuzzle.words.length));
             const pangrams = basePuzzle.pangrams.filter(word => words.includes(word));
             const maxScore = words.reduce((total, word) => total + scoreWord(word, [...basePuzzle.letters, basePuzzle.center]).pts, 0);
             return { ...basePuzzle, words, pangrams, wordCount: words.length, maxScore, adaptiveMaxLength: maxLength };
-        }, [basePuzzle, gradeBand, adaptiveSkill, mode]);
-        const progressMode = gradeBand === 'family' || mode === 'sprint' ? mode : `${mode}-kids-${gradeBand}`;
+        }, [basePuzzle, gradeBand, adaptiveSkill, mode, pidx, loading]);
         const allLetters = useMemo(() => puzzle ? [...puzzle.letters, puzzle.center] : [], [pidx]);
         const letterSet = useMemo(() => new Set(allLetters), [allLetters]);
 
@@ -1322,7 +1338,7 @@
                         </div>
                         {practiceMode && (
                             <span className="practice-indicator">
-                                3+ letters &bull; no center required
+                                3+ letters &bull; center optional for 3-letter words
                             </span>
                         )}
                         {!practiceMode && mode === 'daily' && streakData.currentStreak > 0 && (

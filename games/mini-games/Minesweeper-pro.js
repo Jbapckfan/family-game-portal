@@ -207,7 +207,10 @@ function MineQuestGame() {
   const theme = MQ_THEMES[themeId] || MQ_THEMES.classic;
   const saveProfile = React.useCallback((next) => {
     setProfile(next);
-    localStorage.setItem(MQ_PROFILE_KEY, JSON.stringify(next));
+    try {
+      localStorage.setItem(MQ_PROFILE_KEY, JSON.stringify(next));
+    } catch (_) {
+    }
   }, []);
   const commitBoard = React.useCallback((next) => {
     boardRef.current = next;
@@ -296,8 +299,11 @@ function MineQuestGame() {
     burst(28);
     if (navigator.vibrate) navigator.vibrate([35, 30, 70]);
     const bestKey2 = `familyPortalMineQuestBest:${mode}:${mode === "classic" ? difficulty : mission}`;
-    const previousBest = Number(localStorage.getItem(bestKey2) || 0);
-    if (!previousBest || finalTime < previousBest) localStorage.setItem(bestKey2, String(finalTime));
+    try {
+      const previousBest = Number(localStorage.getItem(bestKey2) || 0);
+      if (!previousBest || finalTime < previousBest) localStorage.setItem(bestKey2, String(finalTime));
+    } catch (_) {
+    }
     const nextProfile = {
       ...profile,
       wins: profile.wins + 1,
@@ -539,7 +545,11 @@ function MineQuestGame() {
   }, [profile, saveProfile, tone]);
   const flags = board.flat().filter((cell) => cell.flagged).length;
   const bestKey = `familyPortalMineQuestBest:${mode}:${mode === "classic" ? difficulty : mission}`;
-  const best = Number(localStorage.getItem(bestKey) || 0);
+  let best = 0;
+  try {
+    best = Number(localStorage.getItem(bestKey) || 0);
+  } catch (_) {
+  }
   const medalIcon = medal === "gold" ? "🥇" : medal === "silver" ? "🥈" : "🥉";
   return /* @__PURE__ */ React.createElement("div", { className: `minequest-shell theme-${themeId} ${shaking ? "mq-shake" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "mq-particles", "aria-hidden": "true" }, particles.map((particle) => /* @__PURE__ */ React.createElement("i", { key: particle.id, className: "mq-particle", style: { "--px": `${particle.x}%`, "--py": `${particle.y}%`, "--dx": particle.dx, "--dy": particle.dy } }))), /* @__PURE__ */ React.createElement("div", { className: "mini-layout mq-wrap" }, /* @__PURE__ */ React.createElement("aside", { className: "mini-controls mq-controls" }, /* @__PURE__ */ React.createElement("div", { className: "mq-heading" }, /* @__PURE__ */ React.createElement("h1", { className: "mq-title" }, "MINESWEEPER"), /* @__PURE__ */ React.createElement("div", { className: "mq-tools mq-tabs" }, /* @__PURE__ */ React.createElement("button", { ref: helpTrigger, className: "mq-button", onClick: () => setShowHelp(true), "aria-label": "How to Play" }, /* @__PURE__ */ React.createElement("span", { className: "mq-tool-label" }, "How to Play"), /* @__PURE__ */ React.createElement("span", { className: "mq-tool-icon", "aria-hidden": "true" }, "?")), /* @__PURE__ */ React.createElement("button", { className: "mq-button", onClick: () => {
     mutedRef.current = !mutedRef.current;

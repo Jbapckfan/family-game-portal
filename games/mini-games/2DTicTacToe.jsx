@@ -659,7 +659,7 @@
         const TACTICAL_PUZZLES = [
             { title: 'Win in one', goal: 'Finish the row.', board: ['X','X','','O','O','','','',''], answers: [2] },
             { title: 'Block the threat', goal: 'Stop O from winning.', board: ['O','','X','O','X','','','',''], answers: [6] },
-            { title: 'Build a fork', goal: 'Create two winning threats.', board: ['X','','','','O','','','','X'], answers: [2,6] },
+            { title: 'Build a fork', goal: 'Create two winning threats.', board: ['X','','','O','X','','','','O'], answers: [1,2] },
             { title: 'Force the draw', goal: 'Find the only safe square.', board: ['O','','X','X','O','','O','X',''], answers: [8] }
         ];
 

@@ -134,7 +134,7 @@
                             </li>
                             <li className="flex gap-2">
                                 <span className="text-green-400 mt-0.5" aria-hidden="true">&#9654;</span>
-                                <span>Don't run into a <strong className="text-green-300">wall</strong> or your <strong className="text-green-300">own tail</strong> - that ends the game!</span>
+                                <span>Don't run into a <strong className="text-green-300">wall</strong> or your <strong className="text-green-300">own tail</strong> - that ends the game! (In Wraparound you go through the walls; in Zen nothing ends the game.)</span>
                             </li>
                             <li className="flex gap-2">
                                 <span className="text-green-400 mt-0.5" aria-hidden="true">&#9654;</span>
@@ -353,7 +353,7 @@
                     const distance=Math.abs(currentFood.row-newHead.row)+Math.abs(currentFood.col-newHead.col);
                     if(distance<=4&&distance>0){
                         const pulled={row:currentFood.row+Math.sign(newHead.row-currentFood.row),col:currentFood.col+Math.sign(newHead.col-currentFood.col)};
-                        if(!obstaclesRef.current.some(cell=>cell.row===pulled.row&&cell.col===pulled.col)){currentFood=pulled;foodRef.current=pulled;setFood(pulled);}
+                        if(!obstaclesRef.current.some(cell=>cell.row===pulled.row&&cell.col===pulled.col)&&!currentSnake.some(cell=>cell.row===pulled.row&&cell.col===pulled.col)){currentFood=pulled;foodRef.current=pulled;setFood(pulled);}
                     }
                 }
                 const willEat = !!currentFood && newHead.row === currentFood.row && newHead.col === currentFood.col;

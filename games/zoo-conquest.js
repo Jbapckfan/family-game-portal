@@ -1084,6 +1084,7 @@ const ZooRiskGame = () => {
     } else {
       setShowCardTrade(false);
       setMustTradeCards(false);
+      if (turnPhase === "attack") setTurnPhase("reinforce");
       setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your animals.`);
     }
   };
@@ -1393,6 +1394,7 @@ const ZooRiskGame = () => {
       setAiThinking(true);
       const army = currentPlayer.army;
       const aiName = currentPlayer.name;
+      let aiTroopsToPlace = troopsToPlace;
       if (turnPhase === "reinforce") {
         const aiCards = playerCards[army] || [];
         if (aiCards.length >= 5 || aiCards.length >= 3 && canTradeCards(aiCards)) {
@@ -1420,6 +1422,7 @@ const ZooRiskGame = () => {
             }));
             setTradeCount(currentTradeCount);
             setTroopsToPlace((prev) => prev + totalBonusTroops);
+            aiTroopsToPlace += totalBonusTroops;
             SoundSystem.cardTrade();
             trackStat("cardsTraded", army, trades);
             setMessage(`🤖 ${aiName} traded ${trades} card set${trades > 1 ? "s" : ""} for +${totalBonusTroops} animals!`);
@@ -1427,15 +1430,15 @@ const ZooRiskGame = () => {
           }
         }
       }
-      if (turnPhase === "reinforce" && troopsToPlace > 0) {
-        setMessage(`🤖 ${aiName} placing ${troopsToPlace} reinforcements...`);
-        trackStat("troopsDeployed", army, troopsToPlace);
+      if (turnPhase === "reinforce" && aiTroopsToPlace > 0) {
+        setMessage(`🤖 ${aiName} placing ${aiTroopsToPlace} reinforcements...`);
+        trackStat("troopsDeployed", army, aiTroopsToPlace);
         const localTerritories = {};
         Object.entries(gameState.territories).forEach(([id, t]) => {
           localTerritories[id] = { ...t };
         });
         const reinforcements = {};
-        for (let i = 0; i < troopsToPlace; i++) {
+        for (let i = 0; i < aiTroopsToPlace; i++) {
           const target = aiFindBestReinforceTarget(army, localTerritories);
           if (target) {
             reinforcements[target] = (reinforcements[target] || 0) + 1;

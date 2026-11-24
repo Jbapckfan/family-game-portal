@@ -217,6 +217,7 @@
             const [justMatchedIds, setJustMatchedIds] = React.useState(() => new Set());
             const [moves, setMoves] = React.useState(0);
             const [bestMoves, setBestMoves] = React.useState(null);
+            const [newBest, setNewBest] = React.useState(false);
             const [showHowToPlay, setShowHowToPlay] = React.useState(false);
             const [currentPlayer,setCurrentPlayer]=React.useState(0);
             const [playerScores,setPlayerScores]=React.useState([0,0]);
@@ -249,6 +250,7 @@
                 if (isWon && (bestMoves === null || moves < bestMoves)) {
                     localStorage.setItem(`${BEST_MOVES_KEY}:${sizeId}:${playMode}`, String(moves));
                     setBestMoves(moves);
+                    setNewBest(true);
                 }
             }, [isWon, moves, bestMoves,sizeId,playMode]);
 
@@ -326,7 +328,7 @@
                 setMatched(new Set());
                 setJustMatchedIds(new Set());
                 setMoves(0);
-                setCurrentPlayer(0);setPlayerScores([0,0]);setCombo(0);setPoints(0);setMistakes(0);setTimeLeft(sizeConfig.time);setStarted(false);setFailed(false);
+                setCurrentPlayer(0);setPlayerScores([0,0]);setCombo(0);setPoints(0);setMistakes(0);setTimeLeft(sizeConfig.time);setStarted(false);setFailed(false);setNewBest(false);
             }, [sizeConfig]);
 
             React.useEffect(()=>{startNewGame();},[sizeId,playMode,twoPlayer]);
@@ -419,7 +421,7 @@
                                         {isWon?`You matched all ${totalPairs} pairs in ${moves} moves.`:playMode==='timed'?'Time ran out.':'You used all 8 mistakes.'}
                                     </p>
                                     {twoPlayer&&<p className="text-cyan-200 font-bold">{playerScores[0]===playerScores[1]?'Tie game!':`${playerScores[0]>playerScores[1]?'Player 1':'Player 2'} wins ${Math.max(...playerScores)}–${Math.min(...playerScores)}!`}</p>}
-                                    {bestMoves === moves && (
+                                    {newBest && (
                                         <p className="text-yellow-200 text-sm font-bold">New best score!</p>
                                     )}
                                     <button

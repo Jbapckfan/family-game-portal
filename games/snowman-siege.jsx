@@ -45,7 +45,7 @@
         { name:'Pinecone Village', icon:'🏘️', goalWave:5, objective:'Defeat 20 invaders', check:s=>s.totalEnemiesKilled>=20, skyTop:'#1d3557', skyBottom:'#457b9d' },
         { name:'Whispering Forest', icon:'🌲', goalWave:7, objective:'Build a 10-hit combo', check:s=>s.highestCombo>=10, skyTop:'#102a2a', skyBottom:'#24544b' },
         { name:'Glacier Pass', icon:'🏔️', goalWave:9, objective:'Finish with 35% accuracy', check:s=>s.totalShotsFired>0&&s.totalShotsHit/s.totalShotsFired>=.35, skyTop:'#16324f', skyBottom:'#1f7a8c' },
-        { name:'Aurora Fortress', icon:'🌌', goalWave:12, objective:'Defeat the wave-10 boss and survive', check:s=>s.bossesDefeated>=2, skyTop:'#160f35', skyBottom:'#4c1d6f' }
+        { name:'Aurora Fortress', icon:'🌌', goalWave:12, objective:'Defeat the wave-10 boss and survive', check:s=>s.wave10BossDefeated, skyTop:'#160f35', skyBottom:'#4c1d6f' }
     ];
 
     // ===== POWER-UP TYPES =====
@@ -570,6 +570,7 @@
             highestCombo: 0,
             powerUpsCollected: 0
             ,bossesDefeated: 0
+            ,wave10BossDefeated: false
             ,bossSpawnedWave: 0
             ,missionComplete: false
             ,launcherId: gameConfig.launcher
@@ -1099,7 +1100,7 @@
                             s.totalShotsHit += 1;
                             registerHit();
                             if (e.hp <= 0) {
-                                if (e.boss) s.bossesDefeated += 1;
+                                if (e.boss) { s.bossesDefeated += 1; if (e.id === 'boss-10') s.wave10BossDefeated = true; }
                                 s.totalEnemiesKilled += 1;
                                 const pointsEarned = e.points * s.comboMultiplier;
                                 s.score += pointsEarned;
@@ -1168,7 +1169,7 @@
             for (let j=s.enemies.length-1;j>=0;j--) {
                 const e=s.enemies[j];
                 if (e.hp>0) continue;
-                if (e.boss) s.bossesDefeated+=1;
+                if (e.boss) { s.bossesDefeated+=1; if (e.id==='boss-10') s.wave10BossDefeated=true; }
                 s.totalEnemiesKilled+=1;s.score+=e.points*s.comboMultiplier;
                 spawnParticles(e.x,e.y,COLORS.SNOW,e.boss?35:15,e.boss?3:2);
                 s.meltingEnemies.push({x:e.x,y:e.y,radius:e.radius,type:e.type,meltStart:now,meltDuration:e.boss?650:300});

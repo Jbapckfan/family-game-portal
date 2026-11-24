@@ -8,6 +8,8 @@
             1: { label: 'Player 1', name: 'Red', bg: '#ef4444', ring: '#dc2626', text: '#fecaca' },
             2: { label: 'Player 2', name: 'Yellow', bg: '#facc15', ring: '#eab308', text: '#422006' },
         };
+        // Names shown for the bot levels. 'perfect' stays the internal and saved value; the bot is not unbeatable.
+        const AI_LEVEL_LABEL = { easy: 'easy', smart: 'smart', perfect: 'hard' };
 
         // --- BOARD HELPERS ---
         // Board is stored as a flat array of length COLS*ROWS, index = row * COLS + col.
@@ -449,9 +451,9 @@
             if (winner === 'draw') {
                 statusText = "It's a Draw!";
             } else if (winner) {
-                statusText = `${winner===1?(names[0]||'Player 1'):(vsAI?`Bot (${difficulty})`:(names[1]||'Player 2'))} Wins!`;
+                statusText = `${winner===1?(names[0]||'Player 1'):(vsAI?`Bot (${AI_LEVEL_LABEL[difficulty]})`:(names[1]||'Player 2'))} Wins!`;
             } else {
-                statusText = `${currentPlayer===1?(names[0]||'Player 1'):(vsAI?`Bot (${difficulty})`:(names[1]||'Player 2'))}'s Turn (${turnInfo.name})`;
+                statusText = `${currentPlayer===1?(names[0]||'Player 1'):(vsAI?`Bot (${AI_LEVEL_LABEL[difficulty]})`:(names[1]||'Player 2'))}'s Turn (${turnInfo.name})`;
             }
 
             return (
@@ -481,7 +483,7 @@
                         <HowToPlayModal isOpen={showHowToPlay} onClose={closeHowToPlay} triggerRef={howToPlayTriggerRef} />
 
                         <details className="mini-settings" open={window.matchMedia('(min-width: 701px) and (orientation: landscape)').matches}><summary>Match options</summary><div className="grid grid-cols-2 gap-2 mb-2"><input value={names[0]} onChange={e=>{const next=[e.target.value,names[1]];setNames(next);localStorage.setItem('connect4-names',JSON.stringify(next));}} maxLength="12" className="bg-gray-900 border border-red-500 rounded px-2 py-1 text-center" aria-label="Red player name"/><input value={names[1]} onChange={e=>{const next=[names[0],e.target.value];setNames(next);localStorage.setItem('connect4-names',JSON.stringify(next));}} maxLength="12" disabled={vsAI} className="bg-gray-900 border border-yellow-500 rounded px-2 py-1 text-center disabled:opacity-40" aria-label="Yellow player name"/></div>
-                        <div className="flex flex-wrap justify-center gap-1 mb-2"><button onClick={()=>setVsAI(false)} className={`px-2 py-1 rounded border text-xs ${!vsAI?'bg-blue-600':'bg-gray-900'}`}>2 Players</button>{['easy','smart','perfect'].map(level=><button key={level} onClick={()=>{setVsAI(true);setDifficulty(level);}} className={`px-2 py-1 rounded border text-xs capitalize ${vsAI&&difficulty===level?'bg-purple-600':'bg-gray-900'}`}>AI {level}</button>)}<select value={seriesLength} onChange={e=>{setSeriesLength(Number(e.target.value));setMatchScore([0,0]);}} className="bg-gray-900 border rounded px-2 text-xs"><option value="3">Best of 3</option><option value="5">Best of 5</option></select></div>
+                        <div className="flex flex-wrap justify-center gap-1 mb-2"><button onClick={()=>setVsAI(false)} className={`px-2 py-1 rounded border text-xs ${!vsAI?'bg-blue-600':'bg-gray-900'}`}>2 Players</button>{['easy','smart','perfect'].map(level=><button key={level} onClick={()=>{setVsAI(true);setDifficulty(level);}} className={`px-2 py-1 rounded border text-xs capitalize ${vsAI&&difficulty===level?'bg-purple-600':'bg-gray-900'}`}>AI {AI_LEVEL_LABEL[level]}</button>)}<select value={seriesLength} onChange={e=>{setSeriesLength(Number(e.target.value));setMatchScore([0,0]);}} className="bg-gray-900 border rounded px-2 text-xs"><option value="3">Best of 3</option><option value="5">Best of 5</option></select></div>
                         <div className="flex gap-1 overflow-x-auto mb-3">{[['classic','Classic'],['pop','Pop Out'],['five','Five in Row'],['obstacle','Obstacles'],['rotate','Rotating']].map(([id,label])=><button key={id} onClick={()=>changeVariant(id)} className={`shrink-0 px-2 py-1 rounded border text-xs ${variant===id?'bg-cyan-600':'bg-gray-900'}`}>{label}</button>)}</div>
                         <div className="mb-2 text-sm text-blue-100">Series: <b className="text-red-300">{names[0]||'Player 1'} {matchScore[0]}</b> – <b className="text-yellow-200">{vsAI?'Bot':names[1]||'Player 2'} {matchScore[1]}</b> · first to {matchTarget}</div>
 
@@ -543,7 +545,7 @@
                                         {winner === 'draw' ? 'DRAW!' : `${winner===1?(names[0]||'Player 1'):(vsAI?'Bot':names[1]||'Player 2')} WINS!`}
                                     </h2>
                                     <p className="text-blue-100">
-                                        {winner === 'draw' ? 'The board is full. No winner this time.' : `${PLAYERS[winner].name} connected four in a row.`}
+                                        {winner === 'draw' ? 'The board is full. No winner this time.' : `${PLAYERS[winner].name} connected ${variant === 'five' ? 'five' : 'four'} in a row.`}
                                     </p>
                                     <button
                                         ref={overlayButtonRef}
@@ -557,7 +559,7 @@
                         </main>
                         <div className="mini-bottom">
 
-                        <div className="mt-3 p-2 rounded-lg bg-black/40 border border-blue-800 text-xs text-blue-100"><b>Family records:</b> {Object.entries(records).slice(-3).reverse().map(([key,row])=><div key={key}>{key}: {row.p1}-{row.p2} ({row.draws} draws)</div>)}</div>
+                        <div className="mt-3 p-2 rounded-lg bg-black/40 border border-blue-800 text-xs text-blue-100"><b>Family records:</b> {Object.entries(records).slice(-3).reverse().map(([key,row])=><div key={key}>{key.replace('Bot (perfect)', 'Bot (hard)')}: {row.p1}-{row.p2} ({row.draws} draws)</div>)}</div>
 
                         <footer className="py-6">
                             <button

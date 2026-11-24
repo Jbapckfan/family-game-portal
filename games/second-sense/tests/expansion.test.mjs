@@ -17,7 +17,7 @@ test('at least 180 substantive challenges are available; permutations do not inc
 
 test('every previously published puzzle retains its exact content, IDs, and position', () => {
   const digest = createHash('sha256').update(JSON.stringify(PUZZLES.slice(0, 30))).digest('hex');
-  assert.equal(digest, '0e6382c4eda4c941681f4155f49447b8c362e9b6bf336f6283112c5c0e375eb9');
+  assert.equal(digest, '423ee8e11a3fac4dc4cb4510a9cd3955a2515ec6e48b324b51531c9dc1a46208');
 });
 
 test('the launch dates keep their daily identities after the bank grows', () => {

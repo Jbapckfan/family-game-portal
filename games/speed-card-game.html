@@ -1421,7 +1421,8 @@
       document.getElementById('end-time').textContent = formatTime(elapsedBeforePause);
       document.getElementById('end-combo').textContent = bestCombo;
       document.getElementById('end-record').textContent = `${saved.wins}–${saved.losses}`;
-      setTimeout(() => elements.end.classList.add('open'), 420);
+      // A quick R restart can beat this delay; never cover the new game with the old result.
+      setTimeout(() => { if (phase === 'over') elements.end.classList.add('open'); }, 420);
     }
 
     function beginCountdown() {

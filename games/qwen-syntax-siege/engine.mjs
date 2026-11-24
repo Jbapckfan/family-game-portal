@@ -44,7 +44,7 @@ export function submit(p,s) {
   const index=waveIndex(p,s),w=p.waves[index],word=currentWord(p,s);
   if(word.length<3)return {state:s,message:'Use at least three letters to fire a word.'};
   if(s.played[index].includes(word))return {state:{...s,selected:[]},message:'That word already hit this wave. Find a different one.'};
-  if(!w.words.includes(word))return {state:{...s,selected:[],misses:s.misses+1},message:'Not in this wave’s word list. The core takes 10 damage.'};
+  if(!w.words.includes(word))return {state:{...s,selected:[]},message:'Not in this wave’s word list. No damage; try another word.'};
   const played=s.played.map(words=>[...words]);played[index].push(word);
   let state={...s,played,selected:[]};
   const cleared=waveDamage(state,index)>=w.health;
@@ -71,4 +71,4 @@ export function reveal(p,s) {
   if(getStatus(p,s)!=='playing')return s;
   return {...s,played:p.waves.map(w=>[w.words[0]]),selected:[],started:true,revealed:true};
 }
-export const summarize=(p,s)=>`${waveIndex(p,s)}/${p.waves.length} waves · ${health(s)} core HP · ${score(s)} points${s.untimed?' · untimed assist':''}${s.hints?` · ${s.hints} hints`:''}`;
+export const summarize=(p,s)=>`${waveIndex(p,s)}/${p.waves.length} waves · ${health(s)} core HP · ${score(s)} points${s.untimed?' · untimed assist':''}${s.hints?` · ${s.hints} ${s.hints===1?'hint':'hints'}`:''}`;

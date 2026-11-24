@@ -12,7 +12,8 @@ const LEVELS = [
       [1, null, 1, null, 1, null, 1, null, 1]
     ],
     initialEmpty: { row: 0, col: 4 },
-    directions: [[0, 4], [0, -4], [4, 0], [-4, 0], [2, 2], [2, -2], [-2, 2], [-2, -2]]
+    // Standard triangle rules: jumps only along the board's three lines
+    directions: [[0, 4], [0, -4], [2, 2], [2, -2], [-2, 2], [-2, -2]]
   },
   {
     name: "Cross",
@@ -38,6 +39,7 @@ const LEVELS = [
       [null, null, 1, null, 1, null, 1, null, null]
     ],
     initialEmpty: { row: 2, col: 4 },
+    // Keeps the extra straight up/down jump ([4,0]); explained in How to Play
     directions: [[0, 4], [0, -4], [4, 0], [-4, 0], [2, 2], [2, -2], [-2, 2], [-2, -2]]
   },
   {
@@ -295,7 +297,7 @@ const HowToPlayModal = ({ isOpen, onClose, triggerRef }) => {
         "×"
       ),
       /* @__PURE__ */ React.createElement("h2", { id: "how-to-play-title", className: "text-2xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-4" }, "How to Play"),
-      /* @__PURE__ */ React.createElement("ul", { className: "text-purple-100/90 text-sm space-y-3 list-none" }, /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", { className: "text-cyan-300" }, "Click a peg"), " to select it, then click an ", /* @__PURE__ */ React.createElement("strong", { className: "text-cyan-300" }, "empty hole"), " two spaces away to jump.")), /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, "The peg you ", /* @__PURE__ */ React.createElement("strong", { className: "text-pink-300" }, "jump over"), " is removed from the board.")), /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, "Goal: remove as many pegs as possible. Ideally, leave ", /* @__PURE__ */ React.createElement("strong", { className: "text-yellow-300" }, "just 1 peg"), "!")), /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, "Jump over adjacent pegs into empty holes along ", /* @__PURE__ */ React.createElement("strong", { className: "text-cyan-300" }, "valid paths"), "."))),
+      /* @__PURE__ */ React.createElement("ul", { className: "text-purple-100/90 text-sm space-y-3 list-none" }, /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", { className: "text-cyan-300" }, "Click a peg"), " to select it, then click an ", /* @__PURE__ */ React.createElement("strong", { className: "text-cyan-300" }, "empty hole"), " two spaces away to jump.")), /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, "The peg you ", /* @__PURE__ */ React.createElement("strong", { className: "text-pink-300" }, "jump over"), " is removed from the board.")), /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, "Goal: remove as many pegs as possible. Ideally, leave ", /* @__PURE__ */ React.createElement("strong", { className: "text-yellow-300" }, "just 1 peg"), "!")), /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, "Jump over adjacent pegs into empty holes along ", /* @__PURE__ */ React.createElement("strong", { className: "text-cyan-300" }, "valid paths"), ".")), /* @__PURE__ */ React.createElement("li", { className: "flex gap-2" }, /* @__PURE__ */ React.createElement("span", { className: "text-cyan-400 mt-0.5", "aria-hidden": "true" }, "▶"), /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("strong", { className: "text-cyan-300" }, "Triple Triangle bonus move:"), " on that board only, a peg can also jump ", /* @__PURE__ */ React.createElement("strong", { className: "text-cyan-300" }, "straight up or down"), " over the peg right above or below it, even though there is a small gap between them."))),
       /* @__PURE__ */ React.createElement(
         "button",
         {
@@ -672,10 +674,10 @@ const PegJumperGame = () => {
   }, [gameState]);
   const handleResume = useCallback(() => {
     setIsPaused(false);
-    if (historyStack.length > 0) {
+    if (historyStack.length > 0 && gameState === GameState.PLAYING) {
       setIsTimerRunning(true);
     }
-  }, [historyStack]);
+  }, [historyStack, gameState]);
   const handleHint = useCallback(() => {
     if (hintsRemaining <= 0 || gameState !== GameState.PLAYING || animatingMove || isPaused) return;
     if (hintTimeoutRef.current) {

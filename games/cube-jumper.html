@@ -1822,9 +1822,10 @@ function onJumpUp() { jumpHeld = false; }
 window.addEventListener('keydown', e => { if((e.code==='Space'||e.code==='ArrowUp')&&!e.repeat){e.preventDefault();onJumpDown();} });
 window.addEventListener('keyup', e => { if(e.code==='Space'||e.code==='ArrowUp'){onJumpUp();} });
 canvas.addEventListener('mousedown', e => { if(state==='playing')onJumpDown(); });
-canvas.addEventListener('mouseup', e => { onJumpUp(); });
+window.addEventListener('mouseup', e => { onJumpUp(); });
 canvas.addEventListener('touchstart', e => { if(state==='playing'){e.preventDefault();onJumpDown();} }, {passive:false});
 canvas.addEventListener('touchend', e => { onJumpUp(); });
+canvas.addEventListener('touchcancel', e => { onJumpUp(); });
 
 function setGameButtons(visible) {
   document.getElementById('pause-btn').style.display = visible ? 'block' : 'none';
@@ -2471,7 +2472,7 @@ function die() {
     jumpHeld = false;
     jumpBufferTimer = 0;
     // Reset obstacles that were triggered after checkpoint
-    level.obstacles.forEach(o => { if (o.x > cp.cameraX + PLAYER_SCREEN_X - 50) delete o._triggered; });
+    level.obstacles.forEach((o, i) => { if (!cp.triggered[i]) delete o._triggered; });
     level.orbs.forEach(o => { if (o.x > cp.cameraX + PLAYER_SCREEN_X - 50) o.collected = false; });
     deathFlash = 0.3;
     screenShake = 4;
@@ -2492,7 +2493,7 @@ function die() {
     ang:0, spread:6.28, spd:100, spdV:150, life:0.5, lifeV:0.3,
     colors:['#fff',deathSkin.detail,currentWorld.accent], size:2, sizeV:3, shape:deathSkin.pattern==='star'?'diamond':'circle'
   });
-  if (score > (bestScores[selectedLevel]||0)) { bestScores[selectedLevel]=score; saveProgress(); }
+  if (!practiceMode && score > (bestScores[selectedLevel]||0)) { bestScores[selectedLevel]=score; saveProgress(); }
   if(focusPractice?.active){
     setTimeout(()=>{if(focusPractice?.active)restartFocusSection();},520);
     return;
@@ -2664,13 +2665,13 @@ function stepPhysics(dt) {
     const ps = PLAYER_SIZE * miniM;
     const worldX = cameraX + PLAYER_SCREEN_X;
 
-    // Practice mode checkpoints
-    if (practiceMode && cameraX - lastCheckpointX > 400) {
+    // Practice mode checkpoints (never mid robot boost: a respawn starts with the button released)
+    if (practiceMode && !(player.mode === 'robot' && player._robotJumping && jumpHeld) && cameraX - lastCheckpointX > 400) {
       lastCheckpointX = cameraX;
       practiceCheckpoints.push({
         cameraX: cameraX - speed * dashMult * dt, gameTime: gameTime - dt, playerY: player.y, vy: player.vy, grounded: player.grounded,
         mode: player.mode, gravFlipped: player.gravFlipped, coyoteTimer,
-        mini: player.mini, speedMult
+        mini: player.mini, speedMult, triggered: level.obstacles.map(o => !!o._triggered)
       });
       audio.checkpoint();
       particles.emit(PLAYER_SCREEN_X, player.y+ps/2, 8, {

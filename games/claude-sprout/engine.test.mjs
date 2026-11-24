@@ -16,8 +16,10 @@ test('every seed solves through legal one-letter additions with strict multiset 
 test('a legal dead end wilts once and preserves the prior word; Undo and Restart retain penalties',()=>{
  const p=PUZZLES[0];let s=play(p,createState(p),'earn');s=play(p,s,'crane');const before=analyze(p,s);s=play(p,s,'cornea');assert.equal(analyze(p,s).wilts,1);assert.deepEqual(analyze(p,s).stack,before.stack);assert.deepEqual(analyze(p,s).soilUsed,before.soilUsed);s=undo(p,s);assert.equal(analyze(p,s).stack.at(-1),'earn');assert.equal(analyze(p,s).wilts,1);s=restart(p,s);assert.deepEqual(analyze(p,s).stack,['ear']);assert.equal(analyze(p,s).wilts,1);assert.ok(restoreState(p,s));assert.equal(solutionPath(p,s).at(-1).length,8);
 });
-test('five dead-end wilts lose without an unchecked completion flag',()=>{
- const p=PUZZLES[0];let s=play(p,createState(p),'earn');s=play(p,s,'crane');for(let i=0;i<5;i++)s=play(p,s,'cornea');assert.equal(getStatus(p,s),'lost');assert.equal(analyze(p,s).wilts,5);assert.ok(restoreState(p,s));assert.deepEqual(undo(p,s),s);
+test('five dead-end wilts lose without an unchecked completion flag; a repeated dead end is free',()=>{
+ const p=PUZZLES[0];let s=play(p,createState(p),'earn');s=play(p,s,'crane');s=play(p,s,'cornea');const once=s.events;s=play(p,s,'cornea');assert.equal(analyze(p,s).wilts,1);assert.deepEqual(s.events,once);
+ const saved={events:[...once,...Array(4).fill({type:'word',word:'cornea'})],typed:[],revealed:false};assert.equal(getStatus(p,saved),'lost');assert.equal(analyze(p,saved).wilts,5);assert.ok(restoreState(p,saved));
+ const q=PUZZLES.find(x=>x.id==='sprout-114');s=createState(q);for(const word of ['gist','hits','list','silt','slit'])s=play(q,s,word);assert.equal(getStatus(q,s),'lost');assert.equal(analyze(q,s).wilts,5);assert.ok(restoreState(q,s));assert.deepEqual(undo(q,s),s);
 });
 test('hints charge a wilt and always identify a soil letter with a full surviving continuation',()=>{
  for(const p of PUZZLES){let s=createState(p);for(const nextWord of findRoute(p).slice(1)){const assisted=hint(p,s),a=analyze(p,assisted),current=a.stack.at(-1);assert.equal(a.wilts,1);assert.equal(hint(p,assisted),null);assert.ok([...p.levels[current.length+1].a].some(word=>extraLetter(current,word)===a.hintLetter&&findRoute(p,word,remainder(p.seed+p.pool,word))),p.id);assert.ok(restoreState(p,assisted));s=play(p,s,nextWord);}}

@@ -2090,6 +2090,8 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
                 m.originalInventoryIndex = ms.originalInventoryIndex;
                 m.xPct = ms.xPct;
                 m.yPct = ms.yPct;
+                // The canvas may have been resized since the snapshot; place by percentage.
+                if (typeof m.xPct === 'number' && typeof m.yPct === 'number') m.restoreFromPercentage(canvasCSSWidth, canvasCSSHeight);
                 return m;
             });
 
@@ -2528,7 +2530,8 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
             document.getElementById('modeIndicator').textContent = layout.length <= LEVELS[wonLevel].par ? 'IDEAL PAR SOLUTION REPLAY' : 'WINNING SOLUTION REPLAY';
             layout.forEach((saved, i) => setTimeout(() => {
                 if (token !== replayToken) return;
-                const inventory = gameState.mirrorInventory[saved.originalInventoryIndex] || gameState.mirrorInventory.find(item => !item.used);
+                const savedSlot = gameState.mirrorInventory[saved.originalInventoryIndex];
+                const inventory = savedSlot && !savedSlot.used ? savedSlot : gameState.mirrorInventory.find(item => !item.used);
                 if (!inventory) return;
                 const inventoryIndex = gameState.mirrorInventory.indexOf(inventory);
                 const mirror = new Mirror(saved.xPct * canvasCSSWidth, saved.yPct * canvasCSSHeight, saved.angle, saved.length, inventory.id);
@@ -2787,7 +2790,7 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
 
                     if (intersection) {
                         const distance = Math.sqrt((intersection.x - startX) ** 2 + (intersection.y - startY) ** 2);
-                        if (distance < minDistance && distance > 1) {
+                        if (distance < minDistance && distance >= 0) {
                             minDistance = distance;
                             closestIntersection = { ...intersection, distance };
                         }
@@ -3000,6 +3003,11 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
                     let reflectionCount = beam.reflections;
 
                     while (reflectionCount < maxReflections && totalSegments < maxTotalSegments) {
+                        // A beam that starts on or inside a wall (its 1 px step off a mirror crossed the wall face) is blocked.
+                        if (gameState.obstacles.some(o => currentX >= o.x && currentX <= o.x + o.width && currentY >= o.y && currentY <= o.y + o.height)) {
+                            this.hitObstacle = true;
+                            break;
+                        }
                         let closestIntersection = null;
                         let closestDistance = Infinity;
                         let intersectedObject = null;
@@ -3012,7 +3020,8 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
 
                         allObjects.forEach(obj => {
                             const intersection = obj.intersectsRay(currentX, currentY, currentAngle);
-                            if (intersection && intersection.distance > 0.1 && intersection.distance < closestDistance) {
+                            // Walls count at any distance: a beam leaving a mirror right beside a wall must not skip it.
+                            if (intersection && (intersection.distance > 0.1 || obj instanceof Obstacle) && intersection.distance < closestDistance) {
                                 closestDistance = intersection.distance;
                                 closestIntersection = intersection;
                                 intersectedObject = obj;
@@ -3246,7 +3255,9 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
                 }
 
                 // Show victory modal after a brief delay for the hit animation
+                const modalToken = replayToken;
                 setTimeout(() => {
+                    if (modalToken !== replayToken) return; // level changed or reset meanwhile
                     showVictoryModal(wonLevel, stars, moveCount, level.par, hasNextLevel);
                 }, 800);
             }
@@ -3813,6 +3824,7 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
 
         function resetGame() {
             replayToken++;
+            gameState.won = false; // a reset board can be won again
             ensureAudio();
             // Return mirrors to storage
             gameState.mirrors.forEach(mirror => {
@@ -4000,6 +4012,8 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
                     const dy = y - dragStartPos.y;
                     if (Math.sqrt(dx * dx + dy * dy) <= DRAG_MOVE_THRESHOLD) return;
                     dragMovedBeyondThreshold = true;
+                    // IMPROVEMENT 1: Count repositioning as a move (before any win this drag triggers)
+                    incrementMoveCount();
                 }
 
                 gameState.selectedMirror.x = x;
@@ -4019,8 +4033,6 @@ canvas#gameCanvas,.lab-canvas{background-color:#1a242a!important;background-imag
                     redoStack = [];
                     updateUndoRedoButtons();
                 }
-                // IMPROVEMENT 1: Count repositioning as a move
-                incrementMoveCount();
                 // IMPROVEMENT 5: Play clink sound for repositioning
                 playClinkSound();
                 gameState.selectedMirror.updatePercentage(); // IMPROVEMENT 4: finalize

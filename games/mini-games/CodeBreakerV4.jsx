@@ -1048,6 +1048,9 @@
                 eliminatedColors, notepadOpen, undoUsed, undoSnapshot, maxCombo, showTutorial, showHistory
             } = state;
 
+            // Notepad notes belong to one secret code; clear them whenever a new code is set.
+            React.useEffect(() => { setNotebookMarks({}); }, [secretCode]);
+
             // Refs for focus management and auto-scroll
             const guessListRef = React.useRef(null);
             const rulesCloseRef = React.useRef(null);
@@ -1240,7 +1243,7 @@
             // Reset the game to its initial state
             const handleNewGame = () => {
                 if (specialMode === 'daily') {
-                    dispatch({ type: 'RESET_WITH_SECRET', preset: 'medium', secretCode: seededDailySecret(), disableHints: true, message: `Daily Code ${new Date().toISOString().slice(0,10)} — same puzzle for everyone` });
+                    dispatch({ type: 'RESET_WITH_SECRET', preset: 'medium', secretCode: seededDailySecret(), disableHints: true, message: `Daily Code ${dailyDateKey()} — same puzzle for everyone` });
                     return;
                 }
                 if (specialMode.startsWith('maker')) {
@@ -1257,21 +1260,27 @@
                 dispatch({ type: 'RESET_GAME', preset: currentPreset, allowDuplicates: !allowDuplicates });
             };
 
+            // The daily code follows the player's own calendar date (it changes at local midnight).
+            const dailyDateKey = () => {
+                const d = new Date();
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            };
+
             const seededDailySecret = () => {
-                const day = new Date().toISOString().slice(0, 10);
+                const day = dailyDateKey();
                 let seed = [...day].reduce((n, ch) => ((n * 31) + ch.charCodeAt(0)) >>> 0, 2166136261);
                 const colors = GAME_PRESETS.medium.availableColors;
                 const result = [];
                 for (let i = 0; i < GAME_PRESETS.medium.codeLength; i++) {
                     seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-                    result.push(colors[seed % colors.length]);
+                    result.push(colors[(seed >>> 16) % colors.length]);
                 }
                 return result;
             };
 
             const startDaily = () => {
                 setSpecialMode('daily'); setMakerDraft([]); setNotebookMarks({});
-                dispatch({ type: 'RESET_WITH_SECRET', preset: 'medium', secretCode: seededDailySecret(), disableHints: true, message: `Daily Code ${new Date().toISOString().slice(0,10)} — same puzzle for everyone` });
+                dispatch({ type: 'RESET_WITH_SECRET', preset: 'medium', secretCode: seededDailySecret(), disableHints: true, message: `Daily Code ${dailyDateKey()} — same puzzle for everyone` });
             };
 
             const startCodeMaker = () => {

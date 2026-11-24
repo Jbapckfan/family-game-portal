@@ -2212,7 +2212,7 @@ function recordFamilyScore(won) {
     const nameInput = document.getElementById('familyCommanderName');
     const name = (nameInput?.value || data.commanderName || 'Commander').trim().slice(0, 18) || 'Commander';
     data.commanderName = name;
-    data.familyScores.push({ name, score: G.score, map: G.mapIdx, wave: G.wave, won, at: Date.now() });
+    data.familyScores.push({ name, score: G.score, map: G.mapIdx, wave: Math.min(G.wave, missionWaveTarget()), won, at: Date.now() }); // a win ends after the last wave
     data.familyScores.sort((a, b) => b.score - a.score || b.wave - a.wave);
     data.familyScores = data.familyScores.slice(0, 20);
     savePersistentData(data);
@@ -2266,13 +2266,26 @@ const ENEMY_TRAITS = {
     runner:   { resist: 'slow', resistIcon: '💨', resistColor: '#87ceeb', resistLabel: 'Slow Resist' },
     soldier:  { vuln: 'energy', vulnIcon: '⚡', vulnColor: '#ffff44', vulnLabel: 'Energy Weak' },
     heavy:    { resist: 'fire', resistIcon: '🛡️', resistColor: '#4488ff', resistLabel: 'Fire Resist' },
-    speeder:  { resist: 'slow', resistIcon: '💨', resistColor: '#ff44ff', resistLabel: 'Slow Immune' },
+    speeder:  { resist: 'slow', immune: true, resistIcon: '💨', resistColor: '#ff44ff', resistLabel: 'Slow Immune' },
     tank:     { resist: 'fire', resistIcon: '🛡️', resistColor: '#4488ff', resistLabel: 'Fire Resist' },
     healer:   { vuln: 'fire', vulnIcon: '🔥', vulnColor: '#ff4400', vulnLabel: 'Fire Weak' },
     splitter: { vuln: 'energy', vulnIcon: '⚡', vulnColor: '#ffff44', vulnLabel: 'Energy Weak' },
     boss:     { resist: 'all', resistIcon: '🛡️', resistColor: '#ff0000', resistLabel: 'Armored' },
     swarm:    { vuln: 'splash', vulnIcon: '💥', vulnColor: '#ff6b35', vulnLabel: 'Splash Weak' }
 };
+// What the traits do. Resist: 25% less damage of that type ('Armored' = all damage). Weak: 25% more.
+// 'Slow Resist': slows are 25% weaker; 'Slow Immune': slows have no effect.
+// Fire = Flame Thrower hits and burns; energy = Pulse, Laser and Tesla; splash = Missile and Plasma blast damage.
+const TRAIT_RESIST_MULT = 0.75, TRAIT_WEAK_MULT = 1.25, TRAIT_SLOW_RESIST = 0.75;
+const ENERGY_TOWERS = ['pulse', 'laser', 'tesla'];
+function traitDamageMult(enemyType, source, isBurn, isSplash) {
+    const trait = ENEMY_TRAITS[enemyType] || {};
+    const kind = { fire: isBurn || (!!source && source.type === 'flame'), energy: !!source && ENERGY_TOWERS.includes(source.type), splash: isSplash };
+    let mult = 1;
+    if (trait.resist === 'all' || kind[trait.resist]) mult *= TRAIT_RESIST_MULT;
+    if (kind[trait.vuln]) mult *= TRAIT_WEAK_MULT;
+    return mult;
+}
 
 function generateBestiary() {
     const grid = document.getElementById('bestiaryGrid');
@@ -2558,6 +2571,8 @@ function drawMapPreview(i) {
 // ═══════════════════════════════════════════════════════════════
 // TOWER CLASS
 // ═══════════════════════════════════════════════════════════════
+const VORTEX_HOLD_TICKS = 180; // most game ticks one vortex pulls the same enemy (3 s at 1x)
+
 class Tower {
     constructor(x, y, type) {
         const t = TOWERS[type];
@@ -2584,7 +2599,8 @@ class Tower {
             special: { ...t },
             pulsePhase: Math.random() * Math.PI * 2,
             activeSynergies: [],
-            synergyNames: []
+            synergyNames: [],
+            pullTicks: new WeakMap() // vortex: game ticks this tower has pulled each enemy
         });
     }
 
@@ -2606,15 +2622,19 @@ class Tower {
             }
         }
 
-        // Aura effect
+        // Aura effect: pull enemies back along the path. One vortex holds a given enemy for at most
+        // VORTEX_HOLD_TICKS of game time, so vortexes can never stall a wave.
         if (this.special.aura) {
             enemies.forEach(e => {
                 if (e.dead) return;
                 const d = dist(this.x, this.y, e.x, e.y);
                 if (d < this.range && d > 15) {
-                    const angle = Math.atan2(this.y - e.y, this.x - e.x);
-                    e.x += Math.cos(angle) * this.special.pull * G.speed;
-                    e.y += Math.sin(angle) * this.special.pull * G.speed;
+                    const held = this.pullTicks.get(e) || 0;
+                    const ticks = Math.min(G.speed, VORTEX_HOLD_TICKS - held);
+                    if (ticks > 0) {
+                        this.pullTicks.set(e, held + ticks);
+                        e.moveBack(this.special.pull * ticks);
+                    }
 
                     if (Math.random() < 0.15 * G.speed) {
                         e.takeDamage(this.dmg, this);
@@ -2667,8 +2687,8 @@ class Tower {
             const dmg = isCrit ? this.dmg * 2.5 : this.dmg;
 
             if (s.pierce) {
-                // Piercing beam
-                const angle = this.rotation;
+                // Piercing beam, aimed at the target (the turning turret lags behind, more so at 2X-5X)
+                const angle = Math.atan2(t.y - this.y, t.x - this.x);
                 const hits = [];
                 enemies.forEach(e => {
                     if (e.dead || hits.length >= s.pierce) return;
@@ -2697,13 +2717,14 @@ class Tower {
             // Chain lightning
             this.chainLightning(t);
         } else if (s.spread) {
-            // Spread shot
+            // Spread shot: a fan centred on the target, landing at the target's distance
             const baseAngle = Math.atan2(t.y - this.y, t.x - this.x);
+            const reach = dist(this.x, this.y, t.x, t.y);
             for (let i = 0; i < s.spread; i++) {
-                const angle = baseAngle + (i - 1) * 0.25;
+                const angle = baseAngle + (i - (s.spread - 1) / 2) * 0.25;
                 projectiles.push(this.createProjectile(
-                    this.x + Math.cos(angle) * 200,
-                    this.y + Math.sin(angle) * 200,
+                    this.x + Math.cos(angle) * reach,
+                    this.y + Math.sin(angle) * reach,
                     null
                 ));
             }
@@ -2739,7 +2760,7 @@ class Tower {
         let curr = first;
 
         for (let i = 0; i < this.special.chain && curr; i++) {
-            const dmgMult = 1 - i * 0.15;
+            const dmgMult = Math.max(0, 1 - i * 0.15); // never negative (would heal long chains)
             curr.takeDamage(this.dmg * dmgMult, this);
 
             let next = null, bestD = this.special.chainRange;
@@ -2920,13 +2941,18 @@ class Enemy {
             this.pathProgress += (this.spd * G.speed * 0.5) / len;
 
             if (this.pathProgress >= 1) {
-                this.pathProgress = 0;
+                // Carry the overshoot onto the next segment (same distance at every speed)
+                const over = (this.pathProgress - 1) * len;
                 this.pathIdx++;
+                const after = path[this.pathIdx + 1];
+                this.pathProgress = after ? Math.min(1, over / dist(next.x, next.y, after.x, after.y)) : 0;
             }
 
+            // Position on the segment the enemy is on now
+            const a = path[this.pathIdx], b = path[this.pathIdx + 1] || a;
             const t = Math.min(1, this.pathProgress);
-            this.x = curr.x + dx * t;
-            this.y = curr.y + dy * t;
+            this.x = a.x + (b.x - a.x) * t;
+            this.y = a.y + (b.y - a.y) * t;
         }
 
         // Reached end
@@ -3056,7 +3082,8 @@ class Enemy {
         }
     }
 
-    takeDamage(amount, source, isCrit = false, isBurn = false) {
+    takeDamage(amount, source, isCrit = false, isBurn = false, isSplash = false) {
+        amount *= traitDamageMult(this.type, source, isBurn, isSplash);
         this.hp -= amount;
         if (source) source.totalDmg += amount;
 
@@ -3117,31 +3144,39 @@ class Enemy {
 
     applyEffect(type, value, duration) {
         if (type === 'slow') {
+            const trait = ENEMY_TRAITS[this.type] || {};
+            if (trait.resist === 'slow') {
+                if (trait.immune) return;
+                value *= TRAIT_SLOW_RESIST;
+            }
             this.slowAmt = this.slowTimer > 0 ? Math.max(this.slowAmt || 0, value) : value;
             this.slowTimer = Math.max(this.slowTimer, duration);
         } else if (type === 'burn') {
             this.burnTimer = Math.max(this.burnTimer, duration);
             this.burnDmg = value;
         } else if (type === 'teleport') {
-            // Move backwards on path (pathProgress is measured along segment pathIdx -> pathIdx + 1)
-            let dist = value;
-            while (dist > 0 && this.pathIdx < path.length - 1) {
-                const curr = path[this.pathIdx];
-                const next = path[this.pathIdx + 1];
-                const segLen = Math.sqrt((next.x - curr.x) ** 2 + (next.y - curr.y) ** 2);
-                const progDist = this.pathProgress * segLen;
-
-                if (dist <= progDist) {
-                    this.pathProgress -= dist / segLen;
-                    break;
-                }
-
-                dist -= progDist;
-                if (this.pathIdx === 0) { this.pathProgress = 0; break; }
-                this.pathIdx--;
-                this.pathProgress = 1;
-            }
+            this.moveBack(value);
             spawnParticles(this.x, this.y, 15, '#ff00ff');
+        }
+    }
+
+    // Move backwards on path, never before its start (pathProgress is measured along segment pathIdx -> pathIdx + 1)
+    moveBack(dist) {
+        while (dist > 0 && this.pathIdx < path.length - 1) {
+            const curr = path[this.pathIdx];
+            const next = path[this.pathIdx + 1];
+            const segLen = Math.sqrt((next.x - curr.x) ** 2 + (next.y - curr.y) ** 2);
+            const progDist = this.pathProgress * segLen;
+
+            if (dist <= progDist) {
+                this.pathProgress -= dist / segLen;
+                break;
+            }
+
+            dist -= progDist;
+            if (this.pathIdx === 0) { this.pathProgress = 0; break; }
+            this.pathIdx--;
+            this.pathProgress = 1;
         }
     }
 }
@@ -3172,7 +3207,7 @@ function updateProjectiles() {
             if (p.splash) {
                 enemies.forEach(e => {
                     if (!e.dead && dist(p.x, p.y, e.x, e.y) < p.splash) {
-                        e.takeDamage(p.dmg, p.owner);
+                        e.takeDamage(p.dmg, p.owner, false, false, true);
                         if (p.slow) e.applyEffect('slow', p.slow, p.slowDur || 90);
                         if (p.burn) e.applyEffect('burn', p.burn, p.burnDur || 90);
                     }
@@ -4062,8 +4097,13 @@ function useAbility(type) {
     else if (type === 'goldRush') playSound('abilityGold');
 
     if (type === 'meteor') {
-        // Meteor strike at mouse position
-        const x = mouse.x, y = mouse.y;
+        // Meteor strike at the pointer when it is over the map; otherwise (on-screen button, touch)
+        // at the enemy furthest along the path
+        let x = mouse.x, y = mouse.y;
+        if (!(x > 0 && y > 0 && x < viewW && y < viewH)) {
+            const lead = enemies.reduce((a, e) => !e.dead && (!a || e.pathIdx + e.pathProgress > a.pathIdx + a.pathProgress) ? e : a, null);
+            if (lead) { x = lead.x; y = lead.y; }
+        }
         enemies.forEach(e => {
             if (!e.dead && dist(x, y, e.x, e.y) < 100) {
                 e.takeDamage(200 + G.wave * 10, null, true);
@@ -4455,6 +4495,7 @@ function bindEvents() {
     });
 
     document.addEventListener('keydown', e => {
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return; // typing a name
         const key = e.key.toLowerCase();
         if (key === 'escape') {
             // Close spec dialog if open

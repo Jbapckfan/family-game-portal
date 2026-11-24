@@ -2518,6 +2518,7 @@
                 }
 
                 let bestScore = -Infinity;
+                let worstScore = Infinity;
                 let bestEdge = availableEdges[0];
                 // minimax scores are from player 1's side; flip them when
                 // player 0 (AI 1 in AI vs AI) is choosing
@@ -2545,7 +2546,11 @@
                         bestScore = side * score;
                         bestEdge = edge;
                     }
+                    worstScore = Math.min(worstScore, side * score);
                 }
+
+                // Look-ahead rated every move the same: use Hard's choice
+                if (worstScore === bestScore) return this.findHardMove();
 
                 return bestEdge;
             }
@@ -2803,6 +2808,7 @@
                 this.playVictorySound();
 
                 setTimeout(() => {
+                    if (!this.gameEnded) return; // a new game started during the pause
                     let winner;
                     if (this.scores[0] === this.scores[1]) {
                         winner = 'Tie';

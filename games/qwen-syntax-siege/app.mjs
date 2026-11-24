@@ -28,7 +28,7 @@ mountDailyGame({
     'Defend your 100-HP core against six fixed letter waves. Tap Start defense when you are ready; each daily wave has a 20-second clock.',
     'Tap the six letter tiles to form a word of three or more letters, then Fire word. Each tile can be used once in a word. Every wave has a six-letter solution.',
     'Each letter deals 10 damage. Defeat a 60-HP enemy with one six-letter word or several different shorter words. Longer words earn more points.',
-    'Only words in the wave’s prepared word list count. An unlisted word costs 10 core HP; an expired clock costs 20 HP. A repeated accepted word deals no extra damage.',
+    'Only words in the wave’s prepared word list count. An unlisted word is not accepted and costs no core HP; an expired clock costs 20 HP. A repeated accepted word deals no extra damage.',
     'A hint adds the next letter of a six-letter solution and records assistance. Untimed assist stops the clock for the rest of the puzzle. Practice is always untimed.',
     'Help and leaving the screen pause the timer. Clear and Undo change your current word; damage to the core remains. Defeat all six waves before core HP reaches zero.'
   ],

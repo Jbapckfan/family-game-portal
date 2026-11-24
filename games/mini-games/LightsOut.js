@@ -512,7 +512,13 @@ const LightsOutGame = () => {
   const [wonStars, setWonStars] = React.useState(0);
   const [campaignMode, setCampaignMode] = React.useState(false);
   const [campaignIndex, setCampaignIndex] = React.useState(0);
-  const [campaignUnlocked, setCampaignUnlocked] = React.useState(() => Number(localStorage.getItem("lightsout_campaign_unlocked") || 0));
+  const [campaignUnlocked, setCampaignUnlocked] = React.useState(() => {
+    try {
+      return Number(localStorage.getItem("lightsout_campaign_unlocked") || 0);
+    } catch {
+      return 0;
+    }
+  });
   const [hintExplanation, setHintExplanation] = React.useState("");
   const howToPlayTriggerRef = React.useRef(null);
   const resetButtonRef = React.useRef(null);
@@ -556,6 +562,7 @@ const LightsOutGame = () => {
   const [timedMode, setTimedMode] = React.useState(false);
   const [timeRemaining, setTimeRemaining] = React.useState(0);
   const [timerActive, setTimerActive] = React.useState(false);
+  const [timerStarted, setTimerStarted] = React.useState(false);
   const [timedScore, setTimedScore] = React.useState(null);
   const [bestTimedScores, setBestTimedScores] = React.useState(() => loadBestTimed());
   const timerRef = React.useRef(null);
@@ -578,7 +585,7 @@ const LightsOutGame = () => {
       setTimerActive(false);
     }
   }, [timerActive, isWon]);
-  const isTimedGameOver = timedMode && timeRemaining === 0 && timerActive === false && !isWon && moves > 0;
+  const isTimedGameOver = timedMode && timeRemaining === 0 && timerActive === false && !isWon && timerStarted;
   const toggleTimedMode = React.useCallback(() => {
     setTimedMode((prev) => {
       const newMode = !prev;
@@ -645,10 +652,11 @@ const LightsOutGame = () => {
   }, [isWon, moves, gridSize, minSolution, timedMode, timeRemaining]);
   const handleLightClick = React.useCallback((r, c) => {
     if (checkWinCondition(board)) return;
-    if (timedMode && timeRemaining === 0 && moves > 0) return;
-    if (timedMode && moves === 0 && !timerActive) {
+    if (timedMode && timeRemaining === 0 && timerStarted) return;
+    if (timedMode && !timerStarted) {
       setTimeRemaining(getTimeLimit(gridSize));
       setTimerActive(true);
+      setTimerStarted(true);
     }
     setMoveHistory((prev) => [...prev, { row: r, col: c }]);
     setBoard((prevBoard) => toggleLights(prevBoard, r, c, gridSize));
@@ -657,19 +665,19 @@ const LightsOutGame = () => {
     setHintExplanation("");
     setHoveredCell(null);
     triggerRipple(r, c, gridSize);
-  }, [board, gridSize, timedMode, timeRemaining, moves, timerActive, triggerRipple]);
+  }, [board, gridSize, timedMode, timeRemaining, timerStarted, triggerRipple]);
   const handleUndo = React.useCallback(() => {
     if (moveHistory.length === 0) return;
-    if (timedMode && timeRemaining === 0 && moves > 0) return;
+    if (timedMode && timeRemaining === 0 && timerStarted) return;
     const lastMove = moveHistory[moveHistory.length - 1];
     setMoveHistory((prev) => prev.slice(0, -1));
     setBoard((prevBoard) => toggleLights(prevBoard, lastMove.row, lastMove.col, gridSize));
     setMoves((prevMoves) => Math.max(0, prevMoves - 1));
     setHintCell(null);
-  }, [moveHistory, gridSize, timedMode, timeRemaining, moves]);
+  }, [moveHistory, gridSize, timedMode, timeRemaining, timerStarted]);
   const handleHint = React.useCallback(() => {
     if (hintsRemaining <= 0 || isWon) return;
-    if (timedMode && timeRemaining === 0 && moves > 0) return;
+    if (timedMode && timeRemaining === 0 && timerStarted) return;
     const solution = solveLightsOut(board);
     if (!solution || solution.length === 0) {
       setHintCell(null);
@@ -681,7 +689,7 @@ const LightsOutGame = () => {
     const lit = affected.filter(([r, c]) => board[r][c]).length;
     setHintExplanation(`Choose row ${target.row + 1}, column ${target.col + 1}. It flips ${affected.length} cells, including ${lit} currently lit, and belongs to a complete shortest solution of ${solution.length} move${solution.length === 1 ? "" : "s"}.`);
     setHintsRemaining((prev) => prev - 1);
-  }, [hintsRemaining, isWon, board, timedMode, timeRemaining, moves, gridSize]);
+  }, [hintsRemaining, isWon, board, timedMode, timeRemaining, timerStarted, gridSize]);
   const startNewGame = React.useCallback((size) => {
     const newBoard = generateBoard(size);
     setBoard(newBoard);
@@ -694,6 +702,7 @@ const LightsOutGame = () => {
     setTimedScore(null);
     setTimeRemaining(0);
     setTimerActive(false);
+    setTimerStarted(false);
     setRippleCells({});
     setHoveredCell(null);
     if (timerRef.current) clearInterval(timerRef.current);
@@ -717,6 +726,7 @@ const LightsOutGame = () => {
     setWonStars(0);
     setTimedMode(false);
     setTimerActive(false);
+    setTimerStarted(false);
     const solution = solveLightsOut(next);
     setMinSolution(solution ? solution.length : null);
   }, [campaignUnlocked]);
@@ -810,7 +820,7 @@ const LightsOutGame = () => {
       style: !timerUrgent ? { color: `rgba(var(--lo-primary), 0.8)` } : {}
     },
     formatTime(timeRemaining)
-  ), timedMode && moves === 0 && !timerActive && /* @__PURE__ */ React.createElement("span", { className: "text-gray-400 text-[10px]" }, "Timer starts on first move")), /* @__PURE__ */ React.createElement("div", { className: "w-full h-2 rounded-full bg-gray-800 overflow-hidden" }, /* @__PURE__ */ React.createElement(
+  ), timedMode && !timerStarted && /* @__PURE__ */ React.createElement("span", { className: "text-gray-400 text-[10px]" }, "Timer starts on first move")), /* @__PURE__ */ React.createElement("div", { className: "w-full h-2 rounded-full bg-gray-800 overflow-hidden" }, /* @__PURE__ */ React.createElement(
     "div",
     {
       className: `h-full rounded-full transition-all duration-1000 ease-linear ${timerUrgent ? "countdown-urgent" : ""}`,

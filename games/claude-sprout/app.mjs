@@ -10,7 +10,7 @@ mountDailyGame({
   'Begin with the three-letter seed. Keep every letter in your current word, add one unused letter from the soil, and rearrange them into a new word.',
   'Grow through four, five, six, and seven letters to reach an eight-letter bloom. Each soil tile can be added once; repeated letters are separate tiles.',
   'Tap tiles in word order or type in the entry field. Tap a letter in the active row, or use Delete, to put it back.',
-  'A listed word with no route to a bloom costs one wilt. Your prior word and soil remain available. An unlisted guess costs nothing. Five wilts end the round.',
+  'A listed word with no route to a bloom costs one wilt. Your prior word and soil remain available. An unlisted guess or a repeated dead end costs nothing. Five wilts end the round.',
   'Undo growth goes back one accepted word; Restart returns to the seed. Both preserve all wilts and hint use.',
   'Which letter? highlights a soil letter that still leads to a bloom. It costs one wilt and can use the final remaining wilt. Every prepared seed has a complete path.'
  ],

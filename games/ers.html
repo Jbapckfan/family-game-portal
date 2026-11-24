@@ -828,6 +828,12 @@
         penalty.push(state.players[playerIndex].deck.pop());
       }
       state.burn.push(...penalty);
+      // A challenge responder who burns their last card can no longer answer: the challenger
+      // captures, exactly as when the responder flips their last card.
+      if (state.challenge && state.challenge.responderIndex === playerIndex && !state.players[playerIndex].deck.length) {
+        state.pendingAward = state.challenge.challengerIndex;
+        state.challenge = null;
+      }
       return { valid: false, reasons: [], penalty: penalty.length };
     }
 
@@ -1377,7 +1383,8 @@
     });
 
     window.addEventListener('keydown', event => {
-      if (event.code === 'Space' || event.key === 'Enter') {
+      // Space/Enter flip only while a round runs, so menu and overlay buttons still work by keyboard.
+      if ((event.code === 'Space' || event.key === 'Enter') && (phase === 'playing' || phase === 'countdown')) {
         event.preventDefault(); humanPlay();
       } else if (event.key.toLowerCase() === 's') {
         event.preventDefault(); humanSlap();

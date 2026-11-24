@@ -405,6 +405,22 @@ const refinements = [
     'b<-445&&Math.abs(f)<18&&A>-158&&window.__velocityCompleteRun?.()',
     'b<-980&&Math.abs(f-140)<18&&A>-438&&window.__velocityCompleteRun?.()',
   ],
+  // Respawn line: 45 below the lower of the current and next checkpoint, so a marble
+  // still on the track between two checkpoints is never pulled back.
+  [
+    'A<(tu[r]?.[1]??13)-45){',
+    'A<Math.min(tu[r]?.[1]??13,tu[r+1]?.[1]??-420)-45){',
+  ],
+  // Checkpoint 2 sits at a hairpin where a marble placed at rest wedges. Respawn and
+  // practice there start at the far end of the following straight instead; gates,
+  // triggers and steering still use the checkpoint list itself.
+  [
+    'tu=[[0,13,8],[40,-15,-70],[40,-50,-100],[-50,-90,-190],[0,-131,-345],[175,-190,-520],[-120,-275,-465],[-180,-320,-700]],ni=({position:n',
+    'tu=[[0,13,8],[40,-15,-70],[40,-50,-100],[-50,-90,-190],[0,-131,-345],[175,-190,-520],[-120,-275,-465],[-180,-320,-700]],respawnSpots=tu.map((spot,index)=>index===2?[40,-54.7,-128]:spot),ni=({position:n',
+  ],
+  ['spot=tu[index]', 'spot=respawnSpots[index]'],
+  ['const locked=tu[r]||tu[0]', 'const locked=respawnSpots[r]||respawnSpots[0]'],
+  ['const respawn=tu[r]||tu[0]', 'const respawn=respawnSpots[r]||respawnSpots[0]'],
 ];
 
 for (const [before, after] of refinements) {

@@ -8,6 +8,7 @@ const PLAYERS = {
   1: { label: "Player 1", name: "Red", bg: "#ef4444", ring: "#dc2626", text: "#fecaca" },
   2: { label: "Player 2", name: "Yellow", bg: "#facc15", ring: "#eab308", text: "#422006" }
 };
+const AI_LEVEL_LABEL = { easy: "easy", smart: "smart", perfect: "hard" };
 const createEmptyBoard = () => Array(COLS * ROWS).fill(null);
 const cellIndex = (row, col) => row * COLS + col;
 const lowestEmptyRow = (board, col) => {
@@ -490,9 +491,9 @@ const ConnectFourGame = () => {
   if (winner === "draw") {
     statusText = "It's a Draw!";
   } else if (winner) {
-    statusText = `${winner === 1 ? names[0] || "Player 1" : vsAI ? `Bot (${difficulty})` : names[1] || "Player 2"} Wins!`;
+    statusText = `${winner === 1 ? names[0] || "Player 1" : vsAI ? `Bot (${AI_LEVEL_LABEL[difficulty]})` : names[1] || "Player 2"} Wins!`;
   } else {
-    statusText = `${currentPlayer === 1 ? names[0] || "Player 1" : vsAI ? `Bot (${difficulty})` : names[1] || "Player 2"}'s Turn (${turnInfo.name})`;
+    statusText = `${currentPlayer === 1 ? names[0] || "Player 1" : vsAI ? `Bot (${AI_LEVEL_LABEL[difficulty]})` : names[1] || "Player 2"}'s Turn (${turnInfo.name})`;
   }
   return /* @__PURE__ */ React.createElement("div", { className: "mini-shell min-h-screen bg-black text-white font-sans relative overflow-hidden p-4 flex items-center justify-center" }, /* @__PURE__ */ React.createElement("div", { className: "absolute inset-0 bg-gradient-to-br from-black via-blue-950/50 to-black", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "absolute top-0 left-0 w-full h-full bg-repeat scanline-animation pointer-events-none", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "mini-layout relative z-10 w-full max-w-lg mx-auto text-center" }, /* @__PURE__ */ React.createElement("aside", { className: "mini-controls" }, /* @__PURE__ */ React.createElement("header", { className: "pt-16 pb-6 sm:py-6" }, /* @__PURE__ */ React.createElement("div", { className: "flex items-center justify-center gap-3" }, /* @__PURE__ */ React.createElement("h1", { className: "text-4xl md:text-5xl font-black bg-gradient-to-r from-red-400 via-blue-300 to-yellow-300 bg-clip-text text-transparent tracking-wider text-shadow-neon" }, "CONNECT FOUR"), /* @__PURE__ */ React.createElement(
     "button",
@@ -515,7 +516,7 @@ const ConnectFourGame = () => {
   }, maxLength: "12", disabled: vsAI, className: "bg-gray-900 border border-yellow-500 rounded px-2 py-1 text-center disabled:opacity-40", "aria-label": "Yellow player name" })), /* @__PURE__ */ React.createElement("div", { className: "flex flex-wrap justify-center gap-1 mb-2" }, /* @__PURE__ */ React.createElement("button", { onClick: () => setVsAI(false), className: `px-2 py-1 rounded border text-xs ${!vsAI ? "bg-blue-600" : "bg-gray-900"}` }, "2 Players"), ["easy", "smart", "perfect"].map((level) => /* @__PURE__ */ React.createElement("button", { key: level, onClick: () => {
     setVsAI(true);
     setDifficulty(level);
-  }, className: `px-2 py-1 rounded border text-xs capitalize ${vsAI && difficulty === level ? "bg-purple-600" : "bg-gray-900"}` }, "AI ", level)), /* @__PURE__ */ React.createElement("select", { value: seriesLength, onChange: (e) => {
+  }, className: `px-2 py-1 rounded border text-xs capitalize ${vsAI && difficulty === level ? "bg-purple-600" : "bg-gray-900"}` }, "AI ", AI_LEVEL_LABEL[level])), /* @__PURE__ */ React.createElement("select", { value: seriesLength, onChange: (e) => {
     setSeriesLength(Number(e.target.value));
     setMatchScore([0, 0]);
   }, className: "bg-gray-900 border rounded px-2 text-xs" }, /* @__PURE__ */ React.createElement("option", { value: "3" }, "Best of 3"), /* @__PURE__ */ React.createElement("option", { value: "5" }, "Best of 5"))), /* @__PURE__ */ React.createElement("div", { className: "flex gap-1 overflow-x-auto mb-3" }, [["classic", "Classic"], ["pop", "Pop Out"], ["five", "Five in Row"], ["obstacle", "Obstacles"], ["rotate", "Rotating"]].map(([id, label]) => /* @__PURE__ */ React.createElement("button", { key: id, onClick: () => changeVariant(id), className: `shrink-0 px-2 py-1 rounded border text-xs ${variant === id ? "bg-cyan-600" : "bg-gray-900"}` }, label))), /* @__PURE__ */ React.createElement("div", { className: "mb-2 text-sm text-blue-100" }, "Series: ", /* @__PURE__ */ React.createElement("b", { className: "text-red-300" }, names[0] || "Player 1", " ", matchScore[0]), " – ", /* @__PURE__ */ React.createElement("b", { className: "text-yellow-200" }, vsAI ? "Bot" : names[1] || "Player 2", " ", matchScore[1]), " · first to ", matchTarget)), /* @__PURE__ */ React.createElement(
@@ -581,7 +582,7 @@ const ConnectFourGame = () => {
         role: "alert"
       },
       /* @__PURE__ */ React.createElement("h2", { className: "text-3xl font-black text-shadow-neon text-yellow-300" }, winner === "draw" ? "DRAW!" : `${winner === 1 ? names[0] || "Player 1" : vsAI ? "Bot" : names[1] || "Player 2"} WINS!`),
-      /* @__PURE__ */ React.createElement("p", { className: "text-blue-100" }, winner === "draw" ? "The board is full. No winner this time." : `${PLAYERS[winner].name} connected four in a row.`),
+      /* @__PURE__ */ React.createElement("p", { className: "text-blue-100" }, winner === "draw" ? "The board is full. No winner this time." : `${PLAYERS[winner].name} connected ${variant === "five" ? "five" : "four"} in a row.`),
       /* @__PURE__ */ React.createElement(
         "button",
         {
@@ -592,7 +593,7 @@ const ConnectFourGame = () => {
         matchScore.some((value) => value >= matchTarget) ? "New Match" : "Next Round"
       )
     )
-  ), /* @__PURE__ */ React.createElement("div", { className: "mini-bottom" }, /* @__PURE__ */ React.createElement("div", { className: "mt-3 p-2 rounded-lg bg-black/40 border border-blue-800 text-xs text-blue-100" }, /* @__PURE__ */ React.createElement("b", null, "Family records:"), " ", Object.entries(records).slice(-3).reverse().map(([key, row]) => /* @__PURE__ */ React.createElement("div", { key }, key, ": ", row.p1, "-", row.p2, " (", row.draws, " draws)"))), /* @__PURE__ */ React.createElement("footer", { className: "py-6" }, /* @__PURE__ */ React.createElement(
+  ), /* @__PURE__ */ React.createElement("div", { className: "mini-bottom" }, /* @__PURE__ */ React.createElement("div", { className: "mt-3 p-2 rounded-lg bg-black/40 border border-blue-800 text-xs text-blue-100" }, /* @__PURE__ */ React.createElement("b", null, "Family records:"), " ", Object.entries(records).slice(-3).reverse().map(([key, row]) => /* @__PURE__ */ React.createElement("div", { key }, key.replace("Bot (perfect)", "Bot (hard)"), ": ", row.p1, "-", row.p2, " (", row.draws, " draws)"))), /* @__PURE__ */ React.createElement("footer", { className: "py-6" }, /* @__PURE__ */ React.createElement(
     "button",
     {
       ref: newGameButtonRef,

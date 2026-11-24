@@ -57,6 +57,7 @@ function select(type,id){
 }
 function check(event){
   event.preventDefault();
+  if(error)return;
   const result=engine.submitPair(app.puzzle,app.game,{nounId,verbId,word:draft});
   if(!result.changed){app.notice('Select a noun clue and a verb clue, then enter one word using letters only.');return;}
   let message;

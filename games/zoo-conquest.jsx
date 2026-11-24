@@ -1639,6 +1639,8 @@
           // Done trading
           setShowCardTrade(false);
           setMustTradeCards(false);
+          // A forced trade after eliminating a player happens mid-attack: place the animals, then attacking resumes.
+          if (turnPhase === 'attack') setTurnPhase('reinforce');
           setMessage(`🎁 Traded cards for ${bonusTroops} extra animals! Place your animals.`);
         }
       };
@@ -2040,6 +2042,8 @@
           setAiThinking(true);
           const army = currentPlayer.army;
           const aiName = currentPlayer.name;
+          // This run's troopsToPlace is fixed when it starts; carry the card-trade bonus locally so it gets placed.
+          let aiTroopsToPlace = troopsToPlace;
 
           // Phase 0: AI Card Trading - trade cards before placing reinforcements
           if (turnPhase === 'reinforce') {
@@ -2077,6 +2081,7 @@
                 }));
                 setTradeCount(currentTradeCount);
                 setTroopsToPlace(prev => prev + totalBonusTroops);
+                aiTroopsToPlace += totalBonusTroops;
                 SoundSystem.cardTrade();
                 trackStat('cardsTraded', army, trades);
                 setMessage(`🤖 ${aiName} traded ${trades} card set${trades > 1 ? 's' : ''} for +${totalBonusTroops} animals!`);
@@ -2086,9 +2091,9 @@
           }
 
           // Phase 1: Reinforce - place ALL troops at once (fast)
-          if (turnPhase === 'reinforce' && troopsToPlace > 0) {
-            setMessage(`🤖 ${aiName} placing ${troopsToPlace} reinforcements...`);
-            trackStat('troopsDeployed', army, troopsToPlace);
+          if (turnPhase === 'reinforce' && aiTroopsToPlace > 0) {
+            setMessage(`🤖 ${aiName} placing ${aiTroopsToPlace} reinforcements...`);
+            trackStat('troopsDeployed', army, aiTroopsToPlace);
 
             // Place all troops at once instead of one by one
             // Use a local copy of territories so each iteration sees updated troop counts
@@ -2097,7 +2102,7 @@
               localTerritories[id] = { ...t };
             });
             const reinforcements = {};
-            for (let i = 0; i < troopsToPlace; i++) {
+            for (let i = 0; i < aiTroopsToPlace; i++) {
               const target = aiFindBestReinforceTarget(army, localTerritories);
               if (target) {
                 reinforcements[target] = (reinforcements[target] || 0) + 1;

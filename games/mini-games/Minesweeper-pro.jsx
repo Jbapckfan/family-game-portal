@@ -214,7 +214,7 @@ function MineQuestGame() {
 
   const saveProfile = React.useCallback((next) => {
     setProfile(next);
-    localStorage.setItem(MQ_PROFILE_KEY, JSON.stringify(next));
+    try { localStorage.setItem(MQ_PROFILE_KEY, JSON.stringify(next)); } catch (_) {}
   }, []);
 
   const commitBoard = React.useCallback((next) => {
@@ -294,8 +294,10 @@ function MineQuestGame() {
     tone(880, .25, .055); burst(28);
     if (navigator.vibrate) navigator.vibrate([35, 30, 70]);
     const bestKey = `familyPortalMineQuestBest:${mode}:${mode === 'classic' ? difficulty : mission}`;
-    const previousBest = Number(localStorage.getItem(bestKey) || 0);
-    if (!previousBest || finalTime < previousBest) localStorage.setItem(bestKey, String(finalTime));
+    try {
+      const previousBest = Number(localStorage.getItem(bestKey) || 0);
+      if (!previousBest || finalTime < previousBest) localStorage.setItem(bestKey, String(finalTime));
+    } catch (_) {}
     const nextProfile = {
       ...profile,
       wins: profile.wins + 1,
@@ -458,7 +460,8 @@ function MineQuestGame() {
 
   const flags = board.flat().filter((cell) => cell.flagged).length;
   const bestKey = `familyPortalMineQuestBest:${mode}:${mode === 'classic' ? difficulty : mission}`;
-  const best = Number(localStorage.getItem(bestKey) || 0);
+  let best = 0;
+  try { best = Number(localStorage.getItem(bestKey) || 0); } catch (_) {}
   const medalIcon = medal === 'gold' ? '🥇' : medal === 'silver' ? '🥈' : '🥉';
 
   return (

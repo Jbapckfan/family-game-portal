@@ -42,7 +42,7 @@ export function mountDailyGame(config) {
     $('practice-mode').setAttribute('aria-pressed',String(session.mode==='practice'));
     $('practice-mode').textContent=session.mode==='practice'?'Next practice':'Practice';
     config.render({root:board,puzzle,state,mode:session.mode,announce,commit:(next,note)=>{
-      const changed=session.commit(next);render(note||(!changed&&session.outcome==='playing'?'The puzzle changed. Try that move again.':''));return changed;
+      const day=session.dateKey,changed=session.commit(next);render(note&&(changed||session.dateKey===day)?note:(!changed&&session.outcome==='playing'?'The puzzle changed. Try that move again.':''));return changed;
     }});
     board.dataset.gameReady='true';
     if(finished)board.querySelectorAll('button,input,textarea,select').forEach(el=>{el.disabled=true;});

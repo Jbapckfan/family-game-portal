@@ -16,7 +16,8 @@
                     [1, null, 1, null, 1, null, 1, null, 1],
                 ],
                 initialEmpty: { row: 0, col: 4 },
-                directions: [[0,4],[0,-4],[4,0],[-4,0],[2,2],[2,-2],[-2,2],[-2,-2]]
+                // Standard triangle rules: jumps only along the board's three lines
+                directions: [[0,4],[0,-4],[2,2],[2,-2],[-2,2],[-2,-2]]
             },
             {
                 name: "Cross",
@@ -42,6 +43,7 @@
                     [null, null, 1, null, 1, null, 1, null, null],
                 ],
                 initialEmpty: { row: 2, col: 4 },
+                // Keeps the extra straight up/down jump ([4,0]); explained in How to Play
                 directions: [[0,4],[0,-4],[4,0],[-4,0],[2,2],[2,-2],[-2,2],[-2,-2]]
             },
             {
@@ -363,6 +365,10 @@
                             <li className="flex gap-2">
                                 <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
                                 <span>Jump over adjacent pegs into empty holes along <strong className="text-cyan-300">valid paths</strong>.</span>
+                            </li>
+                            <li className="flex gap-2">
+                                <span className="text-cyan-400 mt-0.5" aria-hidden="true">&#9654;</span>
+                                <span><strong className="text-cyan-300">Triple Triangle bonus move:</strong> on that board only, a peg can also jump <strong className="text-cyan-300">straight up or down</strong> over the peg right above or below it, even though there is a small gap between them.</span>
                             </li>
                         </ul>
                         <button
@@ -842,10 +848,11 @@
 
             const handleResume = useCallback(() => {
                 setIsPaused(false);
-                if (historyStack.length > 0) {
+                // A jump finished while paused may have ended the game; keep the clock stopped then
+                if (historyStack.length > 0 && gameState === GameState.PLAYING) {
                     setIsTimerRunning(true);
                 }
-            }, [historyStack]);
+            }, [historyStack, gameState]);
 
             // Feature 3: Hint handler - find a valid move and highlight it
             const handleHint = useCallback(() => {

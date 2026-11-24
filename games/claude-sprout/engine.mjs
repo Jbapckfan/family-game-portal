@@ -91,6 +91,7 @@ export function submitWord(p,s,input=typedWord(p,s)){
  if(result.kind==='length')return {state:s,message:`Use all ${a.stack.at(-1).length+1} letters.`};
  if(result.kind==='letters')return {state:s,message:'Keep every letter in your word and add exactly one available soil letter.'};
  if(result.kind==='unlisted')return {state:s,message:'That is not in this puzzle’s word list. No wilt charged.'};
+ if(result.kind==='dead'&&s.events.some(e=>e.type==='word'&&e.word===word))return {state:s,message:'Already tried that word. No extra wilt.'};
  const next={...s,events:[...s.events,{type:'word',word}],typed:[]},status=getStatus(p,next);
  return {state:next,message:status==='won'?`${word.toUpperCase()} — in bloom.`:status==='lost'?'Five wilts. One complete growth path is shown below.':result.kind==='grow'?`${word.toUpperCase()} grows. Now add one more letter.`:`${word.toUpperCase()} is a dead end. One wilt; your previous word and soil are kept.`};
 }

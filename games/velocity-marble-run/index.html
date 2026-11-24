@@ -1,453 +1,493 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Marble POV: Velocity" />
-    <meta name="theme-color" content="#050505" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="description" content="Marble POV: Velocity - A high-speed 3D marble physics runner with collectibles, power-ups, and unlockable marbles.">
-    <meta property="og:title" content="Marble POV: Velocity">
-    <meta property="og:description" content="A high-speed 3D marble physics runner with collectibles, power-ups, and unlockable marbles.">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <title>Marble POV: Velocity</title>
-    <!-- Feature 8: Custom Favicon via Inline SVG (marble/sphere) -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='g' cx='40%25' cy='35%25' r='55%25'%3E%3Cstop offset='0%25' stop-color='%2380ffff'/%3E%3Cstop offset='50%25' stop-color='%2300c8d4'/%3E%3Cstop offset='100%25' stop-color='%23003844'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='30' fill='url(%23g)' stroke='%2300f0ff' stroke-width='1.5'/%3E%3Cellipse cx='24' cy='22' rx='10' ry='7' fill='rgba(255,255,255,0.25)' transform='rotate(-25 24 22)'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="./assets/velocity-tailwind.css">
-    <style>
-      * {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
-      }
-      html, body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background: #050505;
-        font-family: -apple-system, BlinkMacSystemFont, 'Avenir Next', 'Segoe UI', sans-serif;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        touch-action: none;
-      }
-      #root {
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        top: env(safe-area-inset-top, 0px);
-        left: env(safe-area-inset-left, 0px);
-        right: env(safe-area-inset-right, 0px);
-        bottom: env(safe-area-inset-bottom, 0px);
-      }
-      /* Feature 2: Custom CSS Scrollbar with Neon Glow */
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track {
-        background: #0a0a0a;
-        border-radius: 4px;
-        border: 1px solid #1a1a2e;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #00f0ff 0%, #007a85 100%);
-        border-radius: 4px;
-        box-shadow: 0 0 6px rgba(0, 240, 255, 0.5), 0 0 12px rgba(0, 240, 255, 0.2);
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #33f5ff 0%, #00b8c8 100%);
-        box-shadow: 0 0 10px rgba(0, 240, 255, 0.7), 0 0 20px rgba(0, 240, 255, 0.35);
-      }
-      ::-webkit-scrollbar-corner { background: #0a0a0a; }
-      /* Firefox scrollbar */
-      * {
-        scrollbar-width: thin;
-        scrollbar-color: #00f0ff #0a0a0a;
-      }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-      /* Feature 1: Loading Screen Styles */
-      #loading-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        background: #050505;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 28px;
-        transition: opacity 0.5s ease-out;
-      }
-      #loading-overlay.fade-out {
-        opacity: 0;
-        pointer-events: none;
-      }
-      #loading-overlay .spinner {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        border: 3px solid #1a1a2e;
-        border-top-color: #00f0ff;
-        animation: loading-spin 0.9s linear infinite;
-        box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-      }
-      #loading-overlay .loading-text {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-        color: #00f0ff;
-        letter-spacing: 6px;
-        text-transform: uppercase;
-        animation: loading-pulse 1.5s ease-in-out infinite;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-      }
-      #loading-overlay .loading-sub {
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 13px;
-        color: #555;
-        letter-spacing: 2px;
-      }
-      @keyframes loading-spin {
-        to { transform: rotate(360deg); }
-      }
-      @keyframes loading-pulse {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
-      }
+    <!-- iOS PWA Configuration -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Velocity">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#0a0a1a">
 
-      /* Feature 10: Error Overlay Styles */
-      #error-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 999999;
-        background: rgba(5, 5, 5, 0.95);
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        padding: 24px;
-        text-align: center;
-      }
-      #error-overlay.visible { display: flex; }
-      #error-overlay .error-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        border: 2px solid #ff4060;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 28px;
-        color: #ff4060;
-        box-shadow: 0 0 20px rgba(255, 64, 96, 0.3);
-      }
-      #error-overlay .error-title {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 20px;
-        font-weight: 700;
-        color: #ff4060;
-        letter-spacing: 2px;
-      }
-      #error-overlay .error-msg {
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 16px;
-        color: #aaa;
-        max-width: 400px;
-        line-height: 1.5;
-      }
-      #error-overlay .error-btn {
-        margin-top: 8px;
-        padding: 12px 32px;
-        background: transparent;
-        border: 1px solid #ff4060;
-        border-radius: 10px;
-        color: #ff4060;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 2px;
-        cursor: pointer;
-        transition: all 0.2s;
-        min-height: 44px;
-      }
-      #error-overlay .error-btn:hover {
-        background: rgba(255, 64, 96, 0.15);
-        box-shadow: 0 0 15px rgba(255, 64, 96, 0.3);
-      }
+    <!-- Prevent iOS gestures interfering with game -->
+    <meta name="touch-action" content="manipulation">
 
-      /* Feature 3: Fullscreen Toggle Button */
-      #fullscreen-btn {
-        position: fixed;
-        bottom: 12px;
-        right: 12px;
-        z-index: 9999;
-        background: rgba(0, 0, 0, 0.7);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        padding: 8px 12px;
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        transition: background 0.2s;
-        min-height: 44px;
-        min-width: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        line-height: 1;
-      }
-      #fullscreen-btn:hover { background: rgba(0, 0, 0, 0.9); }
-      #fullscreen-btn svg { width: 18px; height: 18px; fill: #fff; }
-      @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
-        }
-      }
-      @media (max-width: 600px) {
-        #fullscreen-btn {
-          top: 12px;
-          bottom: auto;
-        }
-        .velocity-hud {
-          padding: 72px 16px 16px !important;
-        }
-        .velocity-checkpoints {
-          top: 118px !important;
-          left: 16px !important;
-        }
-        .velocity-speed {
-          position: absolute;
-          bottom: 150px;
-          left: 50%;
-          transform: translateX(-50%);
-        }
-        .velocity-speed .text-6xl {
-          font-size: 2.25rem;
-          line-height: 2.5rem;
-        }
-        .velocity-speed .w-64 {
-          width: 180px;
-        }
-        .velocity-instructions {
-          display: none;
-        }
-      }
-    </style>
-    <link rel="modulepreload" href="./assets/index-velocity-v2.js?course=grand-prix-v3">
-    <link rel="manifest" href="./manifest.json">
-    <script>
-      (function() {
-        var userAgent = navigator.userAgent || '';
-        var isIPad = /iPad/i.test(userAgent) ||
-          (/Macintosh/i.test(userAgent) && navigator.maxTouchPoints > 1);
-        var forcedLite = false;
-        try {
-          forcedLite = localStorage.getItem('velocity-force-lite') === '1';
-        } catch (error) {}
-        var lowMemory = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4;
+    <title>Velocity - Marble Run</title>
 
-        window.__velocityLiteMode = isIPad || lowMemory || forcedLite;
-        window.__velocityBootState = { moduleLoaded: false, appMounted: false };
-        window.__velocityBootError = function(message) {
-          window.__velocityPendingError = message || 'The game could not start on this device.';
-          if (window.__velocityShowBootError) {
-            window.__velocityShowBootError(window.__velocityPendingError);
-          }
-        };
-        window.__velocityEnableSafeMode = function() {
-          try {
-            localStorage.setItem('velocity-force-lite', '1');
-          } catch (error) {}
-          location.reload();
-        };
-      })();
+    <!-- App Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Preload critical assets -->
+    <link rel="preload" href="css/game.css" as="style">
+    <link rel="modulepreload" href="js/vendor/three.module.min.js">
+
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen active">
+            <div class="loader-content">
+                <div class="logo-container">
+                    <div class="marble-loader"></div>
+                    <h1 class="logo-text">VELOCITY</h1>
+                </div>
+                <div class="loading-bar">
+                    <div class="loading-progress" id="load-progress"></div>
+                </div>
+                <p class="loading-text" id="load-text">Loading assets...</p>
+            </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="menu-screen" class="screen">
+            <div class="menu-background">
+                <canvas id="menu-bg-canvas"></canvas>
+            </div>
+            <!-- Family portal: way back to the list of games -->
+            <a id="btn-portal" href="../../" aria-label="Back to all games" style="position:absolute;z-index:2;top:calc(var(--safe-top, 0px) + 6px);left:12px;padding:4px 10px;border-radius:999px;background:rgba(10,10,26,0.65);color:#fff;font:600 12px/16px system-ui,sans-serif;letter-spacing:0.04em;text-decoration:none">&#8249; All Games</a>
+            <div class="menu-content">
+                <div class="title-section">
+                    <h1 class="game-title">
+                        <span class="title-velocity">VELOCITY</span>
+                        <span class="title-marble">MARBLE RUN</span>
+                    </h1>
+                    <div class="title-marble-display">
+                        <div class="display-marble"></div>
+                    </div>
+                </div>
+
+                <div class="menu-buttons">
+                    <button class="menu-btn primary" id="btn-play">
+                        <span class="btn-icon">&#9658;</span>
+                        <span class="btn-text">PLAY</span>
+                    </button>
+                    <button class="menu-btn" id="btn-levels">
+                        <span class="btn-icon">&#9632;</span>
+                        <span class="btn-text">LEVELS</span>
+                    </button>
+                    <button class="menu-btn" id="btn-music">
+                        <span class="btn-icon">&#9835;</span>
+                        <span class="btn-text">MUSIC RUN</span>
+                    </button>
+                    <button class="menu-btn" id="btn-daily">
+                        <span class="btn-icon">&#9788;</span>
+                        <span class="btn-text">CHALLENGES</span>
+                    </button>
+                    <button class="menu-btn" id="btn-scores">
+                        <span class="btn-icon">&#9813;</span>
+                        <span class="btn-text">SCORES</span>
+                    </button>
+                    <button class="menu-btn" id="btn-collection">
+                        <span class="btn-icon">&#9733;</span>
+                        <span class="btn-text">MARBLE STORE</span>
+                    </button>
+                    <button class="menu-btn" id="btn-settings">
+                        <span class="btn-icon">&#9881;</span>
+                        <span class="btn-text">SETTINGS</span>
+                    </button>
+                </div>
+
+                <div class="menu-footer">
+                    <div class="currency-display">
+                        <div class="currency coins">
+                            <span class="currency-icon">&#9679;</span>
+                            <span class="currency-value" id="total-coins">0</span>
+                        </div>
+                        <div class="currency gems">
+                            <span class="currency-icon">&#9830;</span>
+                            <span class="currency-value" id="total-gems">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Select Screen -->
+        <div id="levels-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="levels-back">&#8592;</button>
+                <h2>SELECT WORLD</h2>
+                <div class="header-stats">
+                    <span class="total-stars">&#9733; <span id="player-stars">0</span>/150</span>
+                </div>
+            </div>
+            <div class="worlds-container" id="worlds-container"></div>
+        </div>
+
+        <!-- World Levels Screen -->
+        <div id="world-levels-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="world-back">&#8592;</button>
+                <h2 id="world-title">WORLD 1</h2>
+                <div class="header-stats">
+                    <span class="world-stars">&#9733; <span id="world-star-count">0</span>/<span id="world-star-max">30</span></span>
+                </div>
+            </div>
+            <div class="levels-grid" id="levels-grid"></div>
+        </div>
+
+        <!-- Challenges Screen: the daily chute and races against friends -->
+        <div id="daily-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="daily-back">&#8592;</button>
+                <h2>CHALLENGES</h2>
+                <div class="header-stats"><span id="daily-date"></span></div>
+            </div>
+            <div class="daily-content scrollable" id="daily-content"></div>
+        </div>
+
+        <!-- Music Run Screen -->
+        <div id="music-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="music-back">&#8592;</button>
+                <h2>MUSIC RUN</h2>
+                <div class="header-stats"></div>
+            </div>
+            <div class="daily-content scrollable" id="music-content"></div>
+        </div>
+
+        <!-- Scores Screen: bests, Music Run grades, recent runs, sharing -->
+        <div id="scores-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="scores-back">&#8592;</button>
+                <h2>SCORES</h2>
+                <div class="header-stats"><span id="scores-total"></span></div>
+            </div>
+            <div class="daily-content scrollable" id="scores-content"></div>
+        </div>
+
+        <!-- Collection Screen -->
+        <div id="collection-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="collection-back">&#8592;</button>
+                <h2>STORE</h2>
+                <div class="store-coins"><span class="coin-dot"></span><span id="store-coins">0</span><span class="gem-dot"></span><span id="store-gems" class="store-gems">0</span></div>
+            </div>
+            <div class="collection-tabs">
+                <button class="tab-btn active" data-tab="marbles">MARBLES</button>
+                <button class="tab-btn" data-tab="skins">SKINS</button>
+                <button class="tab-btn" data-tab="upgrades">UPGRADES</button>
+                <button class="tab-btn" data-tab="achievements">AWARDS</button>
+            </div>
+            <div class="collection-content" id="collection-content"></div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settings-screen" class="screen">
+            <div class="screen-header">
+                <button class="back-btn" id="settings-back">&#8592;</button>
+                <h2>SETTINGS</h2>
+            </div>
+            <div class="settings-content">
+                <div class="setting-group">
+                    <h3>Audio</h3>
+                    <div class="setting-row">
+                        <span>Music</span>
+                        <input type="range" id="music-volume" min="0" max="100" value="80">
+                    </div>
+                    <div class="setting-row">
+                        <span>Sound Effects</span>
+                        <input type="range" id="sfx-volume" min="0" max="100" value="100">
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <h3>Gameplay</h3>
+                    <div class="setting-row">
+                        <span>Your Name</span>
+                        <input type="text" id="player-name" maxlength="16" placeholder="Shown on challenges" autocomplete="nickname">
+                    </div>
+                    <div class="setting-row">
+                        <span>Camera</span>
+                        <select id="camera-select">
+                            <option value="chase" selected>Chase (behind the marble)</option>
+                            <option value="pov">Marble POV (inside it)</option>
+                        </select>
+                    </div>
+                    <div class="setting-row">
+                        <span>POV: Keep Horizon Level</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="horizon-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Tilt to Steer</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="tilt-toggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Haptic Feedback</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="haptics-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Particle Effects</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="particles-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Rival Racers</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="rivals-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Cinematic Cameras</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="cine-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Screen Shake</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="shake-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-row">
+                        <span>Show FPS</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="fps-toggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <h3>Graphics</h3>
+                    <div class="setting-row">
+                        <span>Quality</span>
+                        <select id="quality-select">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high" selected>High</option>
+                            <option value="ultra">Ultra</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <!-- Letterbox bars for the cinematic shots -->
+            <div id="cine-bars" aria-hidden="true"><div class="bar top"></div><div class="bar bottom"></div></div>
+            <!-- Level title card: shown over the intro flyover -->
+            <div id="level-card" aria-hidden="true">
+                <div class="lc-world" id="lc-world"></div>
+                <div class="lc-name" id="lc-name" data-text=""></div>
+                <div class="lc-sub" id="lc-sub"></div>
+            </div>
+            <!-- Game HUD -->
+            <div id="game-hud">
+                <div class="hud-top">
+                    <button class="hud-btn" id="pause-btn" aria-label="Pause">
+                        <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                    </button>
+                    <div class="level-info">
+                        <span class="level-name" id="hud-level-name">1-1</span>
+                        <div class="level-progress">
+                            <div class="progress-fill" id="level-progress-fill"></div>
+                        </div>
+                    </div>
+                    <button class="hud-btn" id="reset-btn" aria-label="Restart">
+                        <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                    </button>
+                </div>
+                <div class="hud-row">
+                    <div class="stat score"><span id="hud-score">0</span></div>
+                    <div class="hud-center">
+                        <div class="hud-stars" id="hud-stars">
+                            <div class="star-threshold" data-star="1"></div>
+                            <div class="star-threshold" data-star="2"></div>
+                            <div class="star-threshold" data-star="3"></div>
+                        </div>
+                        <span class="hud-time" id="hud-time">0.00</span>
+                    </div>
+                    <div class="stat coins">
+                        <span class="stat-icon">&#9679;</span>
+                        <span id="hud-coins">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Game Canvas -->
+            <canvas id="game-canvas"></canvas>
+
+            <!-- FPS Counter -->
+            <div id="fps-counter" class="hidden">FPS: 60</div>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pause-screen" class="screen overlay">
+            <div class="overlay-content">
+                <h2>PAUSED</h2>
+                <div class="pause-buttons">
+                    <button class="menu-btn primary" id="resume-btn">RESUME</button>
+                    <button class="menu-btn" id="restart-btn">RESTART</button>
+                    <button class="menu-btn" id="quit-btn">QUIT TO MENU</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="complete-screen" class="screen overlay">
+            <div class="overlay-content victory">
+                <div class="confetti-container" id="confetti"></div>
+                <h2>LEVEL COMPLETE!</h2>
+                <div class="stars-earned" id="stars-earned">
+                    <div class="star large" data-delay="0"></div>
+                    <div class="star large" data-delay="200"></div>
+                    <div class="star large" data-delay="400"></div>
+                </div>
+                <div class="music-results hidden" id="music-results">
+                    <div class="music-grade" id="music-grade">A</div>
+                    <div class="music-title" id="music-title"></div>
+                    <div class="score-row"><span>Coins</span><span id="music-coins">0/0</span></div>
+                    <div class="score-row"><span>Jumps on the beat</span><span id="music-beats">0/0</span></div>
+                    <div class="score-row"><span>Rewinds</span><span id="music-rewinds">0</span></div>
+                    <div class="score-row total"><span>Score</span><span id="music-score">0</span></div>
+                    <div class="music-best" id="music-best"></div>
+                </div>
+                <div class="medal-result hidden" id="medal-result"></div>
+                <div class="rival-result hidden" id="rival-result"></div>
+                <div class="score-breakdown" id="score-breakdown">
+                    <div class="score-row">
+                        <span>Time Bonus</span>
+                        <span id="time-bonus-value">+500</span>
+                    </div>
+                    <div class="score-row">
+                        <span>Coins Collected</span>
+                        <span id="coins-value">12</span>
+                    </div>
+                    <div class="score-row">
+                        <span>Tricks &amp; Combos</span>
+                        <span id="trick-score">+0</span>
+                    </div>
+                    <div class="score-row">
+                        <span>Best Combo</span>
+                        <span id="best-combo">0</span>
+                    </div>
+                    <div class="score-row">
+                        <span>Attempts</span>
+                        <span id="attempts-value">1</span>
+                    </div>
+                    <div class="score-row">
+                        <span>Clean Run</span>
+                        <span id="perfect-bonus">+0</span>
+                    </div>
+                    <div class="score-row total">
+                        <span>Total Score</span>
+                        <span id="total-score-value">1500</span>
+                    </div>
+                </div>
+                <div class="reward-display" id="rewards">
+                    <div class="reward coins">
+                        <span class="reward-icon">&#9679;</span>
+                        <span class="reward-value">+50</span>
+                    </div>
+                    <div class="reward gems hidden" id="gem-reward">
+                        <span class="reward-icon">&#9830;</span>
+                        <span class="reward-value">+1</span>
+                    </div>
+                </div>
+                <div class="complete-buttons">
+                    <button class="menu-btn" id="replay-level-btn">REPLAY</button>
+                    <button class="menu-btn primary" id="next-level-btn">NEXT LEVEL</button>
+                </div>
+                <button class="menu-btn share-btn" id="share-score-btn">SHARE SCORE</button>
+                <p class="share-status" id="score-share-status" role="status"></p>
+                <button class="menu-btn challenge-btn" id="challenge-btn">CHALLENGE A FRIEND</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameover-screen" class="screen overlay">
+            <div class="overlay-content failure">
+                <h2>MARBLE LOST!</h2>
+                <p class="failure-reason" id="failure-reason">The marble fell off the track</p>
+                <div class="gameover-buttons">
+                    <button class="menu-btn primary" id="retry-btn">TRY AGAIN</button>
+                    <button class="menu-btn" id="gameover-quit-btn">QUIT</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unlock Popup -->
+        <div id="unlock-popup" class="popup hidden">
+            <div class="popup-content">
+                <h3>NEW UNLOCK!</h3>
+                <div class="unlock-item" id="unlock-preview"></div>
+                <p class="unlock-name" id="unlock-name"></p>
+                <button class="menu-btn primary popup-close">AWESOME!</button>
+            </div>
+        </div>
+
+        <!-- Share a challenge -->
+        <div id="share-sheet" class="popup hidden">
+            <div class="popup-content share-content">
+                <h3 id="share-title">CHALLENGE A FRIEND</h3>
+                <p class="share-text" id="share-text"></p>
+                <label class="share-label" for="share-name">Your name</label>
+                <input type="text" id="share-name" maxlength="16" placeholder="So they know who sent it" autocomplete="nickname">
+                <button class="menu-btn primary" id="share-send">SEND CHALLENGE</button>
+                <p class="share-status" id="share-status" role="status"></p>
+                <textarea id="share-link" class="share-link hidden" readonly rows="3" aria-label="Challenge link"></textarea>
+                <button class="menu-btn" id="share-close">DONE</button>
+            </div>
+        </div>
+
+        <!-- Daily Reward Popup -->
+        <div id="daily-popup" class="popup hidden">
+            <div class="popup-content">
+                <h3>DAILY REWARD</h3>
+                <div class="daily-rewards" id="daily-rewards"></div>
+                <button class="menu-btn primary" id="claim-daily">CLAIM</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import * as THREE from './js/vendor/three.module.min.js';
+        window.THREE = THREE;
     </script>
-    <script id="velocity-game-module" type="module" crossorigin src="./assets/index-velocity-v2.js?course=grand-prix-v3"
-      onload="window.__velocityBootState.moduleLoaded=true"
-      onerror="window.__velocityBootError('The Marble Run game file could not be loaded. Check the connection and try again.')"></script>
-    <script nomodule>window.__velocityBootError('This iPad browser is too old for the 3D game. Update iPadOS, then try again.')</script>
-    <script src="./pro-polish.js?course=grand-prix-v3&circuits=full-length-v3" defer></script>
-  </head>
-  <body>
-
-  <!-- Feature 1: Loading Screen with Progress Indicator -->
-  <div id="loading-overlay">
-    <div class="spinner"></div>
-    <div class="loading-text">Loading</div>
-    <div class="loading-sub">Preparing the track...</div>
-  </div>
-
-  <a href="../../" aria-label="Return to main menu" style="position:fixed;top:12px;left:12px;z-index:9999;background:rgba(0,0,0,0.7);color:#fff;text-decoration:none;padding:8px 14px;border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);transition:background 0.2s;min-height:44px;display:flex;align-items:center;gap:6px;" onmouseover="this.style.background='rgba(0,0,0,0.9)'" onmouseout="this.style.background='rgba(0,0,0,0.7)'">🏠 Menu</a>
-
-  <!-- Feature 3: Fullscreen Toggle Button -->
-  <button id="fullscreen-btn" aria-label="Toggle fullscreen" title="Toggle fullscreen">
-    <svg id="fs-icon-enter" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-    <svg id="fs-icon-exit" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
-  </button>
-
-    <div id="root"></div>
-
-  <!-- Feature 10: Error Boundary Fallback UI -->
-  <div id="error-overlay">
-    <div class="error-icon">!</div>
-    <div class="error-title">Marble Run Couldn’t Start</div>
-    <div class="error-msg">An unexpected error occurred. This can happen if your browser lost the graphics context or ran out of memory.</div>
-    <button class="error-btn" onclick="window.__velocityEnableSafeMode()">RETRY IN SAFE MODE</button>
-    <a href="../../" style="margin-top:4px;color:#666;font-family:'Rajdhani',sans-serif;font-size:14px;text-decoration:underline;text-underline-offset:3px;">Return to Menu</a>
-  </div>
-
-    <noscript>
-      <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#050505;color:#00f0ff;font-family:'Rajdhani',sans-serif;text-align:center;padding:20px;">
-        <p>This game requires JavaScript and a WebGL-capable browser to play.</p>
-      </div>
-    </noscript>
-
-  <!-- Feature 1: Loading Screen - MutationObserver to detect app mount -->
-  <script>
-    (function() {
-      var overlay = document.getElementById('loading-overlay');
-      var root = document.getElementById('root');
-      if (!overlay || !root) return;
-
-      function finishLoading() {
-        if (window.__velocityBootState) window.__velocityBootState.appMounted = true;
-        overlay.classList.add('fade-out');
-        setTimeout(function() {
-          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        }, 600);
-        observer.disconnect();
-      }
-
-      function appIsReady() {
-        return !!root.querySelector('canvas');
-      }
-
-      var observer = new MutationObserver(function() {
-        if (appIsReady()) {
-          finishLoading();
-        }
-      });
-      observer.observe(root, { childList: true, subtree: true });
-
-      // Never leave an iPad staring at a blank screen if WebGL or the module fails.
-      setTimeout(function() {
-        if (appIsReady()) {
-          finishLoading();
-        } else {
-          observer.disconnect();
-          window.__velocityBootError('The 3D track did not initialize. Retry in Safe Mode; if it still fails, update iPadOS and reload.');
-        }
-      }, 15000);
-    })();
-  </script>
-
-  <!-- Feature 3: Fullscreen Toggle - Inline Script -->
-  <script>
-    (function() {
-      var btn = document.getElementById('fullscreen-btn');
-      var iconEnter = document.getElementById('fs-icon-enter');
-      var iconExit = document.getElementById('fs-icon-exit');
-      if (!btn || !document.fullscreenEnabled && !document.webkitFullscreenEnabled) {
-        if (btn) btn.style.display = 'none';
-        return;
-      }
-
-      function isFullscreen() {
-        return !!(document.fullscreenElement || document.webkitFullscreenElement);
-      }
-
-      function updateIcon() {
-        var fs = isFullscreen();
-        iconEnter.style.display = fs ? 'none' : 'block';
-        iconExit.style.display = fs ? 'block' : 'none';
-      }
-
-      btn.addEventListener('click', function() {
-        if (isFullscreen()) {
-          if (document.exitFullscreen) document.exitFullscreen();
-          else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-        } else {
-          var el = document.documentElement;
-          if (el.requestFullscreen) el.requestFullscreen();
-          else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-        }
-      });
-
-      document.addEventListener('fullscreenchange', updateIcon);
-      document.addEventListener('webkitfullscreenchange', updateIcon);
-    })();
-  </script>
-
-  <!-- Feature 10: Error Boundary - Global Error Handlers -->
-  <script>
-    (function() {
-      var errorOverlay = document.getElementById('error-overlay');
-      var hasShown = false;
-
-      function showError(message) {
-        if (!errorOverlay) return;
-        var messageElement = errorOverlay.querySelector('.error-msg');
-        if (message && messageElement) messageElement.textContent = message;
-        if (hasShown) return;
-        hasShown = true;
-        errorOverlay.classList.add('visible');
-        // Hide the loading overlay if still present
-        var loadingOverlay = document.getElementById('loading-overlay');
-        if (loadingOverlay && loadingOverlay.parentNode) {
-          loadingOverlay.parentNode.removeChild(loadingOverlay);
-        }
-      }
-
-      window.__velocityShowBootError = showError;
-      if (window.__velocityPendingError) showError(window.__velocityPendingError);
-
-      // Catch uncaught JS errors (only show for fatal-looking errors, not minor warnings)
-      window.addEventListener('error', function(e) {
-        // Skip errors from extensions or cross-origin scripts
-        if (e.filename && e.filename.indexOf(location.origin) === -1) return;
-        // Show for errors that are likely to break the game
-        if (e.message && (
-          /webgl/i.test(e.message) ||
-          /context/i.test(e.message) ||
-          /out of memory/i.test(e.message) ||
-          /cannot read/i.test(e.message) ||
-          /is not defined/i.test(e.message) ||
-          /null/i.test(e.message) ||
-          /undefined/i.test(e.message) ||
-          /failed to/i.test(e.message)
-        )) {
-          showError('The iPad lost its 3D graphics context. Retry in Safe Mode.');
-        }
-      });
-
-      // Catch unhandled promise rejections
-      window.addEventListener('unhandledrejection', function(e) {
-        var reason = e.reason;
-        var msg = (reason && (reason.message || String(reason))) || '';
-        if (/webgl/i.test(msg) || /context/i.test(msg) || /chunk/i.test(msg) ||
-            /loading/i.test(msg) || /network/i.test(msg) || /failed/i.test(msg) ||
-            /module/i.test(msg)) {
-          showError('A required game resource did not finish loading. Retry in Safe Mode.');
-        }
-      });
-
-      // Catch WebGL context loss directly
-      document.addEventListener('webglcontextlost', function(e) {
-        e.preventDefault();
-        showError('The iPad lost its 3D graphics context. Retry in Safe Mode.');
-      }, true);
-    })();
-  </script>
-
-  </body>
+    <script src="js/engine/MusicThemes.js"></script>
+    <script src="js/engine/MusicEngine.js"></script>
+    <script src="js/engine/BeatMap.js"></script>
+    <script src="js/engine/AudioManager.js"></script>
+    <script src="js/engine/HapticManager.js"></script>
+    <script src="js/game/Marble.js"></script>
+    <script src="js/game/Shop.js"></script>
+    <script src="js/game/LevelData.js"></script>
+    <script src="js/game/Rivals.js"></script>
+    <script src="js/game/GameState.js"></script>
+    <script src="js/game/Daily.js"></script>
+    <script src="js/game/Challenge.js"></script>
+    <script src="js/game/ScoreCard.js"></script>
+    <script src="js/game/Progression.js"></script>
+    <script src="js/ui/UIManager.js"></script>
+    <script src="js/ui/Animations.js"></script>
+    <script src="js/ui/PremiumUI.js"></script>
+    <script src="js/three/TrackFixes.js"></script>
+    <script src="js/three/Track.js"></script>
+    <script src="js/three/MarbleLooks.js"></script>
+    <script src="js/three/Scene3D.js"></script>
+    <script src="js/three/MarbleFX.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/main.js"></script>
+</body>
 </html>

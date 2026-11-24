@@ -3,7 +3,7 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import { join, posix } from 'node:path';
 
 export const ORIGIN = 'https://offline.invalid';
-export const SELF_MANAGED = ['games/reflex-riot/', 'games/particle-conquest/'];
+export const SELF_MANAGED = ['games/reflex-riot/', 'games/particle-conquest/', 'games/velocity-marble-run/'];
 export const selfManaged = path => SELF_MANAGED.some(folder => path.startsWith(folder));
 const unusedAsset = path => /^ios\//.test(path) || path.startsWith('games/lasers-3d/assets/review/') ||
   /(?:^|\/)[^/]*-source\.png$/i.test(path);

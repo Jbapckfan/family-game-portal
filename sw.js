@@ -1,6 +1,6 @@
 /* Portal offline support. Generated assets are updated by tools/offline/build-precache.mjs. */
 // BEGIN GENERATED PRECACHE
-const PRECACHE_VERSION = 'b9e0c095902e8e36706182f2';
+const PRECACHE_VERSION = 'f4cc1f83fc00aa7eb7fbb4f0';
 const PRECACHE_FILES = [
   "games/2048-thumb.jpg",
   "games/2DTicTacToe-thumb.jpg",
@@ -408,11 +408,6 @@ const PRECACHE_FILES = [
   "games/tradeoff/puzzles.mjs",
   "games/tradeoff/styles.css",
   "games/velocity-marble-run-thumb.jpg",
-  "games/velocity-marble-run/assets/index-velocity-v2.js",
-  "games/velocity-marble-run/assets/velocity-tailwind.css",
-  "games/velocity-marble-run/index.html",
-  "games/velocity-marble-run/manifest.json",
-  "games/velocity-marble-run/pro-polish.js",
   "games/vendor/react-18.3.1/LICENSE",
   "games/vendor/react-18.3.1/README.md",
   "games/vendor/react-18.3.1/react-dom.production.min.js",
@@ -432,7 +427,7 @@ const CACHE_PREFIX = 'family-game-portal-';
 const CACHE_NAME = CACHE_PREFIX + PRECACHE_VERSION;
 const SCOPE = new URL(self.registration.scope);
 const CORE_FILES = ['index.html', 'manifest.json'];
-const OWN_WORKERS = ['games/reflex-riot/', 'games/particle-conquest/'];
+const OWN_WORKERS = ['games/reflex-riot/', 'games/particle-conquest/', 'games/velocity-marble-run/'];
 
 function relativePath(url) {
   return url.origin === SCOPE.origin && url.pathname.startsWith(SCOPE.pathname)
